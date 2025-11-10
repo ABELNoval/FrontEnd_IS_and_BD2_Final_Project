@@ -1,11 +1,73 @@
-.btn{
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    border: none;
+.app-button {
+  position: relative;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(90deg, #003973, #0077ff);
+  transition: all 0.4s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 119, 255, 0.25);
 }
 
-.login{
-    color: aqua;
-    background-color: black;
+/* ——— Fase 1: Absorción azul ——— */
+.app-button.loading {
+  background: radial-gradient(circle at center, #00aaff 0%, #003973 100%);
+  box-shadow: 0 0 25px rgba(0, 153, 255, 0.6),
+              0 0 60px rgba(0, 102, 255, 0.4);
+  animation: absorb 1.2s ease forwards;
+}
+
+@keyframes absorb {
+  0% {
+    background: linear-gradient(90deg, #003973, #0077ff);
+    box-shadow: 0 0 10px rgba(0, 102, 255, 0.3);
+  }
+  50% {
+    background: radial-gradient(circle at center, #00bbff 20%, #003366 100%);
+    box-shadow: 0 0 30px rgba(0, 153, 255, 0.7);
+  }
+  100% {
+    background: radial-gradient(circle at center, #0077ff 10%, #001633 100%);
+    box-shadow: 0 0 20px rgba(0, 153, 255, 0.5);
+  }
+}
+
+
+/* ——— Fase 2: Engranaje aparece y gira ——— */
+.gear-icon {
+  color: white;
+  animation: spin-gear 1s ease-in-out forwards;
+}
+
+@keyframes spin-gear {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* ——— Texto original ——— */
+.btn-text {
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.app-button.loading .btn-text {
+  opacity: 0;
+}
+
+/* ——— Pequeña pulsación al hacer clic ——— */
+.app-button:active {
+  transform: scale(0.97);
 }
