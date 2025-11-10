@@ -71,3 +71,35 @@
 .app-button:active {
   transform: scale(0.97);
 }
+
+/* === Hover Neon Sweep === */
+.app-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(0, 170, 255, 0.4),
+    transparent
+  );
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.app-button:hover::before {
+  left: 150%;
+  opacity: 1;
+}
+
+/* ——— Después del barrido, el botón queda iluminado ——— */
+.app-button:hover {
+  box-shadow:
+    0 0 15px rgba(0, 170, 255, 0.5),
+    0 0 30px rgba(0, 170, 255, 0.3);
+  background: linear-gradient(90deg, #0040aa, #0099ff);
+  transition: all 0.7s ease-in-out;
+}

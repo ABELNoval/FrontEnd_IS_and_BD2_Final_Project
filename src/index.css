@@ -8,6 +8,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  padding-top: 8vh;
 }
 
 .main-title {
@@ -22,6 +24,8 @@ body {
   align-items: baseline;
   justify-content: center;
   gap: 2px;
+  margin: 0;            
+  padding-bottom: 8px; 
 }
 
 /* Ges y Tec (normales, blancas) */
@@ -176,4 +180,47 @@ input::placeholder {
 @keyframes hkGlow {
   0% { text-shadow: 0 0 8px rgba(0, 170, 255, 0.4); }
   100% { text-shadow: 0 0 16px rgba(0, 200, 255, 0.8); }
+}
+
+/* === LINKS GLOBALES (React Router <Link>) === */
+a {
+  color: #00aaff;
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Efecto de subrayado con gradiente al pasar */
+a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00aaff, #0077ff);
+  transition: width 0.3s ease;
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+/* Cambio de color + resplandor suave al pasar el cursor */
+a:hover {
+  color: #66ccff;
+  text-shadow: 0 0 6px rgba(0, 170, 255, 0.6);
+}
+
+/* Versión secundaria (menos resaltada, por ejemplo "Go to Login") */
+a.secondary {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+a.secondary:hover {
+  color: #00aaff;
+  text-shadow: none;
 }
