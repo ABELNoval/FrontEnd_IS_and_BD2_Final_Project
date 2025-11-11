@@ -1,8 +1,9 @@
 import React from "react";
-import Button from "../Button/Button";
+import { Edit, Trash2 } from "lucide-react";
 import "./TableViewer.css";
+import Button from "../Button/Button"
 
-function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick }) { // 👈 Añadimos onCreateClick
+function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick, onEdit, onDelete }) {
   if (!table) {
     return <div className="table-empty">Selecciona una tabla para verla</div>;
   }
@@ -15,7 +16,7 @@ function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick }) { //
         <h2 className="table-title">{table.name}</h2>
         <Button
           text={`Create ${table.name.slice(0, -1)}`}
-          onClick={onCreateClick} // 👈 Usamos la función pasada
+          onClick={onCreateClick}
           variant="create-button"
         />
       </div>
@@ -28,6 +29,7 @@ function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick }) { //
               {visibleColumns.map((col) => (
                 <th key={col}>{col}</th>
               ))}
+              <th className="actions-header">Actions</th>
             </tr>
           </thead>
 
@@ -62,6 +64,22 @@ function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick }) { //
                   }
                   return <td key={col}>{cell ?? ""}</td>;
                 })}
+                <td className="actions-cell">
+                  <button 
+                    className="action-btn edit-btn"
+                    onClick={() => onEdit && onEdit(row)}
+                    title="Edit"
+                  >
+                    <Edit size={16} />
+                  </button>
+                  <button 
+                    className="action-btn delete-btn"
+                    onClick={() => onDelete && onDelete(row.id)}
+                    title="Delete"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

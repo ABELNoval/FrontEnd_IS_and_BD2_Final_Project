@@ -10,6 +10,7 @@ function Dashboard() {
   const [selectedTable, setSelectedTable] = useState(null);
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
     setTables(data.tables || []);
@@ -20,6 +21,7 @@ function Dashboard() {
     setSelectedTable(foundTable);
     setSelectedRows(new Set());
     setShowCreateForm(false);
+    setEditingItem(null);
   };
 
   const handleForeignClick = (refTableName, targetId) => {
@@ -34,6 +36,7 @@ function Dashboard() {
       }, 0);
     }
     setShowCreateForm(false);
+    setEditingItem(null);
   };
 
   const toggleRowSelection = (rowId) => {
@@ -50,33 +53,28 @@ function Dashboard() {
 
   const toggleCreateForm = () => {
     setShowCreateForm(prev => !prev);
+    setEditingItem(null);
   };
 
   const handleCreateItem = (formData) => {
     if (!selectedTable) return;
 
-    // Crear un nuevo ID (máximo ID actual + 1)
     const maxId = selectedTable.rows.reduce((max, row) => 
       Math.max(max, typeof row.id === 'number' ? row.id : 0), 0);
     const newId = maxId + 1;
 
-    // Crear el nuevo objeto con la estructura correcta
     const newItem = { id: newId };
     
-    // Mapear los datos del formulario a la estructura de la tabla
     selectedTable.columns.forEach(column => {
       if (column !== 'id') {
-        // Si el campo es un objeto (foreign key), lo mantenemos como objeto
         if (typeof formData[column] === 'object' && formData[column] !== null) {
           newItem[column] = formData[column];
         } else {
-          // Para campos normales, asignamos el valor directamente
           newItem[column] = formData[column] || '';
         }
       }
     });
 
-    // Actualizar el estado de las tablas
     setTables(prevTables => 
       prevTables.map(table => 
         table.name === selectedTable.name
@@ -85,15 +83,75 @@ function Dashboard() {
       )
     );
 
-    // Actualizar la tabla seleccionada
     setSelectedTable(prev => 
       prev ? { ...prev, rows: [...prev.rows, newItem] } : null
     );
 
-    // Cerrar el formulario
     setShowCreateForm(false);
-    
     console.log("Nuevo elemento creado:", newItem);
+  };
+
+  // 👇 NUEVA FUNCIÓN PARA EDITAR
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setShowCreateForm(true);
+  };
+
+  // 👇 NUEVA FUNCIÓN PARA ELIMINAR
+  const handleDelete = (itemId) => {
+    if (!selectedTable) return;
+
+    // Verificar si el elemento está siendo usado en otras tablas
+    const usedInTables = [];
+    tables.forEach(table => {
+      if (table.name !== selectedTable.name) {
+        table.rows.forEach(row => {
+          Object.values(row).forEach(cell => {
+            if (cell && typeof cell === 'object' && cell.isForeign && 
+                cell.ref === selectedTable.name && cell.value === itemId) {
+              if (!usedInTables.includes(table.name)) {
+                usedInTables.push(table.name);
+              }
+            }
+          });
+        });
+      }
+    });
+
+    if (usedInTables.length > 0) {
+      const warningMessage = `Este elemento está siendo usado en las siguientes tablas: ${usedInTables.join(', ')}.\n\n¿Estás seguro de que quieres eliminarlo?`;
+      if (!window.confirm(warningMessage)) {
+        return;
+      }
+    } else {
+      if (!window.confirm("¿Estás seguro de que quieres eliminar este elemento?")) {
+        return;
+      }
+    }
+
+    // Eliminar el elemento
+    const updatedRows = selectedTable.rows.filter(row => row.id !== itemId);
+
+    setTables(prevTables => 
+      prevTables.map(table => 
+        table.name === selectedTable.name
+          ? { ...table, rows: updatedRows }
+          : table
+      )
+    );
+
+    setSelectedTable(prev => 
+      prev ? { ...prev, rows: updatedRows } : null
+    );
+
+    // Remover de la selección si estaba seleccionado
+    setSelectedRows(prev => {
+      const newSelection = new Set(prev);
+      newSelection.delete(itemId);
+      return newSelection;
+    });
+
+    console.log("Elemento eliminado:", itemId);
   };
 
   return (
@@ -106,7 +164,11 @@ function Dashboard() {
       </h1>
 
       <div className="dashboard-container">
-        <TableSelector tables={tables} onSelect={handleSelectTable} />
+        <TableSelector 
+          tables={tables} 
+          onSelect={handleSelectTable}
+          activeTable={selectedTable?.name}
+        />
 
         {selectedTable ? (
           <TableViewer
@@ -117,6 +179,8 @@ function Dashboard() {
             onForeignClick={handleForeignClick}
             onToggleRow={toggleRowSelection}
             onCreateClick={toggleCreateForm}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         ) : (
           <p className="table-empty">Selecciona una tabla para verla</p>
@@ -126,8 +190,12 @@ function Dashboard() {
           <CreateForm 
             table={selectedTable}
             tables={tables}
-            onClose={() => setShowCreateForm(false)}
-            onSave={handleCreateItem}
+            editingItem={editingItem}
+            onClose={() => {
+              setShowCreateForm(false);
+              setEditingItem(null);
+            }}
+            onSave={editingItem ? handleCreateItem : handleCreateItem} // Por ahora usa la misma función
           />
         )}
       </div>

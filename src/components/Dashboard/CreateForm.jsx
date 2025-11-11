@@ -1,36 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import "./CreateForm.css";
 
-function CreateForm({ table, tables, onClose, onSave }) { // 👈 Recibimos todas las tablas
+function CreateForm({ table, tables, onClose, onSave, editingItem }) {
   const columns = table.columns.filter(col => col !== "id");
   const [formData, setFormData] = useState({});
 
-  // 👇 Función para detectar si una columna es foreign key
+  // Cargar datos del elemento si estamos editando
+  useEffect(() => {
+    if (editingItem) {
+      const initialData = {};
+      columns.forEach(column => {
+        const value = editingItem[column];
+        if (value && typeof value === 'object' && value.isForeign) {
+          // Para foreign keys, usamos el valor numérico
+          initialData[column] = value.value.toString();
+        } else {
+          initialData[column] = value || '';
+        }
+      });
+      setFormData(initialData);
+    } else {
+      setFormData({});
+    }
+  }, [editingItem, columns]);
+
+  // ... (resto del código permanece igual)
   const isForeignKey = (column) => {
-    // Buscamos en las filas existentes si esta columna tiene objetos foreign key
     const hasForeignKey = table.rows.some(row => 
       row[column] && typeof row[column] === 'object' && row[column].isForeign
     );
     return hasForeignKey;
   };
 
-  // 👇 Función para obtener la tabla referenciada por una foreign key
   const getReferencedTable = (column) => {
-    // Buscamos la primera fila que tenga esta foreign key para obtener la referencia
     const rowWithForeignKey = table.rows.find(row => 
       row[column] && typeof row[column] === 'object' && row[column].isForeign
     );
     return rowWithForeignKey ? rowWithForeignKey[column].ref : null;
   };
 
-  // 👇 Función para obtener las opciones de una tabla referenciada
   const getOptionsForTable = (tableName) => {
     const refTable = tables.find(t => t.name === tableName);
     if (!refTable) return [];
     
-    // Mostramos el primer campo que no sea 'id' como etiqueta
     const labelColumn = refTable.columns.find(col => col !== 'id') || 'id';
     return refTable.rows.map(row => ({
       value: row.id,
@@ -46,15 +60,12 @@ function CreateForm({ table, tables, onClose, onSave }) { // 👈 Recibimos toda
   };
 
   const handleSubmit = () => {
-    // Validar que todos los campos requeridos estén llenos
     const requiredColumns = columns;
     const isEmpty = requiredColumns.some(col => {
       const value = formData[col];
-      // Para foreign keys, el valor debe ser un número (el ID seleccionado)
       if (isForeignKey(col)) {
         return !value || value === '';
       }
-      // Para campos normales, validamos que no esté vacío
       return !value || value.trim() === '';
     });
     
@@ -63,7 +74,6 @@ function CreateForm({ table, tables, onClose, onSave }) { // 👈 Recibimos toda
       return;
     }
     
-    // Para foreign keys, convertimos el valor a objeto foreign key
     const processedData = { ...formData };
     columns.forEach(col => {
       if (isForeignKey(col)) {
@@ -81,7 +91,7 @@ function CreateForm({ table, tables, onClose, onSave }) { // 👈 Recibimos toda
 
   return (
     <div className="create-form-container">
-      <h3>Create new {table.name.slice(0, -1)}</h3>
+      <h3>{editingItem ? `Edit ${table.name.slice(0, -1)}` : `Create new ${table.name.slice(0, -1)}`}</h3>
       <div className="create-form">
         {columns.map(column => {
           if (isForeignKey(column)) {
@@ -127,7 +137,7 @@ function CreateForm({ table, tables, onClose, onSave }) { // 👈 Recibimos toda
           variant="cancel-button"
         />
         <Button 
-          text="Save" 
+          text={editingItem ? "Update" : "Save"} 
           onClick={handleSubmit}
           variant="save-button"
         />
