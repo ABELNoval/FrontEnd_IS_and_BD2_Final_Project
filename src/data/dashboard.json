@@ -1,0 +1,214 @@
+{
+  "tables": [
+    {
+      "name": "Equipos",
+      "columns": ["id", "nombre", "tipo", "marca", "modelo", "serial", "estado", "fecha_adquisicion", "departamento_id", "tecnico_id"],
+      "rows": [
+        {
+          "id": 1,
+          "nombre": "Laptop HP ProBook",
+          "tipo": "Portátil",
+          "marca": "HP",
+          "modelo": "ProBook 450 G8",
+          "serial": "5CD1234X7Y",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-01-15",
+          "departamento_id": { "value": 2, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 3, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 2,
+          "nombre": "Monitor Samsung 24",
+          "tipo": "Pantalla",
+          "marca": "Samsung",
+          "modelo": "S24F350",
+          "serial": "SM12345678",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-02-20",
+          "departamento_id": { "value": 1, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 5, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 3,
+          "nombre": "Servidor Dell R740",
+          "tipo": "Servidor",
+          "marca": "Dell",
+          "modelo": "PowerEdge R740",
+          "serial": "DEL7890123",
+          "estado": "Activo",
+          "fecha_adquisicion": "2022-11-10",
+          "departamento_id": { "value": 3, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 7, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 4,
+          "nombre": "Impresora LaserJet",
+          "tipo": "Impresora",
+          "marca": "HP",
+          "modelo": "LaserJet Pro M404",
+          "serial": "HP45678901",
+          "estado": "Mantenimiento",
+          "fecha_adquisicion": "2022-08-05",
+          "departamento_id": { "value": 4, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 3, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 5,
+          "nombre": "Tablet Surface Pro",
+          "tipo": "Tablet",
+          "marca": "Microsoft",
+          "modelo": "Surface Pro 8",
+          "serial": "MS123456SP",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-03-12",
+          "departamento_id": { "value": 2, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 10, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 6,
+          "nombre": "Workstation Precision",
+          "tipo": "Estación de Trabajo",
+          "marca": "Dell",
+          "modelo": "Precision 5860",
+          "serial": "DEL4567890",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-01-30",
+          "departamento_id": { "value": 5, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 8, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 7,
+          "nombre": "Switch Cisco 48P",
+          "tipo": "Red",
+          "marca": "Cisco",
+          "modelo": "Catalyst 2960X",
+          "serial": "CIS7890123",
+          "estado": "Activo",
+          "fecha_adquisicion": "2022-12-15",
+          "departamento_id": { "value": 3, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 5, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 8,
+          "nombre": "Access Point Ubiquiti",
+          "tipo": "Red",
+          "marca": "Ubiquiti",
+          "modelo": "UAP-AC-PRO",
+          "serial": "UBNT456789",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-04-01",
+          "departamento_id": { "value": 1, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 7, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 9,
+          "nombre": "Laptop ThinkPad",
+          "tipo": "Portátil",
+          "marca": "Lenovo",
+          "modelo": "ThinkPad X1 Carbon",
+          "serial": "LEN9876543",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-02-28",
+          "departamento_id": { "value": 6, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 12, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 10,
+          "nombre": "Monitor Dell UltraSharp",
+          "tipo": "Pantalla",
+          "marca": "Dell",
+          "modelo": "UltraSharp U2720Q",
+          "serial": "DEL1234567",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-03-20",
+          "departamento_id": { "value": 2, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 3, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 11,
+          "nombre": "Scanner Documentos",
+          "tipo": "Escáner",
+          "marca": "Fujitsu",
+          "modelo": "fi-7460",
+          "serial": "FUJ1234567",
+          "estado": "Activo",
+          "fecha_adquisicion": "2022-10-10",
+          "departamento_id": { "value": 4, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 15, "isForeign": true, "ref": "Técnicos" }
+        },
+        {
+          "id": 12,
+          "nombre": "PC All-in-One",
+          "tipo": "Computadora",
+          "marca": "HP",
+          "modelo": "Pavilion 24",
+          "serial": "HP9876543",
+          "estado": "Activo",
+          "fecha_adquisicion": "2023-01-10",
+          "departamento_id": { "value": 1, "isForeign": true, "ref": "Departamentos" },
+          "tecnico_id": { "value": 8, "isForeign": true, "ref": "Técnicos" }
+        }
+      ]
+    },
+    {
+      "name": "Departamentos",
+      "columns": ["id", "nombre", "responsable", "ubicacion", "telefono"],
+      "rows": [
+        { "id": 1, "nombre": "Laboratorio 1", "responsable": "Dr. Rodriguez", "ubicacion": "Edificio A, Piso 2", "telefono": "1234" },
+        { "id": 2, "nombre": "Oficina Técnica", "responsable": "Ing. Martínez", "ubicacion": "Edificio B, Piso 1", "telefono": "5678" },
+        { "id": 3, "nombre": "Sala de Servidores", "responsable": "Admin. Sistemas", "ubicacion": "Sótano 1", "telefono": "9012" },
+        { "id": 4, "nombre": "Administración", "responsable": "Lic. Gómez", "ubicacion": "Edificio A, Piso 1", "telefono": "3456" },
+        { "id": 5, "nombre": "Investigación", "responsable": "Dr. López", "ubicacion": "Edificio C, Piso 3", "telefono": "7890" },
+        { "id": 6, "nombre": "Docencia", "responsable": "Prof. García", "ubicacion": "Edificio D, Piso 2", "telefono": "2345" },
+        { "id": 7, "nombre": "Recursos Humanos", "responsable": "Lic. Pérez", "ubicacion": "Edificio A, Piso 1", "telefono": "6789" },
+        { "id": 8, "nombre": "Contabilidad", "responsable": "C.P. Ramírez", "ubicacion": "Edificio B, Piso 1", "telefono": "0123" }
+      ]
+    },
+    {
+      "name": "Técnicos",
+      "columns": ["id", "nombre", "especialidad", "email", "telefono", "turno"],
+      "rows": [
+        { "id": 3, "nombre": "Carlos Pérez", "especialidad": "Mantenimiento", "email": "carlos@empresa.com", "telefono": "555-0101", "turno": "Matutino" },
+        { "id": 5, "nombre": "Laura Díaz", "especialidad": "Redes", "email": "laura@empresa.com", "telefono": "555-0102", "turno": "Vespertino" },
+        { "id": 7, "nombre": "Miguel Torres", "especialidad": "Servidores", "email": "miguel@empresa.com", "telefono": "555-0103", "turno": "Matutino" },
+        { "id": 8, "nombre": "Ana Rodríguez", "especialidad": "Soporte", "email": "ana@empresa.com", "telefono": "555-0104", "turno": "Vespertino" },
+        { "id": 10, "nombre": "Roberto Silva", "especialidad": "Mantenimiento", "email": "roberto@empresa.com", "telefono": "555-0105", "turno": "Matutino" },
+        { "id": 12, "nombre": "Sofia Castro", "especialidad": "Hardware", "email": "sofia@empresa.com", "telefono": "555-0106", "turno": "Vespertino" },
+        { "id": 15, "nombre": "Javier Morales", "especialidad": "Impresoras", "email": "javier@empresa.com", "telefono": "555-0107", "turno": "Matutino" },
+        { "id": 18, "nombre": "Elena Ruiz", "especialidad": "Redes", "email": "elena@empresa.com", "telefono": "555-0108", "turno": "Vespertino" },
+        { "id": 20, "nombre": "Diego Herrera", "especialidad": "Soporte", "email": "diego@empresa.com", "telefono": "555-0109", "turno": "Matutino" },
+        { "id": 22, "nombre": "Patricia Vega", "especialidad": "Servidores", "email": "patricia@empresa.com", "telefono": "555-0110", "turno": "Vespertino" }
+      ]
+    },
+    {
+      "name": "Mantenimientos",
+      "columns": ["id", "equipo_id", "tecnico_id", "fecha", "tipo", "descripcion", "estado", "costo"],
+      "rows": [
+        { "id": 1, "equipo_id": { "value": 4, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 3, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-05-15", "tipo": "Correctivo", "descripcion": "Cambio de cartucho de tóner", "estado": "Completado", "costo": 150.00 },
+        { "id": 2, "equipo_id": { "value": 1, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 10, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-05-10", "tipo": "Preventivo", "descripcion": "Limpieza interna y actualización de software", "estado": "Completado", "costo": 75.00 },
+        { "id": 3, "equipo_id": { "value": 7, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 5, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-05-18", "tipo": "Configuración", "descripcion": "Configuración de VLANs", "estado": "Completado", "costo": 200.00 },
+        { "id": 4, "equipo_id": { "value": 2, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 8, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-05-20", "tipo": "Correctivo", "descripcion": "Reemplazo de panel LCD", "estado": "En progreso", "costo": 320.00 },
+        { "id": 5, "equipo_id": { "value": 5, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 12, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-05-22", "tipo": "Preventivo", "descripcion": "Revisión general y backup", "estado": "Programado", "costo": 90.00 },
+        { "id": 6, "equipo_id": { "value": 3, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 7, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-05-25", "tipo": "Actualización", "descripcion": "Actualización de memoria RAM", "estado": "Completado", "costo": 450.00 },
+        { "id": 7, "equipo_id": { "value": 8, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 18, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-05-28", "tipo": "Configuración", "descripcion": "Configuración de red WiFi", "estado": "Completado", "costo": 120.00 },
+        { "id": 8, "equipo_id": { "value": 6, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 22, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-06-01", "tipo": "Preventivo", "descripcion": "Limpieza y revisión de componentes", "estado": "Programado", "costo": 110.00 },
+        { "id": 9, "equipo_id": { "value": 9, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 15, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-06-05", "tipo": "Correctivo", "descripcion": "Reparación de teclado", "estado": "En progreso", "costo": 180.00 },
+        { "id": 10, "equipo_id": { "value": 10, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 20, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-06-08", "tipo": "Configuración", "descripcion": "Calibración de color", "estado": "Completado", "costo": 85.00 },
+        { "id": 11, "equipo_id": { "value": 11, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 3, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-06-12", "tipo": "Preventivo", "descripcion": "Limpieza de rodillos", "estado": "Programado", "costo": 95.00 },
+        { "id": 12, "equipo_id": { "value": 12, "isForeign": true, "ref": "Equipos" }, "tecnico_id": { "value": 8, "isForeign": true, "ref": "Técnicos" }, "fecha": "2023-06-15", "tipo": "Actualización", "descripcion": "Instalación de SSD", "estado": "Completado", "costo": 280.00 }
+      ]
+    },
+    {
+      "name": "Proveedores",
+      "columns": ["id", "nombre", "contacto", "telefono", "email", "servicio"],
+      "rows": [
+        { "id": 1, "nombre": "TecnoSuministros S.A.", "contacto": "Juan Martínez", "telefono": "555-1000", "email": "ventas@tecnosuministros.com", "servicio": "Equipos de cómputo" },
+        { "id": 2, "nombre": "Redes y Comunicaciones", "contacto": "María González", "telefono": "555-1001", "email": "info@redesycom.com", "servicio": "Equipos de red" },
+        { "id": 3, "nombre": "Servicio Técnico Integral", "contacto": "Pedro López", "telefono": "555-1002", "email": "servicio@stintegral.com", "servicio": "Mantenimiento" },
+        { "id": 4, "nombre": "Insumos Informáticos", "contacto": "Ana Rodríguez", "telefono": "555-1003", "email": "contacto@insumosinfo.com", "servicio": "Consumibles" },
+        { "id": 5, "nombre": "Soluciones en Cloud", "contacto": "Carlos Sánchez", "telefono": "555-1004", "email": "carlos@cloudsoluciones.com", "servicio": "Servicios en la nube" },
+        { "id": 6, "nombre": "Seguridad Digital", "contacto": "Laura Fernández", "telefono": "555-1005", "email": "laura@seguridaddigital.com", "servicio": "Software de seguridad" }
+      ]
+    }
+  ]
+}

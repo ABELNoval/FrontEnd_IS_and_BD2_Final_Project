@@ -1,0 +1,95 @@
+.dashboard-root, .body-dashboard {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  text-align: center !important; /* o left según quieras */
+  display: block !important;
+}
+
+
+.main-title-dashboard {
+  text-align: center;
+  font-size: 5.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin: 40px 0 20px 0;
+  padding: 0;
+  color: white;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  margin: 0;            
+  padding-bottom: 8px; 
+}
+
+/* Ges y Tec (normales, blancas) */
+.brand-part-dashboard.ges,
+.brand-part-dashboard.tec {
+  color: white;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 7.5rem;
+}
+
+/* H y K (azules, itálicas, fuente distinta) */
+.brand-part-dashboard.highlight {
+  color: #00aaff;
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 7.8rem;
+  text-shadow: 0 0 10px rgba(0, 170, 255, 0.6);
+  transform: rotate(-3deg);
+}
+
+@media (max-height: 700px) {
+  .main-title {
+      font-size: 3.5rem;
+      margin: 20px 0 10px 0;
+  }
+  
+  .brand-part.ges,
+  .brand-part.tec {
+      font-size: 3.5rem;
+  }
+  
+  .brand-part.highlight {
+      font-size: 3.8rem;
+  }
+}
+
+.brand-part.highlight {
+  animation: hkGlow 3s ease-in-out infinite alternate;
+}
+
+
+.table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px; /* Ajusta según necesites */
+  border-radius: 8px;
+}
+
+/* Estilos de scrollbar para la tabla */
+.table-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 170, 255, 0.5);
+  border-radius: 4px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 170, 255, 0.7);
+}

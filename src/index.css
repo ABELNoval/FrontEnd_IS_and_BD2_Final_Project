@@ -9,12 +9,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 8vh;
+  padding-top: 0vh;
 }
 
 .main-title {
   text-align: center;
-  font-size: 7.5rem;
+  font-size: 10.5rem;
   font-weight: 600;
   letter-spacing: 1px;
   margin: 40px 0 20px 0;
@@ -35,7 +35,7 @@ body {
   font-family: "Segoe UI", Roboto, sans-serif;
   font-style: normal;
   font-weight: 600;
-  font-size: 7.5rem;
+  font-size: 10.5rem;
 }
 
 /* H y K (azules, itálicas, fuente distinta) */
@@ -44,7 +44,7 @@ body {
   font-family: "Playfair Display", serif;
   font-style: italic;
   font-weight: 700;
-  font-size: 10.8rem;
+  font-size: 13.8rem;
   text-shadow: 0 0 10px rgba(0, 170, 255, 0.6);
   transform: rotate(-3deg);
 }
