@@ -21,14 +21,18 @@ function FilterPanel({ table, onFilter, onClear }) {
 
   const applyFilters = () => {
     setActiveFilters({ ...filters });
-    onFilter(filters);
+    if (typeof onFilter === 'function') {
+      onFilter(filters);
+    }
     setIsOpen(false);
   };
 
   const clearAllFilters = () => {
     setFilters({});
     setActiveFilters({});
-    onClear();
+    if (typeof onClear === 'function') {
+      onClear();
+    }
     setIsOpen(false);
   };
 
@@ -40,7 +44,9 @@ function FilterPanel({ table, onFilter, onClear }) {
     const newActiveFilters = { ...activeFilters };
     delete newActiveFilters[column];
     setActiveFilters(newActiveFilters);
-    onFilter(newActiveFilters);
+    if (typeof onFilter === 'function') {
+      onFilter(newActiveFilters);
+    }
   };
 
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
