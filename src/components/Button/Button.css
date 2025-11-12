@@ -71,3 +71,169 @@
 .app-button:active {
   transform: scale(0.97);
 }
+
+/* === Hover Neon Sweep === */
+.app-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(0, 170, 255, 0.4),
+    transparent
+  );
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.app-button:hover::before {
+  left: 150%;
+  opacity: 1;
+}
+
+/* ——— Después del barrido, el botón queda iluminado ——— */
+.app-button:hover {
+  box-shadow:
+    0 0 15px rgba(0, 170, 255, 0.5),
+    0 0 30px rgba(0, 170, 255, 0.3);
+  background: linear-gradient(90deg, #0040aa, #0099ff);
+  transition: all 0.7s ease-in-out;
+}
+
+.table-button{
+  position: relative;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(90deg, #003973, #0077ff);
+  transition: all 0.4s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 119, 255, 0.25);
+  flex: 1 1 calc(11% - 16px);   /* Intenta que quepan ~9 por fila (100/9 ≈ 11%) */
+  min-width: 120px;             /* Evita que se achiquen demasiado */
+  max-width: 160px;             /* Tamaño máximo razonable */
+  text-align: center;
+}
+
+/* ... (todos los estilos anteriores de Button.css se mantienen) ... */
+
+/* 👇 Estilo para el botón de crear - versión con animación */
+.create-button {
+  position: relative;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.create-button:hover {
+  background: linear-gradient(90deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35);
+}
+
+.create-button:active {
+  transform: translateY(0);
+}
+
+/* Efecto de barrido al hover (similar al app-button) */
+.create-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.create-button:hover::before {
+  left: 150%;
+  opacity: 1;
+}
+
+.cancel-button, .save-button {
+  position: relative;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  font-size: 0.9rem;
+  min-width: 120px;
+  max-width: 150px;
+  flex-shrink: 0;
+}
+
+.cancel-button {
+  background: linear-gradient(90deg, #6c757d, #5a6268);
+}
+
+.cancel-button:hover {
+  background: linear-gradient(90deg, #5a6268, #4e555b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(108, 117, 125, 0.35);
+}
+
+.save-button {
+  background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.save-button:hover {
+  background: linear-gradient(90deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35);
+}
+
+/* Efecto de barrido al hover (similar al app-button) */
+.cancel-button::before,
+.save-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.cancel-button:hover::before,
+.save-button:hover::before {
+  left: 150%;
+  opacity: 1;
+}

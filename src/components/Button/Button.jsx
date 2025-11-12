@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Settings } from "lucide-react"; // ícono de engranaje
 import "./Button.css";
 
-function Button({ text, onClick }) {
+function Button({ text, onClick , variant}) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -18,7 +18,7 @@ function Button({ text, onClick }) {
 
   return (
     <button
-      className={`app-button ${loading ? "loading" : ""}`}
+      className={variant}
       onClick={handleClick}
       type="button"
     >
