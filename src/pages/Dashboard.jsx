@@ -11,6 +11,7 @@ function Dashboard() {
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [filteredRows, setFilteredRows] = useState(null);
 
   useEffect(() => {
     setTables(data.tables || []);
@@ -22,6 +23,7 @@ function Dashboard() {
     setSelectedRows(new Set());
     setShowCreateForm(false);
     setEditingItem(null);
+    setFilteredRows(null);
   };
 
   const handleForeignClick = (refTableName, targetId) => {
@@ -91,13 +93,53 @@ function Dashboard() {
     console.log("Nuevo elemento creado:", newItem);
   };
 
-  // 👇 NUEVA FUNCIÓN PARA EDITAR
+  // 🔄 NUEVA FUNCIÓN PARA ACTUALIZAR ELEMENTOS EXISTENTES
+  const handleUpdateItem = (formData) => {
+    if (!selectedTable || !editingItem) return;
+
+    // Actualizar el elemento existente
+    const updatedRows = selectedTable.rows.map(row => {
+      if (row.id === editingItem.id) {
+        const updatedItem = { id: editingItem.id };
+        
+        selectedTable.columns.forEach(column => {
+          if (column !== 'id') {
+            if (typeof formData[column] === 'object' && formData[column] !== null) {
+              updatedItem[column] = formData[column];
+            } else {
+              updatedItem[column] = formData[column] || '';
+            }
+          }
+        });
+        
+        return updatedItem;
+      }
+      return row;
+    });
+
+    setTables(prevTables => 
+      prevTables.map(table => 
+        table.name === selectedTable.name
+          ? { ...table, rows: updatedRows }
+          : table
+      )
+    );
+
+    setSelectedTable(prev => 
+      prev ? { ...prev, rows: updatedRows } : null
+    );
+
+    setShowCreateForm(false);
+    setEditingItem(null);
+    
+    console.log("Elemento actualizado:", editingItem.id, formData);
+  };
+
   const handleEdit = (item) => {
     setEditingItem(item);
     setShowCreateForm(true);
   };
 
-  // 👇 NUEVA FUNCIÓN PARA ELIMINAR
   const handleDelete = (itemId) => {
     if (!selectedTable) return;
 
@@ -151,8 +193,52 @@ function Dashboard() {
       return newSelection;
     });
 
+    // Actualizar filas filtradas si existen
+    if (filteredRows) {
+      setFilteredRows(filteredRows.filter(row => row.id !== itemId));
+    }
+
     console.log("Elemento eliminado:", itemId);
   };
+
+  const handleFilter = (filters) => {
+    if (!selectedTable) return;
+
+    if (Object.keys(filters).length === 0) {
+      // Si no hay filtros, mostrar todas las filas
+      setFilteredRows(null);
+      return;
+    }
+
+    const filtered = selectedTable.rows.filter(row => {
+      return Object.entries(filters).every(([column, filterValue]) => {
+        if (!filterValue) return true;
+
+        const cellValue = row[column];
+        
+        // Para foreign keys, buscamos tanto en el valor como en la referencia
+        if (cellValue && typeof cellValue === 'object' && cellValue.isForeign) {
+          const valueStr = String(cellValue.value);
+          const refStr = cellValue.ref;
+          return valueStr.toLowerCase().includes(filterValue.toLowerCase()) || 
+                 refStr.toLowerCase().includes(filterValue.toLowerCase());
+        }
+        
+        // Para valores normales
+        const stringValue = String(cellValue || '').toLowerCase();
+        return stringValue.includes(filterValue.toLowerCase());
+      });
+    });
+
+    setFilteredRows(filtered);
+  };
+
+  // Asegurarnos de pasar las filas filtradas a la tabla
+  const tableWithFilters = selectedTable ? {
+    ...selectedTable,
+    selectedRows,
+    filteredRows: filteredRows || selectedTable.rows
+  } : null;
 
   return (
     <div className="body-dashboard">
@@ -172,15 +258,13 @@ function Dashboard() {
 
         {selectedTable ? (
           <TableViewer
-            table={{
-              ...selectedTable,
-              selectedRows,
-            }}
+            table={tableWithFilters}
             onForeignClick={handleForeignClick}
             onToggleRow={toggleRowSelection}
             onCreateClick={toggleCreateForm}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onFilter={handleFilter}
           />
         ) : (
           <p className="table-empty">Selecciona una tabla para verla</p>
@@ -195,7 +279,7 @@ function Dashboard() {
               setShowCreateForm(false);
               setEditingItem(null);
             }}
-            onSave={editingItem ? handleCreateItem : handleCreateItem} // Por ahora usa la misma función
+            onSave={editingItem ? handleUpdateItem : handleCreateItem} // ✅ Usa la función correcta según el modo
           />
         )}
       </div>

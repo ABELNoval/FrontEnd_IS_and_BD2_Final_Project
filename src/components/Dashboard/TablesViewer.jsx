@@ -1,24 +1,33 @@
 import React from "react";
 import { Edit, Trash2 } from "lucide-react";
+import Button from "../Button/Button";
+import FilterPanel from "./FilterPanel";
 import "./TableViewer.css";
-import Button from "../Button/Button"
 
-function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick, onEdit, onDelete }) {
+function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick, onEdit, onDelete, onFilter }) {
   if (!table) {
     return <div className="table-empty">Selecciona una tabla para verla</div>;
   }
 
   const visibleColumns = table?.columns?.filter((col) => col !== "id") || [];
+  const displayRows = table.filteredRows || table.rows;
 
   return (
     <div className="table-container">
       <div className="table-header">
         <h2 className="table-title">{table.name}</h2>
-        <Button
-          text={`Create ${table.name.slice(0, -1)}`}
-          onClick={onCreateClick}
-          variant="create-button"
-        />
+        <div className="table-header-actions">
+          <FilterPanel 
+            table={table} 
+            onFilter={onFilter}
+            onClear={() => onFilter({})}
+          />
+          <Button
+            text={`Create ${table.name.slice(0, -1)}`}
+            onClick={onCreateClick}
+            variant="create-button"
+          />
+        </div>
       </div>
 
       <div className="table-scroll">
@@ -34,7 +43,7 @@ function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick, onEdit
           </thead>
 
           <tbody>
-            {table?.rows?.map((row) => (
+            {displayRows?.map((row) => (
               <tr 
                 key={row.id} 
                 className={table.selectedRows?.has(row.id) ? "selected" : ""}
@@ -84,6 +93,13 @@ function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick, onEdit
             ))}
           </tbody>
         </table>
+        
+        {/* Mostrar mensaje si no hay resultados */}
+        {displayRows?.length === 0 && (
+          <div className="no-results">
+            No matching records found
+          </div>
+        )}
       </div>
     </div>
   );
