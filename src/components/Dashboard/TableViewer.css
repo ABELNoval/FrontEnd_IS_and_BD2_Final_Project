@@ -236,3 +236,71 @@
   font-style: italic;
   font-size: 1.1rem;
 }
+
+/* ----------------------------- */
+/* 🔵 PAGINATION — ESTILO GESHTECK */
+/* ----------------------------- */
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px 5px;
+}
+
+/* Selector del tamaño de página */
+.page-size-selector {
+  background: #0d1b2a; /* Azul oscuro */
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #8fc9ff; /* Azul clarito */
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.25s;
+}
+
+.page-size-selector:hover {
+  color: #c8e6ff; /* Más brillante */
+  border-color: #4a90e2;
+}
+
+/* Botones de paginación */
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.pagination-btn {
+  padding: 6px 12px;
+  background: linear-gradient(145deg, #0d1b2a, #12263f); /* Fondo acorde */
+  color: #8fc9ff;  /* Letra azul clara */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.25s;
+  font-weight: 600;
+}
+
+.pagination-btn:hover {
+  color: #d4eeff; /* Se ilumina al hacer hover */
+  border-color: #4a90e2;
+  transform: translateY(-1px);
+  background: linear-gradient(145deg, #12263f, #1b3b63);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Info de página */
+.pagination-info {
+  color: #a9cfff; 
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+

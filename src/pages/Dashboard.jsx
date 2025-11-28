@@ -12,6 +12,9 @@ function Dashboard() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [filteredRows, setFilteredRows] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10); // tamaño por defecto
+
 
   useEffect(() => {
     setTables(data.tables || []);
@@ -24,6 +27,7 @@ function Dashboard() {
     setShowCreateForm(false);
     setEditingItem(null);
     setFilteredRows(null);
+    setCurrentPage(1);
   };
 
   const handleForeignClick = (refTableName, targetId) => {
@@ -230,15 +234,31 @@ function Dashboard() {
       });
     });
 
+    setCurrentPage(1);
     setFilteredRows(filtered);
   };
+
+  const paginateRows = (rows) => {
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  return rows.slice(start, end);  
+  };
+
+  const rowsToDisplay = filteredRows || selectedTable?.rows || [];
+  const totalPages = Math.max(1, Math.ceil(rowsToDisplay.length / pageSize));
+
 
   // Asegurarnos de pasar las filas filtradas a la tabla
   const tableWithFilters = selectedTable ? {
     ...selectedTable,
     selectedRows,
-    filteredRows: filteredRows || selectedTable.rows
+    filteredRows: paginateRows(rowsToDisplay), // 🎯 aquí paginamos
+    rowsTotalCount: rowsToDisplay.length,
+    currentPage,
+    totalPages,
+    pageSize,
   } : null;
+
 
   return (
     <div className="body-dashboard">
@@ -265,6 +285,11 @@ function Dashboard() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onFilter={handleFilter}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
           />
         ) : (
           <p className="table-empty">Selecciona una tabla para verla</p>

@@ -4,7 +4,21 @@ import Button from "../Button/Button";
 import FilterPanel from "./FilterPanel";
 import "./TableViewer.css";
 
-function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick, onEdit, onDelete, onFilter }) {
+function TableViewer({ 
+  table, 
+  onForeignClick, 
+  onToggleRow, 
+  onCreateClick, 
+  onEdit, 
+  onDelete, 
+  onFilter,
+  currentPage,
+  totalPages,
+  pageSize,
+  onPageChange,
+  onPageSizeChange
+}) {
+
   if (!table) {
     return <div className="table-empty">Selecciona una tabla para verla</div>;
   }
@@ -29,6 +43,52 @@ function TableViewer({ table, onForeignClick, onToggleRow, onCreateClick, onEdit
           />
         </div>
       </div>
+
+      <div className="pagination-controls">
+        <button 
+          onClick={() => onPageChange(1)} 
+          disabled={currentPage === 1}
+        >
+          ⏮ First
+        </button>
+
+        <button 
+          onClick={() => onPageChange(prev => Math.max(1, prev - 1))} 
+          disabled={currentPage === 1}
+        >
+          ◀ Prev
+        </button>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button 
+          onClick={() => onPageChange(prev => Math.min(totalPages, prev + 1))} 
+          disabled={currentPage === totalPages}
+        >
+          Next ▶
+        </button>
+
+        <button 
+          onClick={() => onPageChange(totalPages)} 
+          disabled={currentPage === totalPages}
+        >
+          Last ⏭
+        </button>
+
+        <select 
+          className="page-size-selector"
+          value={pageSize}
+          onChange={e => onPageSizeChange(Number(e.target.value))}
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
+      </div>
+
 
       <div className="table-scroll">
         <table className="table-viewer">
