@@ -2,8 +2,96 @@ import React, { useState, useEffect } from "react";
 import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
-import data from "../data/dashboard.json";
+import { dashboardService } from "../services/DashboardService.js";
 import "./Dashboard.css";
+
+// Mapeo de nombres de tabla a servicios
+const TABLE_SERVICES = {
+  'Departments': {
+    get: dashboardService.getDepartments,
+    create: dashboardService.createDepartment,
+    update: dashboardService.updateDepartment,
+    delete: dashboardService.deleteDepartment
+  },
+  'Sections': {
+    get: dashboardService.getSections,
+    create: dashboardService.createSection,
+    update: dashboardService.updateSection,
+    delete: dashboardService.deleteSection
+  },
+  'Equipment': {
+    get: dashboardService.getEquipment,
+    create: dashboardService.createEquipment,
+    update: dashboardService.updateEquipment,
+    delete: dashboardService.deleteEquipment
+  },
+  'Responsibles': {
+    get: dashboardService.getResponsibles,
+    create: dashboardService.createResponsible,
+    update: dashboardService.updateResponsible,
+    delete: dashboardService.deleteResponsible
+  },
+  'EquipmentTypes': {
+    get: dashboardService.getEquipmentTypes,
+    create: dashboardService.createEquipmentType,
+    update: dashboardService.updateEquipmentType,
+    delete: dashboardService.deleteEquipmentType
+  }
+};
+
+const DEFAULT_COLUMNS = {
+  Departments: ["id", "name", "sectionId", "responsibleId"],
+  Sections: ["id", "name"],
+  Equipment: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
+  Responsibles: ["id", "userId", "departmentId"],
+  EquipmentTypes: ["id", "name", "equipmentCount"]
+};
+
+
+// Función para transformar datos de API a formato de tabla
+const transformToTableFormat = (data, tableName) => {
+  const defaultColumns = DEFAULT_COLUMNS[tableName] || [];
+
+  if (!data || data.length === 0) {
+    return {
+      name: tableName,
+      columns: defaultColumns,
+      rows: []
+    };
+  }
+
+  const columns = Object.keys(data[0]);
+  
+  return {
+    name: tableName,
+    columns: columns,
+    rows: data.map(item => ({
+      ...item,
+      // Transformar foreign keys al formato que TableViewer entiende
+      ...(item.departmentId && {
+        departmentId: {
+          isForeign: true,
+          ref: 'Departments',
+          value: item.departmentId
+        }
+      }),
+      ...(item.equipmentTypeId && {
+        equipmentTypeId: {
+          isForeign: true,
+          ref: 'EquipmentTypes',
+          value: item.equipmentTypeId
+        }
+      }),
+      ...(item.responsibleId && {
+        responsibleId: {
+          isForeign: true,
+          ref: 'Responsibles',
+          value: item.responsibleId
+        }
+      })
+    }))
+  };
+};
 
 function Dashboard() {
   const [tables, setTables] = useState([]);
@@ -13,12 +101,37 @@ function Dashboard() {
   const [editingItem, setEditingItem] = useState(null);
   const [filteredRows, setFilteredRows] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10); // tamaño por defecto
+  const [pageSize, setPageSize] = useState(10);
+  const [loading, setLoading] = useState(false);
 
-
+  // Cargar datos de todas las tablas al montar el componente
   useEffect(() => {
-    setTables(data.tables || []);
+    loadAllTables();
   }, []);
+
+  const loadAllTables = async () => {
+    setLoading(true);
+    try {
+      const tableNames = Object.keys(TABLE_SERVICES);
+      const tablesData = await Promise.all(
+        tableNames.map(async (tableName) => {
+          try {
+            const data = await TABLE_SERVICES[tableName].get();
+            return transformToTableFormat(data, tableName);
+          } catch (error) {
+            console.error(`Error loading ${tableName}:`, error);
+            return transformToTableFormat([], tableName);
+          }
+        })
+      );
+      
+      setTables(tablesData.filter(table => table !== null));
+    } catch (error) {
+      console.error('Error loading tables:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSelectTable = (tableName) => {
     const foundTable = tables.find((t) => t.name === tableName);
@@ -62,81 +175,90 @@ function Dashboard() {
     setEditingItem(null);
   };
 
-  const handleCreateItem = (formData) => {
+  // CREAR NUEVO ELEMENTO
+  const handleCreateItem = async (formData) => {
     if (!selectedTable) return;
 
-    const maxId = selectedTable.rows.reduce((max, row) => 
-      Math.max(max, typeof row.id === 'number' ? row.id : 0), 0);
-    const newId = maxId + 1;
-
-    const newItem = { id: newId };
-    
-    selectedTable.columns.forEach(column => {
-      if (column !== 'id') {
-        if (typeof formData[column] === 'object' && formData[column] !== null) {
-          newItem[column] = formData[column];
-        } else {
-          newItem[column] = formData[column] || '';
-        }
+    try {
+      const service = TABLE_SERVICES[selectedTable.name];
+      if (!service) {
+        console.error('No service found for table:', selectedTable.name);
+        return;
       }
-    });
 
-    setTables(prevTables => 
-      prevTables.map(table => 
-        table.name === selectedTable.name
-          ? { ...table, rows: [...table.rows, newItem] }
-          : table
-      )
-    );
+      // Preparar datos para la API
+      const apiData = { ...formData };
+      Object.keys(apiData).forEach(key => {
+        if (apiData[key] && typeof apiData[key] === 'object' && apiData[key].isForeign) {
+          apiData[key] = apiData[key].value;
+        }
+      });
 
-    setSelectedTable(prev => 
-      prev ? { ...prev, rows: [...prev.rows, newItem] } : null
-    );
-
-    setShowCreateForm(false);
-    console.log("Nuevo elemento creado:", newItem);
+      await service.create(apiData);
+      
+      // Recargar la tabla completa para obtener los datos actualizados
+      await loadTableData(selectedTable.name);
+      
+      setShowCreateForm(false);
+      console.log("✅ Elemento creado exitosamente");
+    } catch (error) {
+      console.error("❌ Error creando elemento:", error);
+      alert('Error al crear el elemento: ' + (error.response?.data?.message || error.message));
+    }
   };
 
-  // 🔄 NUEVA FUNCIÓN PARA ACTUALIZAR ELEMENTOS EXISTENTES
-  const handleUpdateItem = (formData) => {
+  // ACTUALIZAR ELEMENTO
+  const handleUpdateItem = async (formData) => {
     if (!selectedTable || !editingItem) return;
 
-    // Actualizar el elemento existente
-    const updatedRows = selectedTable.rows.map(row => {
-      if (row.id === editingItem.id) {
-        const updatedItem = { id: editingItem.id };
-        
-        selectedTable.columns.forEach(column => {
-          if (column !== 'id') {
-            if (typeof formData[column] === 'object' && formData[column] !== null) {
-              updatedItem[column] = formData[column];
-            } else {
-              updatedItem[column] = formData[column] || '';
-            }
-          }
-        });
-        
-        return updatedItem;
+    try {
+      const service = TABLE_SERVICES[selectedTable.name];
+      if (!service) {
+        console.error('No service found for table:', selectedTable.name);
+        return;
       }
-      return row;
-    });
 
-    setTables(prevTables => 
-      prevTables.map(table => 
-        table.name === selectedTable.name
-          ? { ...table, rows: updatedRows }
-          : table
-      )
-    );
+      // Preparar datos para la API
+      const apiData = { ...formData };
+      Object.keys(apiData).forEach(key => {
+        if (apiData[key] && typeof apiData[key] === 'object' && apiData[key].isForeign) {
+          apiData[key] = apiData[key].value;
+        }
+      });
 
-    setSelectedTable(prev => 
-      prev ? { ...prev, rows: updatedRows } : null
-    );
+      await service.update(editingItem.id, apiData);
+      
+      // Recargar la tabla completa
+      await loadTableData(selectedTable.name);
+      
+      setShowCreateForm(false);
+      setEditingItem(null);
+      console.log("✅ Elemento actualizado exitosamente");
+    } catch (error) {
+      console.error("❌ Error actualizando elemento:", error);
+      alert('Error al actualizar el elemento: ' + (error.response?.data?.message || error.message));
+    }
+  };
 
-    setShowCreateForm(false);
-    setEditingItem(null);
-    
-    console.log("Elemento actualizado:", editingItem.id, formData);
+  // Cargar datos de una tabla específica
+  const loadTableData = async (tableName) => {
+    try {
+      const service = TABLE_SERVICES[tableName];
+      const data = await service.get();
+      const transformedTable = transformToTableFormat(data, tableName);
+      
+      setTables(prev => 
+        prev.map(table => 
+          table.name === tableName ? transformedTable : table
+        )
+      );
+      
+      if (selectedTable?.name === tableName) {
+        setSelectedTable(transformedTable);
+      }
+    } catch (error) {
+      console.error(`Error reloading ${tableName}:`, error);
+    }
   };
 
   const handleEdit = (item) => {
@@ -144,72 +266,32 @@ function Dashboard() {
     setShowCreateForm(true);
   };
 
-  const handleDelete = (itemId) => {
+  // ELIMINAR ELEMENTO
+  const handleDelete = async (itemId) => {
     if (!selectedTable) return;
 
-    // Verificar si el elemento está siendo usado en otras tablas
-    const usedInTables = [];
-    tables.forEach(table => {
-      if (table.name !== selectedTable.name) {
-        table.rows.forEach(row => {
-          Object.values(row).forEach(cell => {
-            if (cell && typeof cell === 'object' && cell.isForeign && 
-                cell.ref === selectedTable.name && cell.value === itemId) {
-              if (!usedInTables.includes(table.name)) {
-                usedInTables.push(table.name);
-              }
-            }
-          });
-        });
-      }
-    });
-
-    if (usedInTables.length > 0) {
-      const warningMessage = `Este elemento está siendo usado en las siguientes tablas: ${usedInTables.join(', ')}.\n\n¿Estás seguro de que quieres eliminarlo?`;
-      if (!window.confirm(warningMessage)) {
-        return;
-      }
-    } else {
-      if (!window.confirm("¿Estás seguro de que quieres eliminar este elemento?")) {
-        return;
-      }
+    if (!window.confirm("¿Estás seguro de que quieres eliminar este elemento?")) {
+      return;
     }
 
-    // Eliminar el elemento
-    const updatedRows = selectedTable.rows.filter(row => row.id !== itemId);
-
-    setTables(prevTables => 
-      prevTables.map(table => 
-        table.name === selectedTable.name
-          ? { ...table, rows: updatedRows }
-          : table
-      )
-    );
-
-    setSelectedTable(prev => 
-      prev ? { ...prev, rows: updatedRows } : null
-    );
-
-    // Remover de la selección si estaba seleccionado
-    setSelectedRows(prev => {
-      const newSelection = new Set(prev);
-      newSelection.delete(itemId);
-      return newSelection;
-    });
-
-    // Actualizar filas filtradas si existen
-    if (filteredRows) {
-      setFilteredRows(filteredRows.filter(row => row.id !== itemId));
+    try {
+      const service = TABLE_SERVICES[selectedTable.name];
+      await service.delete(itemId);
+      
+      // Recargar la tabla completa
+      await loadTableData(selectedTable.name);
+      
+      console.log("✅ Elemento eliminado:", itemId);
+    } catch (error) {
+      console.error("❌ Error eliminando elemento:", error);
+      alert('Error al eliminar el elemento: ' + (error.response?.data?.message || error.message));
     }
-
-    console.log("Elemento eliminado:", itemId);
   };
 
   const handleFilter = (filters) => {
     if (!selectedTable) return;
 
     if (Object.keys(filters).length === 0) {
-      // Si no hay filtros, mostrar todas las filas
       setFilteredRows(null);
       return;
     }
@@ -220,7 +302,6 @@ function Dashboard() {
 
         const cellValue = row[column];
         
-        // Para foreign keys, buscamos tanto en el valor como en la referencia
         if (cellValue && typeof cellValue === 'object' && cellValue.isForeign) {
           const valueStr = String(cellValue.value);
           const refStr = cellValue.ref;
@@ -228,7 +309,6 @@ function Dashboard() {
                  refStr.toLowerCase().includes(filterValue.toLowerCase());
         }
         
-        // Para valores normales
         const stringValue = String(cellValue || '').toLowerCase();
         return stringValue.includes(filterValue.toLowerCase());
       });
@@ -239,35 +319,39 @@ function Dashboard() {
   };
 
   const paginateRows = (rows) => {
-  const start = (currentPage - 1) * pageSize;
-  const end = start + pageSize;
-  return rows.slice(start, end);  
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    return rows.slice(start, end);  
   };
 
   const rowsToDisplay = filteredRows || selectedTable?.rows || [];
   const totalPages = Math.max(1, Math.ceil(rowsToDisplay.length / pageSize));
 
-
-  // Asegurarnos de pasar las filas filtradas a la tabla
   const tableWithFilters = selectedTable ? {
     ...selectedTable,
     selectedRows,
-    filteredRows: paginateRows(rowsToDisplay), // 🎯 aquí paginamos
+    filteredRows: paginateRows(rowsToDisplay),
     rowsTotalCount: rowsToDisplay.length,
     currentPage,
     totalPages,
     pageSize,
   } : null;
 
+  if (loading) {
+    return <div className="loading">Cargando datos...</div>;
+  }
 
   return (
     <div className="body-dashboard">
-      <h1 className="main-title-dashboard">
-        <span className="brand-part-dashboard ges">Ges</span>
-        <span className="brand-part-dashboard highlight">H</span>
-        <span className="brand-part-dashboard tec">Tec</span>
-        <span className="brand-part-dashboard highlight">K</span>
-      </h1>
+      <div className="dashboard-header">
+        <h1 className="main-title-dashboard">
+          <span className="brand-part-dashboard ges">Ges</span>
+          <span className="brand-part-dashboard highlight">H</span>
+          <span className="brand-part-dashboard tec">Tec</span>
+          <span className="brand-part-dashboard highlight">K</span>
+        </h1>
+        {/* Sin información de usuario ni logout */}
+      </div>
 
       <div className="dashboard-container">
         <TableSelector 
@@ -304,7 +388,7 @@ function Dashboard() {
               setShowCreateForm(false);
               setEditingItem(null);
             }}
-            onSave={editingItem ? handleUpdateItem : handleCreateItem} // ✅ Usa la función correcta según el modo
+            onSave={editingItem ? handleUpdateItem : handleCreateItem}
           />
         )}
       </div>
