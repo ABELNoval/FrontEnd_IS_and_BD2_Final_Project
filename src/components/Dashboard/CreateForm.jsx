@@ -1,141 +1,195 @@
+// src/components/Dashboard/CreateForm.jsx
 import React, { useState, useEffect, useRef } from "react";
 import Button from "../Button/Button";
+import { TABLE_METADATA } from "../../data/tables";
 import "./CreateForm.css";
 
+
 function CreateForm({ table, tables, onClose, onSave, editingItem }) {
-  const columns = table.columns.filter(col => col !== "id");
+  const meta = TABLE_METADATA[table.name] || { columns: {} };
+  const columnsMeta = meta.columns || {};
+  const columns = Object.keys(columnsMeta).filter(c => c !== "id"); // hide id
   const [formData, setFormData] = useState({});
   const lastEditedId = useRef(null);
 
   useEffect(() => {
-    // Solo inicializar si el id de edición cambió
+    // Inicializar el formData tanto para create como para edit
     if (editingItem && editingItem.id !== lastEditedId.current) {
-      const initialData = {};
-      columns.forEach(column => {
-        const value = editingItem[column];
-        if (value && typeof value === "object" && value.isForeign) {
-          initialData[column] = value.value.toString();
+      const initial = {};
+      columns.forEach(col => {
+        const val = editingItem[col];
+        // si viene como objeto foreign en rows: mantener solo el value
+        if (val && typeof val === "object" && val.isForeign) {
+          initial[col] = val.value;
         } else {
-          initialData[column] = value || "";
+          initial[col] = val ?? "";
         }
       });
-      setFormData(initialData);
-      lastEditedId.current = editingItem.id; // 👈 Guardamos el id actual
+      setFormData(initial);
+      lastEditedId.current = editingItem.id;
     } else if (!editingItem) {
-      // Crear vacíos si es modo creación
-      const emptyData = {};
-      columns.forEach(column => (emptyData[column] = ""));
-      setFormData(emptyData);
+      const empty = {};
+      columns.forEach(col => (empty[col] = ""));
+      setFormData(empty);
       lastEditedId.current = null;
     }
-  }, [editingItem, columns]);
+  }, [editingItem, table.name]); // re-init si cambia la tabla
 
-  const isForeignKey = column =>
-    table.rows.some(row => row[column]?.isForeign);
-
-  const getReferencedTable = column => {
-    const refRow = table.rows.find(row => row[column]?.isForeign);
-    return refRow ? refRow[column].ref : null;
-  };
-
-  const getOptionsForTable = tableName => {
-    const refTable = tables.find(t => t.name === tableName);
-    if (!refTable) return [];
-    const labelColumn = refTable.columns.find(c => c !== "id") || "id";
-    return refTable.rows.map(row => ({
-      value: row.id,
-      label: row[labelColumn] || `ID: ${row.id}`,
+  const getOptionsForFk = (refTableName) => {
+    const ref = tables.find(t => t.name === refTableName);
+    if (!ref) return [];
+    // buscar label column - prefer name o first non-id
+    const labelCol = ref.columns.find(c => c !== "id" && (c.toLowerCase().includes("name") || c.toLowerCase().includes("title"))) || ref.columns[1] || "id";
+    return ref.rows.map(r => ({
+      value: r.id,
+      label: r[labelCol] ?? `ID: ${r.id}`
     }));
   };
 
-  const handleInputChange = (column, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [column]: value,
-    }));
+  const handleChange = (col, value) => {
+    setFormData(prev => ({ ...prev, [col]: value }));
   };
 
-  const handleSubmit = () => {
-    const isEmpty = columns.some(col => {
+  const validate = () => {
+    for (const col of columns) {
+      const metaCol = columnsMeta[col];
+      if (!metaCol) continue;
+      if (metaCol.readonly) continue;
       const val = formData[col];
-      if (isForeignKey(col)) return !val;
-      return !val?.trim();
-    });
-    if (isEmpty) {
-      alert("Por favor completa todos los campos");
-      return;
+      if (metaCol.required) {
+        if (val === null || val === undefined || String(val).trim() === "") {
+          alert(`El campo "${col}" es obligatorio.`);
+          return false;
+        }
+      }
+      // types basic checks
+      if (val && metaCol.type === "date") {
+        // no further
+      }
+      if (val && metaCol.type === "uuid") {
+        // can't robustly validate GUID client-side easily; skip strict check
+      }
     }
+    return true;
+  };
 
-    const processedData = { ...formData };
+  const preparePayload = () => {
+    const payload = {};
     columns.forEach(col => {
-      if (isForeignKey(col)) {
-        const refTable = getReferencedTable(col);
-        processedData[col] = {
-          value: parseInt(processedData[col]),
-          isForeign: true,
-          ref: refTable,
-        };
+      const metaCol = columnsMeta[col];
+      if (!metaCol) {
+        payload[col] = formData[col];
+        return;
+      }
+      if (metaCol.readonly) return; // never send readonly
+      const val = formData[col];
+      if (metaCol.type === "fk") {
+        // FK expect just the id (string GUID)
+        payload[col] = val || null;
+      } else if (metaCol.type === "date") {
+        // ensure date string (yyyy-mm-dd) or full iso depending on backend
+        payload[col] = val ? new Date(val).toISOString() : null;
+      } else if (metaCol.type === "number") {
+        payload[col] = val === "" ? null : Number(val);
+      } else {
+        payload[col] = val;
       }
     });
-    onSave(processedData);
+    // If editing include id
+    if (editingItem && editingItem.id) payload.id = editingItem.id;
+    return payload;
+  };
+
+  const onSubmit = () => {
+    if (!validate()) return;
+    const payload = preparePayload();
+    onSave(payload);
   };
 
   return (
     <div className="create-form-container">
-      <h3>
-        {editingItem
-          ? `Edit ${table.name.slice(0, -1)}`
-          : `Create new ${table.name.slice(0, -1)}`}
-      </h3>
+      <h3>{editingItem ? `Edit ${table.name.slice(0, -1)}` : `Create new ${table.name.slice(0, -1)}`}</h3>
       <div className="create-form">
-        {columns.map(column => {
-          if (isForeignKey(column)) {
-            const refTable = getReferencedTable(column);
-            const options = getOptionsForTable(refTable);
+        {columns.map(col => {
+          const metaCol = columnsMeta[col] || { type: "string" };
+          if (metaCol.readonly) {
             return (
-              <div key={column} className="form-field">
-                <label>{column}:</label>
+              <div key={col} className="form-field">
+                <label>{col}:</label>
+                <input type="text" value={formData[col] ?? ""} disabled />
+              </div>
+            );
+          }
+
+          if (metaCol.type === "fk") {
+            const refName = metaCol.ref;
+            const options = getOptionsForFk(refName);
+            return (
+              <div key={col} className="form-field">
+                <label>{col}:</label>
                 <select
-                  value={formData[column] || ""}
-                  onChange={e =>
-                    handleInputChange(column, e.target.value)
-                  }
+                  value={formData[col] ?? ""}
+                  onChange={e => handleChange(col, e.target.value)}
                   className="form-select"
                 >
-                  <option value="">Select {refTable}</option>
-                  {options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
+                  <option value="">{`Select ${refName}`}</option>
+                  {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </div>
             );
           }
 
+          if (metaCol.type === "enum") {
+            return (
+              <div key={col} className="form-field">
+                <label>{col}:</label>
+                <select
+                  value={formData[col] ?? ""}
+                  onChange={e => handleChange(col, e.target.value)}
+                  className="form-select"
+                >
+                  <option value="">{`Select ${col}`}</option>
+                  {metaCol.values.map(v => <option key={v} value={v}>{v}</option>)}
+                </select>
+              </div>
+            );
+          }
+
+          if (metaCol.type === "date") {
+            // show input type date (value YYYY-MM-DD)
+            const dateVal = formData[col] ? new Date(formData[col]).toISOString().slice(0,10) : "";
+            return (
+              <div key={col} className="form-field">
+                <label>{col}:</label>
+                <input
+                  type="date"
+                  value={dateVal}
+                  onChange={e => handleChange(col, e.target.value)}
+                  className="form-input"
+                />
+              </div>
+            );
+          }
+
+          // default text/number
           return (
-            <div key={column} className="form-field">
-              <label>{column}:</label>
+            <div key={col} className="form-field">
+              <label>{col}:</label>
               <input
-                type="text"
-                value={formData[column] ?? ""}
-                placeholder={`Enter ${column}`}
-                onChange={e =>
-                  handleInputChange(column, e.target.value)
-                }
+                type={metaCol.type === "number" ? "number" : "text"}
+                value={formData[col] ?? ""}
+                placeholder={`Enter ${col}`}
+                onChange={e => handleChange(col, e.target.value)}
                 className="form-input"
               />
             </div>
           );
         })}
       </div>
+
       <div className="form-actions">
         <Button text="Cancel" onClick={onClose} variant="cancel-button" />
-        <Button
-          text={editingItem ? "Update" : "Save"}
-          onClick={handleSubmit}
-          variant="save-button"
-        />
+        <Button text={editingItem ? "Update" : "Save"} onClick={onSubmit} variant="save-button" />
       </div>
     </div>
   );
