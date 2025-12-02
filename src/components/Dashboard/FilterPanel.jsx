@@ -19,11 +19,16 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
 
   // departmentId → Departments
   const getReferencedTable = (fk) => {
-    const base = fk.replace(/Id$/i, "");
-    const plural = base.charAt(0).toUpperCase() + base.slice(1) + "s";
+  const base = fk.replace(/Id$/i, "").toLowerCase();
 
-    return tables.find((t) => t.name === plural)?.name || null;
+  // Buscar tabla cuyo nombre (sin plural ni mayúsculas) coincida
+  const match = tables.find((t) =>
+      t.name.toLowerCase().replace(/s$/, "") === base
+    );
+
+    return match ? match.name : null;
   };
+
 
   const getRefColumns = (refTableName) => {
     const t = tables.find((t) => t.name === refTableName);

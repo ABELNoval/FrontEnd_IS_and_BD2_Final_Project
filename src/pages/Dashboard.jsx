@@ -39,7 +39,7 @@ const DEFAULT_COLUMNS = {
   Responsibles: ["id", "name", "email", "departmentId"],
   EquipmentTypes: ["id", "name", "equipmentCount"],
   Technicals: ["id", "name", "email", "speciality", "experience"],
-  Employees: ["id", "name", "email", "departmentID"],
+  Employees: ["id", "name", "email", "departmentId"],
   Directors: ["id", "name", "email"],
   Assessments: ["id", "technicalId", "directorId", "score", "comment", "assessmentDate"],
   Maintenances: ["id", "equipmentId", "technicalId", "maintenanceDate", "maintenanceType", "cost"],
@@ -297,32 +297,50 @@ function Dashboard() {
 
 
   // ============================
-  // FILTRO
+  // 🔥 FILTRO (NUEVO: filtra en backend)
   // ============================
-  const handleFilter = (filters) => {
+  const handleFilter = async (filters) => {
     if (!selectedTable) return;
 
+    // Si no hay filtros → reset
     if (Object.keys(filters).length === 0) {
       setFilteredRows(null);
       return;
     }
 
-    const filtered = selectedTable.rows.filter(row =>
-      Object.entries(filters).every(([col, value]) => {
-        if (!value) return true;
-        const cell = row[col];
-        if (cell?.isForeign) {
-          return (
-            String(cell.value).includes(value) ||
-            String(cell.visual).includes(value)
-          );
-        }
-        return String(cell ?? "").toLowerCase().includes(value.toLowerCase());
-      })
-    );
+    // Convertir los filtros del front a formato backend
+    const backendFilters = Object.entries(filters).map(([key, value]) => {
+      return {
+        field: key,          // "departmentId.name" o "name"
+        operator: "contains", // por ahora siempre "contains"
+        value: value.trim()
+      };
+    });
 
-    setFilteredRows(filtered);
-    setCurrentPage(1);
+    try {
+      const srv = TABLE_SERVICES[selectedTable.name];
+
+      // 🚀 NUEVA ruta en back: POST /{table}/filter
+      const response = await srv.filter(backendFilters);
+
+      // Convertimos al formato con visualId
+      const filteredTable = transformToTableFormat(response, selectedTable.name);
+
+      // Resolver FK visualId
+      const resolved = resolveForeignKeysVisualIds(
+        tables.map(t =>
+          t.name === selectedTable.name ? filteredTable : t
+        )
+      );
+
+      const updated = resolved.find(t => t.name === selectedTable.name);
+
+      setFilteredRows(updated.rows);
+      setCurrentPage(1);
+
+    } catch (e) {
+      console.error("Filter error:", e);
+    }
   };
 
 

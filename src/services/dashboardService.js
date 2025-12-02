@@ -17,6 +17,10 @@ function buildService(controllerName) {
     delete: async (id) => {
       const res = await api.delete(`/${controllerName}/${id}`);
       return res.data;
+    },
+    filter: async (filter) => {
+      const res = await api.post(`/${controllerName}/filter`, filter);
+      return res.data;
     }
   };
 }
