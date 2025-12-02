@@ -1,118 +1,39 @@
-import api from './api';
+import api from "./api";
+
+function buildService(controllerName) {
+  return {
+    get: async () => {
+      const res = await api.get(`/${controllerName}`);
+      return res.data;
+    },
+    create: async (data) => {
+      const res = await api.post(`/${controllerName}`, data);
+      return res.data;
+    },
+    update: async (id, data) => {
+      const res = await api.put(`/${controllerName}/${id}`, { ...data, id });
+      return res.data;
+    },
+    delete: async (id) => {
+      const res = await api.delete(`/${controllerName}/${id}`);
+      return res.data;
+    }
+  };
+}
 
 export const dashboardService = {
-  // ============================================
-  // DEPARTMENTS
-  // ============================================
-  getDepartments: async () => {
-    const response = await api.get('/Department');
-    return response.data;
-  },
+  Department: buildService("department"),
+  Section: buildService("section"),
+  Equipment: buildService("equipment"),
+  EquipmentType: buildService("equipmentType"),
+  Responsible: buildService("responsible"),
 
-  createDepartment: async (data) => {
-    const response = await api.post('/Department', data);
-    return response.data;
-  },
+  Employee: buildService("employee"),
+  Director: buildService("director"),
+  Technical: buildService("technical"),
 
-  updateDepartment: async (id, data) => {
-    const response = await api.put(`/Department/${id}`, { ...data, id });
-    return response.data;
-  },
-
-  deleteDepartment: async (id) => {
-    const response = await api.delete(`/Department/${id}`);
-    return response.data;
-  },
-
-  // ============================================
-  // SECTIONS
-  // ============================================
-  getSections: async () => {
-    const response = await api.get('/Section');
-    return response.data;
-  },
-
-  createSection: async (data) => {
-    const response = await api.post('/Section', data);
-    return response.data;
-  },
-
-  updateSection: async (id, data) => {
-    const response = await api.put(`/Section/${id}`, { ...data, id });
-    return response.data;
-  },
-
-  deleteSection: async (id) => {
-    const response = await api.delete(`/Section/${id}`);
-    return response.data;
-  },
-
-  // ============================================
-  // RESPONSIBLES
-  // ============================================
-  getResponsibles: async () => {
-    const response = await api.get('/Responsible');
-    return response.data;
-  },
-
-  createResponsible: async (data) => {
-    const response = await api.post('/Responsible', data);
-    return response.data;
-  },
-
-  updateResponsible: async (id, data) => {
-    const response = await api.put(`/Responsible/${id}`, { ...data, id });
-    return response.data;
-  },
-
-  deleteResponsible: async (id) => {
-    const response = await api.delete(`/Responsible/${id}`);
-    return response.data;
-  },
-
-  // ============================================
-  // EQUIPMENT
-  // ============================================
-  getEquipment: async () => {
-    const response = await api.get('/Equipment');
-    return response.data;
-  },
-
-  createEquipment: async (data) => {
-    const response = await api.post('/Equipment', data);
-    return response.data;
-  },
-
-  updateEquipment: async (id, data) => {
-    const response = await api.put(`/Equipment/${id}`, { ...data, id });
-    return response.data;
-  },
-
-  deleteEquipment: async (id) => {
-    const response = await api.delete(`/Equipment/${id}`);
-    return response.data;
-  },
-
-  // ============================================
-  // EQUIPMENT TYPES
-  // ============================================
-  getEquipmentTypes: async () => {
-    const response = await api.get('/EquipmentType');
-    return response.data;
-  },
-
-  createEquipmentType: async (data) => {
-    const response = await api.post('/EquipmentType', data);
-    return response.data;
-  },
-
-  updateEquipmentType: async (id, data) => {
-    const response = await api.put(`/EquipmentType/${id}`, { ...data, id });
-    return response.data;
-  },
-
-  deleteEquipmentType: async (id) => {
-    const response = await api.delete(`/EquipmentType/${id}`);
-    return response.data;
-  }
+  Assessment: buildService("assessment"),
+  Transfer: buildService("transfer"),
+  Maintenance: buildService("maintenance"),
+  EquipmentDecommission: buildService("equipmentDecommission")
 };

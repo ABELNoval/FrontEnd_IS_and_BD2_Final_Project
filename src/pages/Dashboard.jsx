@@ -1,98 +1,120 @@
+// ========================
+// Dashboard.jsx COMPLETO
+// ========================
 import React, { useState, useEffect } from "react";
 import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
-import { dashboardService } from "../services/DashboardService.js";
+import { dashboardService } from "../services/dashboardService.js";
 import "./Dashboard.css";
 
-// Mapeo de nombres de tabla a servicios
+// =====================================
+// 1) TODOS LOS SERVICIOS DE TODAS LAS TABLAS
+// =====================================
 const TABLE_SERVICES = {
-  'Departments': {
-    get: dashboardService.getDepartments,
-    create: dashboardService.createDepartment,
-    update: dashboardService.updateDepartment,
-    delete: dashboardService.deleteDepartment
-  },
-  'Sections': {
-    get: dashboardService.getSections,
-    create: dashboardService.createSection,
-    update: dashboardService.updateSection,
-    delete: dashboardService.deleteSection
-  },
-  'Equipment': {
-    get: dashboardService.getEquipment,
-    create: dashboardService.createEquipment,
-    update: dashboardService.updateEquipment,
-    delete: dashboardService.deleteEquipment
-  },
-  'Responsibles': {
-    get: dashboardService.getResponsibles,
-    create: dashboardService.createResponsible,
-    update: dashboardService.updateResponsible,
-    delete: dashboardService.deleteResponsible
-  },
-  'EquipmentTypes': {
-    get: dashboardService.getEquipmentTypes,
-    create: dashboardService.createEquipmentType,
-    update: dashboardService.updateEquipmentType,
-    delete: dashboardService.deleteEquipmentType
-  }
+  Departments: dashboardService.Department,
+  Sections: dashboardService.Section,
+  Equipment: dashboardService.Equipment,
+  Responsibles: dashboardService.Responsible,
+  EquipmentTypes: dashboardService.EquipmentType,
+
+  Technicals: dashboardService.Technical,
+  Employees: dashboardService.Employee,
+  Directors: dashboardService.Director,
+
+  Assessments: dashboardService.Assessment,
+  Maintenances: dashboardService.Maintenance,
+  Transfers: dashboardService.Transfer,
+  EquipmentDecommissions: dashboardService.EquipmentDecommission
 };
 
+
+// =====================================
+// COLUMNAS DEFAULT CORRECTAS
+// =====================================
 const DEFAULT_COLUMNS = {
   Departments: ["id", "name", "sectionId", "responsibleId"],
   Sections: ["id", "name"],
   Equipment: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
-  Responsibles: ["id", "userId", "departmentId"],
-  EquipmentTypes: ["id", "name", "equipmentCount"]
+  Responsibles: ["id", "name", "email", "departmentId"],
+  EquipmentTypes: ["id", "name", "equipmentCount"],
+  Technicals: ["id", "name", "email", "speciality", "experience"],
+  Employees: ["id", "name", "email", "departmentID"],
+  Directors: ["id", "name", "email"],
+  Assessments: ["id", "technicalId", "directorId", "score", "comment", "assessmentDate"],
+  Maintenances: ["id", "equipmentId", "technicalId", "maintenanceDate", "maintenanceType", "cost"],
+  Transfers: ["id", "equipmentId", "sourceDepartmentId", "targetDepartmentId", "responsibleId", "transferDate"],
+  EquipmentDecommissions: ["id", "equipmentId", "technicalId", "departmentId", "destinyTypeId", "decommissionDate", "reason"]
 };
 
+const allTableNames = [
+  "Departments",
+  "EquipmentTypes",
+  "Responsibles",
+  "Employee",
+  "Director",
+  "Technical",
+  "Sections",
+  "Equipment",
+  "Assessments",
+  "Maintenances",
+  "Transfers",
+  "EquipmentDecommissions"
+];
 
-// Función para transformar datos de API a formato de tabla
+
+
+// =====================================
+// TRANSFORMAR FORMATO DE TABLAS
+// =====================================
 const transformToTableFormat = (data, tableName) => {
   const defaultColumns = DEFAULT_COLUMNS[tableName] || [];
 
   if (!data || data.length === 0) {
     return {
       name: tableName,
-      columns: defaultColumns,
+      columns: ["visualId", ...defaultColumns],
       rows: []
     };
   }
 
-  const columns = Object.keys(data[0]);
-  
+  const columns = ["visualId", ...Object.keys(data[0])];
+
   return {
     name: tableName,
-    columns: columns,
-    rows: data.map(item => ({
-      ...item,
-      // Transformar foreign keys al formato que TableViewer entiende
-      ...(item.departmentId && {
-        departmentId: {
-          isForeign: true,
-          ref: 'Departments',
-          value: item.departmentId
+    columns,
+    rows: data.map((item, index) => {
+      const row = {
+        visualId: index + 1,
+        ...item
+      };
+
+      // Detección dinámica de foreign keys
+      Object.keys(item).forEach((key) => {
+        if (key.endsWith("Id")) {
+          const refTable = key.replace("Id", "");
+
+          if (allTableNames.includes(refTable)) {
+            row[key] = {
+              isForeign: true,
+              ref: refTable,
+              value: item[key],
+              visual: null
+            };
+          }
         }
-      }),
-      ...(item.equipmentTypeId && {
-        equipmentTypeId: {
-          isForeign: true,
-          ref: 'EquipmentTypes',
-          value: item.equipmentTypeId
-        }
-      }),
-      ...(item.responsibleId && {
-        responsibleId: {
-          isForeign: true,
-          ref: 'Responsibles',
-          value: item.responsibleId
-        }
-      })
-    }))
+      });
+
+      return row;
+    })
   };
 };
 
+
+
+// =====================================
+// COMPONENTE PRINCIPAL
+// =====================================
 function Dashboard() {
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
@@ -104,38 +126,92 @@ function Dashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [loading, setLoading] = useState(false);
 
-  // Cargar datos de todas las tablas al montar el componente
+
+  // =====================================
+  // CARGAR TODAS LAS TABLAS
+  // =====================================
   useEffect(() => {
     loadAllTables();
   }, []);
 
   const loadAllTables = async () => {
     setLoading(true);
+
     try {
       const tableNames = Object.keys(TABLE_SERVICES);
-      const tablesData = await Promise.all(
-        tableNames.map(async (tableName) => {
-          try {
-            const data = await TABLE_SERVICES[tableName].get();
-            return transformToTableFormat(data, tableName);
-          } catch (error) {
-            console.error(`Error loading ${tableName}:`, error);
-            return transformToTableFormat([], tableName);
-          }
-        })
+
+      const data = await Promise.all(tableNames.map(async (table) => {
+        const result = await TABLE_SERVICES[table].get().catch(() => []);
+        return transformToTableFormat(result, table);
+      }));
+
+      // una vez cargadas → resolvemos visualId de FK
+      const resolved = resolveForeignKeysVisualIds(data);
+      setTables(resolved);
+
+    } catch (err) {
+      console.error("Load error:", err);
+    }
+
+    setLoading(false);
+  };
+
+  // ====================================================
+  // RECARGAR TODAS LAS TABLAS
+  // ===================================================
+  const reloadTable = async (tableName) => {
+    try {
+      const srv = TABLE_SERVICES[tableName];
+      const data = await srv.get();
+
+      const updatedTable = transformToTableFormat(data, tableName);
+
+      const updatedTables = resolveForeignKeysVisualIds(
+        tables.map(t => t.name === tableName ? updatedTable : t)
       );
-      
-      setTables(tablesData.filter(table => table !== null));
-    } catch (error) {
-      console.error('Error loading tables:', error);
-    } finally {
-      setLoading(false);
+
+      setTables(updatedTables);
+
+      // ⚡ devolver al Dashboard la tabla actualizada
+      return updatedTables.find(t => t.name === tableName);
+
+    } catch (e) {
+      console.error("Error reloading table", tableName, e);
     }
   };
 
+
+
+  // =====================================================
+  // 🔥 SOLUCIÓN: Resolver visualId de foreign keys
+  // =====================================================
+  const resolveForeignKeysVisualIds = (tablesList) => {
+    return tablesList.map(table => ({
+      ...table,
+      rows: table.rows.map(row => {
+        const newRow = { ...row };
+
+        Object.keys(newRow).forEach(key => {
+          const cell = newRow[key];
+          if (cell?.isForeign) {
+            const refTable = tablesList.find(t => t.name === cell.ref);
+            const refRow = refTable?.rows.find(r => r.id === cell.value);
+            if (refRow) cell.visual = refRow.visualId;
+          }
+        });
+
+        return newRow;
+      })
+    }));
+  };
+
+
+  // =====================================
+  // SELECT TABLE
+  // =====================================
   const handleSelectTable = (tableName) => {
-    const foundTable = tables.find((t) => t.name === tableName);
-    setSelectedTable(foundTable);
+    const found = tables.find(t => t.name === tableName);
+    setSelectedTable(found);
     setSelectedRows(new Set());
     setShowCreateForm(false);
     setEditingItem(null);
@@ -143,151 +219,86 @@ function Dashboard() {
     setCurrentPage(1);
   };
 
-  const handleForeignClick = (refTableName, targetId) => {
-    const targetTable = tables.find((t) => t.name === refTableName);
-    
-    if (selectedTable?.name === refTableName) {
+
+  // ================================
+  // FOREIGN CLICK
+  // ================================
+  const handleForeignClick = (refTable, targetId) => {
+    const table = tables.find(t => t.name === refTable);
+
+    if (selectedTable?.name === refTable) {
       toggleRowSelection(targetId);
     } else {
-      setSelectedTable(targetTable);
-      setTimeout(() => {
-        setSelectedRows(new Set([targetId]));
-      }, 0);
+      setSelectedTable(table);
+      setTimeout(() => setSelectedRows(new Set([targetId])), 0);
     }
-    setShowCreateForm(false);
-    setEditingItem(null);
   };
 
-  const toggleRowSelection = (rowId) => {
+
+  // ================================
+  // SELECCIÓN DE FILA
+  // ================================
+  const toggleRowSelection = (id) => {
     setSelectedRows(prev => {
-      const newSelection = new Set(prev);
-      if (newSelection.has(rowId)) {
-        newSelection.delete(rowId);
-      } else {
-        newSelection.add(rowId);
-      }
-      return newSelection;
+      const set = new Set(prev);
+      set.has(id) ? set.delete(id) : set.add(id);
+      return set;
     });
   };
 
+
+  // ================================
+  // CREAR / UPDATE / DELETE
+  // ================================
   const toggleCreateForm = () => {
     setShowCreateForm(prev => !prev);
     setEditingItem(null);
   };
 
-  // CREAR NUEVO ELEMENTO
-  const handleCreateItem = async (formData) => {
-    if (!selectedTable) return;
+  const handleCreateItem = async (data) => {
+    const srv = TABLE_SERVICES[selectedTable.name];
 
-    try {
-      const service = TABLE_SERVICES[selectedTable.name];
-      if (!service) {
-        console.error('No service found for table:', selectedTable.name);
-        return;
-      }
+    const apiData = { ...data };
+    Object.keys(apiData).forEach(k => {
+      if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
+    });
 
-      // Preparar datos para la API
-      const apiData = { ...formData };
-      Object.keys(apiData).forEach(key => {
-        if (apiData[key] && typeof apiData[key] === 'object' && apiData[key].isForeign) {
-          apiData[key] = apiData[key].value;
-        }
-      });
-
-      await service.create(apiData);
-      
-      // Recargar la tabla completa para obtener los datos actualizados
-      await loadTableData(selectedTable.name);
-      
-      setShowCreateForm(false);
-      console.log("✅ Elemento creado exitosamente");
-    } catch (error) {
-      console.error("❌ Error creando elemento:", error);
-      alert('Error al crear el elemento: ' + (error.response?.data?.message || error.message));
-    }
+    await srv.create(apiData);
+    const updated = await reloadTable(selectedTable.name);
+    setSelectedTable(updated);
+    setShowCreateForm(false);
   };
 
-  // ACTUALIZAR ELEMENTO
-  const handleUpdateItem = async (formData) => {
-    if (!selectedTable || !editingItem) return;
+  const handleUpdateItem = async (data) => {
+    const srv = TABLE_SERVICES[selectedTable.name];
 
-    try {
-      const service = TABLE_SERVICES[selectedTable.name];
-      if (!service) {
-        console.error('No service found for table:', selectedTable.name);
-        return;
-      }
+    const apiData = { ...data };
+    Object.keys(apiData).forEach(k => {
+      if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
+    });
 
-      // Preparar datos para la API
-      const apiData = { ...formData };
-      Object.keys(apiData).forEach(key => {
-        if (apiData[key] && typeof apiData[key] === 'object' && apiData[key].isForeign) {
-          apiData[key] = apiData[key].value;
-        }
-      });
+    await srv.update(editingItem.id, apiData);
 
-      await service.update(editingItem.id, apiData);
-      
-      // Recargar la tabla completa
-      await loadTableData(selectedTable.name);
-      
-      setShowCreateForm(false);
-      setEditingItem(null);
-      console.log("✅ Elemento actualizado exitosamente");
-    } catch (error) {
-      console.error("❌ Error actualizando elemento:", error);
-      alert('Error al actualizar el elemento: ' + (error.response?.data?.message || error.message));
-    }
+    const updated = await reloadTable(selectedTable.name);
+    setSelectedTable(updated);
+
+    setShowCreateForm(false);
+    setEditingItem(null);
   };
 
-  // Cargar datos de una tabla específica
-  const loadTableData = async (tableName) => {
-    try {
-      const service = TABLE_SERVICES[tableName];
-      const data = await service.get();
-      const transformedTable = transformToTableFormat(data, tableName);
-      
-      setTables(prev => 
-        prev.map(table => 
-          table.name === tableName ? transformedTable : table
-        )
-      );
-      
-      if (selectedTable?.name === tableName) {
-        setSelectedTable(transformedTable);
-      }
-    } catch (error) {
-      console.error(`Error reloading ${tableName}:`, error);
-    }
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Seguro que deseas eliminar?")) return;
+    const srv = TABLE_SERVICES[selectedTable.name];
+    await srv.delete(id);
+
+    const updated = await reloadTable(selectedTable.name);
+    setSelectedTable(updated);
   };
 
-  const handleEdit = (item) => {
-    setEditingItem(item);
-    setShowCreateForm(true);
-  };
 
-  // ELIMINAR ELEMENTO
-  const handleDelete = async (itemId) => {
-    if (!selectedTable) return;
-
-    if (!window.confirm("¿Estás seguro de que quieres eliminar este elemento?")) {
-      return;
-    }
-
-    try {
-      const service = TABLE_SERVICES[selectedTable.name];
-      await service.delete(itemId);
-      
-      // Recargar la tabla completa
-      await loadTableData(selectedTable.name);
-      
-      console.log("✅ Elemento eliminado:", itemId);
-    } catch (error) {
-      console.error("❌ Error eliminando elemento:", error);
-      alert('Error al eliminar el elemento: ' + (error.response?.data?.message || error.message));
-    }
-  };
-
+  // ============================
+  // FILTRO
+  // ============================
   const handleFilter = (filters) => {
     if (!selectedTable) return;
 
@@ -296,50 +307,54 @@ function Dashboard() {
       return;
     }
 
-    const filtered = selectedTable.rows.filter(row => {
-      return Object.entries(filters).every(([column, filterValue]) => {
-        if (!filterValue) return true;
-
-        const cellValue = row[column];
-        
-        if (cellValue && typeof cellValue === 'object' && cellValue.isForeign) {
-          const valueStr = String(cellValue.value);
-          const refStr = cellValue.ref;
-          return valueStr.toLowerCase().includes(filterValue.toLowerCase()) || 
-                 refStr.toLowerCase().includes(filterValue.toLowerCase());
+    const filtered = selectedTable.rows.filter(row =>
+      Object.entries(filters).every(([col, value]) => {
+        if (!value) return true;
+        const cell = row[col];
+        if (cell?.isForeign) {
+          return (
+            String(cell.value).includes(value) ||
+            String(cell.visual).includes(value)
+          );
         }
-        
-        const stringValue = String(cellValue || '').toLowerCase();
-        return stringValue.includes(filterValue.toLowerCase());
-      });
-    });
+        return String(cell ?? "").toLowerCase().includes(value.toLowerCase());
+      })
+    );
 
-    setCurrentPage(1);
     setFilteredRows(filtered);
+    setCurrentPage(1);
   };
 
-  const paginateRows = (rows) => {
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
-    return rows.slice(start, end);  
-  };
 
+  // ============================
+  // PAGINACIÓN
+  // ============================
   const rowsToDisplay = filteredRows || selectedTable?.rows || [];
   const totalPages = Math.max(1, Math.ceil(rowsToDisplay.length / pageSize));
+  const paginated = rowsToDisplay.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
-  const tableWithFilters = selectedTable ? {
-    ...selectedTable,
-    selectedRows,
-    filteredRows: paginateRows(rowsToDisplay),
-    rowsTotalCount: rowsToDisplay.length,
-    currentPage,
-    totalPages,
-    pageSize,
-  } : null;
 
-  if (loading) {
-    return <div className="loading">Cargando datos...</div>;
-  }
+  const tableWithFilters =
+    selectedTable
+      ? {
+          ...selectedTable,
+          filteredRows: paginated,
+          selectedRows,
+          currentPage,
+          totalPages,
+          pageSize,
+          rowsTotalCount: rowsToDisplay.length
+        }
+      : null;
+
+
+  // ============================
+  // RENDER
+  // ============================
+  if (loading) return <div className="loading">Cargando datos…</div>;
 
   return (
     <div className="body-dashboard">
@@ -350,12 +365,11 @@ function Dashboard() {
           <span className="brand-part-dashboard tec">Tec</span>
           <span className="brand-part-dashboard highlight">K</span>
         </h1>
-        {/* Sin información de usuario ni logout */}
       </div>
 
       <div className="dashboard-container">
-        <TableSelector 
-          tables={tables} 
+        <TableSelector
+          tables={tables}
           onSelect={handleSelectTable}
           activeTable={selectedTable?.name}
         />
@@ -363,10 +377,14 @@ function Dashboard() {
         {selectedTable ? (
           <TableViewer
             table={tableWithFilters}
+            tables={tables}
             onForeignClick={handleForeignClick}
             onToggleRow={toggleRowSelection}
             onCreateClick={toggleCreateForm}
-            onEdit={handleEdit}
+            onEdit={(item) => {
+              setEditingItem(item);
+              setShowCreateForm(true);
+            }}
             onDelete={handleDelete}
             onFilter={handleFilter}
             currentPage={currentPage}
@@ -379,8 +397,8 @@ function Dashboard() {
           <p className="table-empty">Selecciona una tabla para verla</p>
         )}
 
-        {showCreateForm && selectedTable && (
-          <CreateForm 
+        {showCreateForm && (
+          <CreateForm
             table={selectedTable}
             tables={tables}
             editingItem={editingItem}

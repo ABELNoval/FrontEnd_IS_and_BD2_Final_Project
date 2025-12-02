@@ -38,13 +38,19 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
   const getOptionsForFk = (refTableName) => {
     const ref = tables.find(t => t.name === refTableName);
     if (!ref) return [];
-    // buscar label column - prefer name o first non-id
-    const labelCol = ref.columns.find(c => c !== "id" && (c.toLowerCase().includes("name") || c.toLowerCase().includes("title"))) || ref.columns[1] || "id";
+
+    // Buscar columna de label preferida (name, title, o la primera que no sea id)
+    const labelCol =
+      ref.columns.find(c => c !== "id" && (c.toLowerCase().includes("name") || c.toLowerCase().includes("title")))
+      || ref.columns.find(c => c !== "id")
+      || "visualId";
+
     return ref.rows.map(r => ({
-      value: r.id,
-      label: r[labelCol] ?? `ID: ${r.id}`
+      value: r.id,                      // 👈 ESTE SIGUE SIENDO EL GUID QUE SE ENVÍA AL API
+      label: `${r.visualId} - ${r[labelCol] ?? "Item"}` // 👈 VISUAL
     }));
   };
+
 
   const handleChange = (col, value) => {
     setFormData(prev => ({ ...prev, [col]: value }));
