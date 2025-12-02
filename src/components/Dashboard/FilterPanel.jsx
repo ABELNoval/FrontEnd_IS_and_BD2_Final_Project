@@ -8,6 +8,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
   const [activeFilters, setActiveFilters] = useState({});
   const [expandedFK, setExpandedFK] = useState(null); // <-- nuevo
 
+
   const visibleColumns =
     table?.columns?.filter((col) => col !== "id" && col !== "visualId") || [];
 

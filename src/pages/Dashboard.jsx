@@ -205,6 +205,48 @@ function Dashboard() {
     }));
   };
 
+  // =====================================
+  // Construir filtro para backend cuando es FK (p. ej. departmentId.name)
+  // =====================================
+  const buildBackendFilter = async (key, value) => {
+    const [fk, subProp] = key.split(".");
+
+    // Only handle FK-like keys such as "departmentId.name"
+    if (!fk || !subProp || !/Id$/i.test(fk)) return null;
+
+    const base = fk.replace(/Id$/i, "");
+    const serviceKey = base.charAt(0).toUpperCase() + base.slice(1);
+    const service = dashboardService[serviceKey];
+
+    if (!service || !service.get) return null;
+
+    try {
+      const relatedRows = await service.get();
+
+      // Defensive: ensure we only try to read object properties and ignore malformed rows
+      const matches = (relatedRows || []).filter((r) => {
+        if (!r || typeof r !== "object") return false;
+        const val = r[subProp];
+        if (val === undefined || val === null) return false;
+        return String(val).toLowerCase().includes(value.toLowerCase());
+      });
+
+      // collect only valid ids
+      const ids = matches.map((r) => r && r.id).filter(Boolean);
+      if (ids.length === 0) return null;
+
+      if (ids.length === 1) {
+        return `${fk} == "${ids[0]}"`;
+      }
+
+      const idList = ids.map((id) => `"${id}"`).join(", ");
+      return `${fk} in (${idList})`;
+    } catch (e) {
+      console.error("buildBackendFilter error:", e);
+      return null;
+    }
+  };
+
 
   // =====================================
   // SELECT TABLE
@@ -308,18 +350,45 @@ function Dashboard() {
       return;
     }
 
-    // Convertir los filtros del front a formato backend
-    const backendFilters = Object.entries(filters).map(([key, value]) => {
-      return {
-        field: key,          // "departmentId.name" o "name"
-        operator: "contains", // por ahora siempre "contains"
-        value: value.trim()
-      };
+    // Convierte "departmentId.name" → "Department.Name"
+    const convertToBackendField = (key) => {
+      return key
+        .split(".")
+        .map((segment, index) => {
+
+          // Primer segmento: detectar FK tipo "departmentId"
+          if (index === 0 && segment.toLowerCase().endsWith("id")) {
+            const base = segment.slice(0, -2); // remove "Id"
+            return base.charAt(0).toUpperCase() + base.slice(1);
+          }
+
+          // Cualquier propiedad → PascalCase
+          return segment.charAt(0).toUpperCase() + segment.slice(1);
+        })
+        .join(".");
+    };
+
+    // Construimos filtros: para claves normales usamos Contains, para FKs usamos buildBackendFilter
+    const backendFiltersPromises = Object.entries(filters).map(async ([key, value]) => {
+      const safeValue = (value || "").trim();
+      if (!safeValue) return null;
+
+      if (!key.includes(".")) {
+        const safeEscaped = safeValue.replace(/"/g, '\\"');
+        const backendField = convertToBackendField(key);
+        return `${backendField}.Contains("${safeEscaped}")`;
+      }
+
+      // caso FK: p.ej. departmentId.name → resolver IDs y devolver comparaciones por Id
+      return await buildBackendFilter(key, safeValue);
     });
+
+    const backendFilters = (await Promise.all(backendFiltersPromises)).filter(Boolean);
+
 
     try {
       const srv = TABLE_SERVICES[selectedTable.name];
-
+      console.log("BackendFilters:", backendFilters);
       // 🚀 NUEVA ruta en back: POST /{table}/filter
       const response = await srv.filter(backendFilters);
 
