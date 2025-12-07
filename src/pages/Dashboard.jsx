@@ -62,6 +62,13 @@ const allTableNames = [
   "EquipmentDecommissions"
 ];
 
+const enumsValues = {
+  "state" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
+  "mantinanceType": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
+  "destinyType" :{"Department":1, "Disposal":2, "Warehouse":3},
+  "locationType" : {"Department":1, "Disposal":2, "Warehouse":3}
+}
+
 
 
 // =====================================
@@ -297,12 +304,6 @@ function Dashboard() {
     setEditingItem(null);
   };
 
-  const enumsValues = {
-    "state" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
-    "mantinanceType": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
-    "destinyType" :{"Department":1, "Disposal":2, "Warehouse":3},
-    "locationType" : {"Department":1, "Disposal":2, "Warehouse":3}
-  }
   const handleCreateItem = async (data) => {
     const srv = TABLE_SERVICES[selectedTable.name];
 

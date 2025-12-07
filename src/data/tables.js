@@ -70,7 +70,7 @@ export const TABLE_METADATA = {
     }
   },
 
-  Equipment: {
+  Equipments: {
     apiPath: "/Equipments",
     columns: {
       id: { type: "uuid", readonly: true },
@@ -119,7 +119,7 @@ export const TABLE_METADATA = {
     }
   },
 
-  EquipmentDecommission: {
+  EquipmentDecommissions: {
     apiPath: "/EquipmentDecommission",
     columns: {
       id: { type: "uuid", readonly: true },
