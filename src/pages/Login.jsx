@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from '../components/Button/Button.jsx'
 import Input from '../components/Input/Input.jsx'
 import AuthBox from "../components/AuthBox/AuthBox.jsx";
@@ -48,9 +48,6 @@ function Login() {
           onChange={setPassword}
         />
         <Button text="Login" onClick={handleLogin} variant="app-button" />
-        <p>
-          Don't have an account? <Link to="/register">Create one</Link>
-        </p>
       </AuthBox>
     </div>
   );

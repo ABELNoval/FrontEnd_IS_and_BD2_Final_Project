@@ -33,14 +33,14 @@ const TABLE_SERVICES = {
 // COLUMNAS DEFAULT CORRECTAS
 // =====================================
 const DEFAULT_COLUMNS = {
-  Departments: ["id", "name", "sectionId", "responsibleId"],
-  Sections: ["id", "name"],
+  Departments: ["id", "name", "sectionId"],
+  Sections: ["id", "name", "responsibleId"],
   Equipment: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
-  Responsibles: ["id", "name", "email", "departmentId"],
+  Responsibles: ["id", "name", "email", "password", "departmentId"],
   EquipmentTypes: ["id", "name", "equipmentCount"],
-  Technicals: ["id", "name", "email", "speciality", "experience"],
-  Employees: ["id", "name", "email", "departmentId"],
-  Directors: ["id", "name", "email"],
+  Technicals: ["id", "name", "email", "password", "speciality", "experience"],
+  Employees: ["id", "name", "email", "password", "departmentId"],
+  Directors: ["id", "name", "email", "password"],
   Assessments: ["id", "technicalId", "directorId", "score", "comment", "assessmentDate"],
   Maintenances: ["id", "equipmentId", "technicalId", "maintenanceDate", "maintenanceType", "cost"],
   Transfers: ["id", "equipmentId", "sourceDepartmentId", "targetDepartmentId", "responsibleId", "transferDate"],
@@ -51,11 +51,11 @@ const allTableNames = [
   "Departments",
   "EquipmentTypes",
   "Responsibles",
-  "Employee",
-  "Director",
-  "Technical",
+  "Employees",
+  "Directors",
+  "Technicals",
   "Sections",
-  "Equipment",
+  "Equipments",
   "Assessments",
   "Maintenances",
   "Transfers",
@@ -88,16 +88,15 @@ const transformToTableFormat = (data, tableName) => {
         visualId: index + 1,
         ...item
       };
-
       // Detección dinámica de foreign keys
       Object.keys(item).forEach((key) => {
         if (key.endsWith("Id")) {
           const refTable = key.replace("Id", "");
-
-          if (allTableNames.includes(refTable)) {
+          const upRefTable = refTable.charAt(0).toLocaleUpperCase() + refTable.slice(1) + "s";
+          if (allTableNames.includes(upRefTable)) {
             row[key] = {
               isForeign: true,
-              ref: refTable,
+              ref: upRefTable,
               value: item[key],
               visual: null
             };
@@ -297,11 +296,21 @@ function Dashboard() {
     setEditingItem(null);
   };
 
+  const enumsValues = {
+    "state" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
+    "mantinanceType": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
+    "destinyType" :{"Department":1, "Disposal":2, "Warehouse":3},
+    "locationType" : {"Department":1, "Disposal":2, "Warehouse":3}
+  }
   const handleCreateItem = async (data) => {
     const srv = TABLE_SERVICES[selectedTable.name];
 
     const apiData = { ...data };
     Object.keys(apiData).forEach(k => {
+      const value = enumsValues[k];
+      if (value) {
+        apiData[k] = value[apiData[k]];
+      }
       if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
     });
 
@@ -441,7 +450,7 @@ function Dashboard() {
   // ============================
   // RENDER
   // ============================
-  if (loading) return <div className="loading">Cargando datos…</div>;
+  if (loading) return <div className="loading">Loading information…</div>;
 
   return (
     <div className="body-dashboard">
