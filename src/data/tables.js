@@ -66,8 +66,7 @@ export const TABLE_METADATA = {
     apiPath: "/EquipmentTypes",
     columns: {
       id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      equipmentCount: { type: "number", readonly: true }
+      name: { type: "string", required: true }
     }
   },
 
@@ -96,7 +95,7 @@ export const TABLE_METADATA = {
     apiPath: "/Transfers",
     columns: {
       id: { type: "uuid", readonly: true },
-      equipmentId: { type: "fk", ref: "Equipment", required: true },
+      equipmentId: { type: "fk", ref: "Equipments", required: true },
       SourceDepartmentId: { type: "fk", ref: "Departments", required: true },
       TargetDepartmentId: { type: "fk", ref: "Departments", required: true },
       transferDate: { type: "date", required: true },

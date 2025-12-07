@@ -14,7 +14,7 @@ import "./Dashboard.css";
 const TABLE_SERVICES = {
   Departments: dashboardService.Department,
   Sections: dashboardService.Section,
-  Equipment: dashboardService.Equipment,
+  Equipments: dashboardService.Equipment,
   Responsibles: dashboardService.Responsible,
   EquipmentTypes: dashboardService.EquipmentType,
 
@@ -35,9 +35,9 @@ const TABLE_SERVICES = {
 const DEFAULT_COLUMNS = {
   Departments: ["id", "name", "sectionId"],
   Sections: ["id", "name", "responsibleId"],
-  Equipment: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
+  Equipments: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
   Responsibles: ["id", "name", "email", "password", "departmentId"],
-  EquipmentTypes: ["id", "name", "equipmentCount"],
+  EquipmentTypes: ["id", "name"],
   Technicals: ["id", "name", "email", "password", "speciality", "experience"],
   Employees: ["id", "name", "email", "password", "departmentId"],
   Directors: ["id", "name", "email", "password"],
@@ -91,7 +91,8 @@ const transformToTableFormat = (data, tableName) => {
       // Detección dinámica de foreign keys
       Object.keys(item).forEach((key) => {
         if (key.endsWith("Id")) {
-          const refTable = key.replace("Id", "");
+          var refTable = key.replace("Id", "");
+          if (key.startsWith("source") || key.startsWith("target")) { refTable = "department";} 
           const upRefTable = refTable.charAt(0).toLocaleUpperCase() + refTable.slice(1) + "s";
           if (allTableNames.includes(upRefTable)) {
             row[key] = {
