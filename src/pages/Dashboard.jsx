@@ -1,11 +1,9 @@
-// ========================
-// Dashboard.jsx COMPLETO
-// ========================
 import React, { useState, useEffect } from "react";
 import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
-import { dashboardService } from "../services/dashboardService.js";
+import { reportService, dashboardService } from "../services/dashboardService.js";
+import { downloadBlob } from "../utils/download.js";
 import "./Dashboard.css";
 
 // =====================================
@@ -132,6 +130,26 @@ function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [loading, setLoading] = useState(false);
+  const [exportFormat, setExportFormat] = useState("pdf");
+
+  // =====================================
+  // 🆕 NUEVO ESTADO 1: Tipo de reporte seleccionado
+  // =====================================
+  // Este estado guarda cuál de los 7 reportes eligió el usuario
+  // "default" = reporte general de la tabla actual
+  const [selectedReport, setSelectedReport] = useState("default");
+
+  // =====================================
+  // 🆕 NUEVO ESTADO 2: Filtros específicos para reportes
+  // =====================================
+  // Algunos reportes necesitan datos adicionales:
+  // - Reporte #2: Necesita ID del equipo para ver su historial
+  // - Reporte #7: Necesita ID del departamento para ver qué equipos llegaron
+  const [reportFilter, setReportFilter] = useState({
+    equipmentId: "",    // Para el reporte #2
+    departmentId: ""    // Para el reporte #7
+  });
+
 
 
   // =====================================
@@ -190,7 +208,7 @@ function Dashboard() {
 
 
   // =====================================================
-  // 🔥 SOLUCIÓN: Resolver visualId de foreign keys
+  // Resolver visualId de foreign keys
   // =====================================================
   const resolveForeignKeysVisualIds = (tablesList) => {
     return tablesList.map(table => ({
@@ -262,7 +280,7 @@ function Dashboard() {
     const found = tables.find(t => t.name === tableName);
     setSelectedTable(found);
     setSelectedRows(new Set());
-    setShowCreateForm(false);
+    setShowCreateForm(false); 
     setEditingItem(null);
     setFilteredRows(null);
     setCurrentPage(1);
@@ -293,6 +311,122 @@ function Dashboard() {
       set.has(id) ? set.delete(id) : set.add(id);
       return set;
     });
+  };
+
+  // =====================================
+  // 🆕 FUNCIÓN AUXILIAR: Generar nombres de archivo
+  // =====================================
+  // Esta función crea nombres descriptivos para los archivos descargados
+  // Ejemplo: "equipos-dados-de-baja-2024-01-15.pdf"
+  const generateFileName = (reportType, format) => {
+    const reportNames = {
+      default: "reporte-general",
+      equipmentDecommissionLastYear: "equipos-dados-de-baja",
+      equipmentMaintenanceHistory: `historial-mantenimiento-${reportFilter.equipmentId || "equipo"}`,
+      equipmentTransfers: "equipos-trasladados",
+      technicianPerformanceCorrelation: "correlacion-rendimiento-tecnicos",
+      frequentMaintenanceEquipment: "equipos-mantenimiento-frecuente",
+      technicianPerformanceBonus: "rendimiento-tecnicos-bonificaciones",
+      equipmentToDepartment: `equipos-departamento-${reportFilter.departmentId || "departamento"}`
+    };
+    
+    const extensions = {
+      pdf: "pdf",
+      excel: "xlsx",
+      word: "docx"
+    };
+    
+    const baseName = reportNames[reportType] || "reporte";
+    const extension = extensions[format] || "pdf";
+    const today = new Date().toISOString().split('T')[0]; // Fecha en formato YYYY-MM-DD
+    
+    return `${baseName}-${today}.${extension}`;
+  };
+
+  // ================================
+  // 🔄 FUNCIÓN COMPLETAMENTE REESCRITA: EXPORTAR REPORTE
+  // ================================
+  // IMPORTANTE: Esta función reemplaza la versión anterior
+  // Ahora maneja 8 casos diferentes (7 reportes especiales + 1 general)
+  const handleExportReport = async () => {
+    try {
+      let response;
+      
+      // 🛡️ VALIDACIÓN 1: Reporte #2 necesita ID de equipo
+      if (selectedReport === "equipmentMaintenanceHistory" && !reportFilter.equipmentId.trim()) {
+        alert("⚠️ Por favor ingresa el ID del equipo para el historial de mantenimiento");
+        return;
+      }
+      
+      // 🛡️ VALIDACIÓN 2: Reporte #7 necesita ID de departamento
+      if (selectedReport === "equipmentToDepartment" && !reportFilter.departmentId.trim()) {
+        alert("⚠️ Por favor ingresa el ID del departamento");
+        return;
+      }
+
+      // 🎯 DECISIÓN: ¿Cuál de los 8 reportes vamos a generar?
+      switch (selectedReport) {
+        case "equipmentDecommissionLastYear":
+          console.log("📋 Exportando reporte 1: Equipos dados de baja (último año)");
+          response = await reportService.equipmentDecommissionLastYear(exportFormat);
+          break;
+          
+        case "equipmentMaintenanceHistory":
+          console.log(`🔧 Exportando reporte 2: Historial del equipo ${reportFilter.equipmentId}`);
+          response = await reportService.equipmentMaintenanceHistory(
+            reportFilter.equipmentId, 
+            exportFormat
+          );
+          break;
+          
+        case "equipmentTransfers":
+          console.log("🚚 Exportando reporte 3: Equipos trasladados entre secciones");
+          response = await reportService.equipmentTransfers(exportFormat);
+          break;
+          
+        case "technicianPerformanceCorrelation":
+          console.log("📈 Exportando reporte 4: Correlación rendimiento técnicos");
+          response = await reportService.technicianPerformanceCorrelation(exportFormat);
+          break;
+          
+        case "frequentMaintenanceEquipment":
+          console.log("⚠️ Exportando reporte 5: Equipos con 3+ mantenimientos");
+          response = await reportService.frequentMaintenanceEquipment(exportFormat);
+          break;
+          
+        case "technicianPerformanceBonus":
+          console.log("💰 Exportando reporte 6: Rendimiento técnicos para bonificaciones");
+          response = await reportService.technicianPerformanceBonus(exportFormat);
+          break;
+          
+        case "equipmentToDepartment":
+          console.log(`📦 Exportando reporte 7: Equipos al departamento ${reportFilter.departmentId}`);
+          response = await reportService.equipmentToDepartment(
+            reportFilter.departmentId, 
+            exportFormat
+          );
+          break;
+          
+        default:
+          // 📊 Reporte general (tabla actual filtrada) - MANTIENE LA FUNCIONALIDAD ORIGINAL
+          console.log("📄 Exportando reporte general de la tabla actual");
+          response = await reportService.export(exportFormat);
+          break;
+      }
+
+      // 📝 Generar nombre del archivo con fecha
+      const fileName = generateFileName(selectedReport, exportFormat);
+      
+      // ⬇️ Descargar el archivo (usa la función downloadBlob que ya tenías)
+      downloadBlob(response, fileName);
+      
+      // ✅ Mensaje de confirmación
+      alert(`✅ Reporte generado: ${fileName}`);
+      
+    } catch (e) {
+      console.error("❌ Error exportando reporte:", e);
+      alert("❌ Error al generar el reporte. Verifica que el backend esté funcionando.");
+    }
   };
 
 
@@ -465,6 +599,147 @@ function Dashboard() {
         </h1>
       </div>
 
+      {/* ===================================== */}
+      {/* 🆕 SECCIÓN COMPLETAMENTE REESCRITA: CONTROLES DE EXPORTACIÓN */}
+      {/* ===================================== */}
+      <div style={{ 
+        display: "flex", 
+        gap: "10px", 
+        marginBottom: "15px", 
+        flexWrap: "wrap",
+        alignItems: "center",
+        padding: "15px",
+        backgroundColor: "#1276daff",
+        borderRadius: "8px",
+        // border: "1px solid #dee2e6"
+      }}>
+        {/* SELECTOR DE TIPO DE REPORTE */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#dbedffff" }}>
+            Tipo de Reporte:
+          </label>
+          <select
+            value={selectedReport}
+            onChange={(e) => {
+              // Cuando cambia el reporte, reseteamos los filtros
+              setSelectedReport(e.target.value);
+              setReportFilter({ equipmentId: "", departmentId: "" });
+            }}
+            style={{ 
+              padding: "8px 12px", 
+              minWidth: "300px",
+              borderRadius: "4px",
+              border: "1px solid #256badff",
+              fontSize: "14px"
+            }}
+          >
+            <option value="default">📋 Reporte General (tabla actual)</option>
+            <option value="equipmentDecommissionLastYear">1. 🗑️ Equipos dados de baja (último año)</option>
+            <option value="equipmentMaintenanceHistory">2. 🔧 Historial mantenimiento por equipo</option>
+            <option value="equipmentTransfers">3. 🚚 Equipos trasladados entre secciones</option>
+            <option value="technicianPerformanceCorrelation">4. 📈 Correlación rendimiento técnicos</option>
+            <option value="frequentMaintenanceEquipment">5. ⚠️ Equipos con 3+ mantenimientos</option>
+            <option value="technicianPerformanceBonus">6. 💰 Rendimiento técnicos (bonificaciones)</option>
+            <option value="equipmentToDepartment">7. 📦 Equipos enviados a departamento</option>
+          </select>
+        </div>
+
+        {/* CAMPOS DE FILTRO ESPECÍFICOS - SOLO APARECEN CUANDO SE NECESITAN */}
+        {selectedReport === "equipmentMaintenanceHistory" && (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#c1d7ecff" }}>
+              ID del Equipo:
+            </label>
+            <input
+              type="text"
+              placeholder="Ej: EQ-001 o el ID real del equipo"
+              value={reportFilter.equipmentId}
+              onChange={(e) => setReportFilter({...reportFilter, equipmentId: e.target.value})}
+              style={{ 
+                padding: "8px 12px", 
+                width: "180px",
+                borderRadius: "4px",
+                border: "1px solid #01376dff",
+                fontSize: "14px"
+              }}
+            />
+          </div>
+        )}
+
+        {selectedReport === "equipmentToDepartment" && (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#abcef0ff" }}>
+              ID del Departamento:
+            </label>
+            <input
+              type="text"
+              placeholder="Ej: DEP-001 o el ID real"
+              value={reportFilter.departmentId}
+              onChange={(e) => setReportFilter({...reportFilter, departmentId: e.target.value})}
+              style={{ 
+                padding: "8px 12px", 
+                width: "180px",
+                borderRadius: "4px",
+                border: "1px solid #ced4da",
+                fontSize: "14px"
+              }}
+            />
+          </div>
+        )}
+
+        {/* SELECTOR DE FORMATO (MANTENIDO PERO MEJORADO) */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#b6cde3ff" }}>
+            Formato de Salida:
+          </label>
+          <select
+            value={exportFormat}
+            onChange={(e) => setExportFormat(e.target.value)}
+            style={{ 
+              padding: "8px 12px", 
+              borderRadius: "4px",
+              border: "1px solid #ced4da",
+              fontSize: "14px",
+              minWidth: "120px"
+            }}
+          >
+            <option value="pdf">📄 PDF (para imprimir)</option>
+            <option value="excel">📊 Excel (para analizar)</option>
+            <option value="word">📝 Word (para documentos)</option>
+          </select>
+        </div>
+        
+        {/* BOTÓN DE EXPORTAR (MANTENIDO PERO MEJORADO) */}
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%" }}>
+          <button
+            onClick={handleExportReport}
+            style={{ 
+              padding: "10px 20px", 
+              cursor: "pointer",
+              backgroundColor: "#28a745",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              fontWeight: "bold",
+              fontSize: "14px",
+              transition: "background-color 0.3s",
+              height: "40px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = "#218838"}
+            onMouseOut={(e) => e.target.style.backgroundColor = "#28a745"}
+          >
+            <span>⬇️</span>
+            Exportar Reporte
+          </button>
+        </div>
+      </div>
+
+      {/* ===================================== */}
+      {/* SECCIÓN ORIGINAL MANTENIDA: TABLAS Y SELECTOR */}
+      {/* ===================================== */}
       <div className="dashboard-container">
         <TableSelector
           tables={tables}
