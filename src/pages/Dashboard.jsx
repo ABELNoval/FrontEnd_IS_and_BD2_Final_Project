@@ -36,11 +36,11 @@ const DEFAULT_COLUMNS = {
   Equipments: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
   Responsibles: ["id", "name", "email", "password", "departmentId"],
   EquipmentTypes: ["id", "name"],
-  Technicals: ["id", "name", "email", "password", "speciality", "experience"],
+  Technicals: ["id", "name", "email", "password", "specialty", "experience"],
   Employees: ["id", "name", "email", "password", "departmentId"],
   Directors: ["id", "name", "email", "password"],
   Assessments: ["id", "technicalId", "directorId", "score", "comment", "assessmentDate"],
-  Maintenances: ["id", "equipmentId", "technicalId", "maintenanceDate", "maintenanceType", "cost"],
+  Maintenances: ["id", "equipmentId", "technicalId", "maintenanceDate", "maintenanceTypeId", "cost"],
   Transfers: ["id", "equipmentId", "sourceDepartmentId", "targetDepartmentId", "responsibleId", "transferDate"],
   EquipmentDecommissions: ["id", "equipmentId", "technicalId", "departmentId", "destinyTypeId", "decommissionDate", "reason"]
 };
@@ -62,9 +62,9 @@ const allTableNames = [
 
 const enumsValues = {
   "state" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
-  "mantinanceType": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
-  "destinyType" :{"Department":1, "Disposal":2, "Warehouse":3},
-  "locationType" : {"Department":1, "Disposal":2, "Warehouse":3}
+  "maintenanceTypeId": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
+  "destinyTypeId" :{"Department":1, "Disposal":2, "Warehouse":3},
+  "locationTypeId" : {"Department":1, "Disposal":2, "Warehouse":3}
 }
 
 
@@ -368,12 +368,12 @@ function Dashboard() {
       switch (selectedReport) {
         case "equipmentDecommissionLastYear":
           console.log("📋 Exportando reporte 1: Equipos dados de baja (último año)");
-          response = await reportService.equipmentDecommissionLastYear(exportFormat);
+          response = await reportService.exportEquipmentDecommissionLastYear(exportFormat);
           break;
           
         case "equipmentMaintenanceHistory":
           console.log(`🔧 Exportando reporte 2: Historial del equipo ${reportFilter.equipmentId}`);
-          response = await reportService.equipmentMaintenanceHistory(
+          response = await reportService.exportEquipmentMaintenanceHistory(
             reportFilter.equipmentId, 
             exportFormat
           );
@@ -391,12 +391,12 @@ function Dashboard() {
           
         case "frequentMaintenanceEquipment":
           console.log("⚠️ Exportando reporte 5: Equipos con 3+ mantenimientos");
-          response = await reportService.frequentMaintenanceEquipment(exportFormat);
+          response = await reportService.exportFrequentMaintenanceEquipment(exportFormat);
           break;
           
         case "technicianPerformanceBonus":
           console.log("💰 Exportando reporte 6: Rendimiento técnicos para bonificaciones");
-          response = await reportService.technicianPerformanceBonus(exportFormat);
+          response = await reportService.exportTechnicianPerformanceBonus(exportFormat);
           break;
           
         case "equipmentToDepartment":
@@ -438,22 +438,20 @@ function Dashboard() {
     setEditingItem(null);
   };
 
-  const handleCreateItem = async (data) => {
-    const srv = TABLE_SERVICES[selectedTable.name];
+  const handleCreateItem = async (data) => { 
+    const srv = TABLE_SERVICES[selectedTable.name]; 
+    const apiData = { ...data }; 
+    Object.keys(apiData).forEach(k => { const value = enumsValues[k]; 
+      if (value)
+        apiData[k] = value[apiData[k]]; 
+    
+      if (apiData[k]?.isForeign) 
+        apiData[k] = apiData[k].value; 
+    }); 
 
-    const apiData = { ...data };
-    Object.keys(apiData).forEach(k => {
-      const value = enumsValues[k];
-      if (value) {
-        apiData[k] = value[apiData[k]];
-      }
-      if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
-    });
-
-    await srv.create(apiData);
-    const updated = await reloadTable(selectedTable.name);
-    setSelectedTable(updated);
-    setShowCreateForm(false);
+    await srv.create(apiData); 
+    const updated = await reloadTable(selectedTable.name); 
+    setSelectedTable(updated); setShowCreateForm(false); 
   };
 
   const handleUpdateItem = async (data) => {
@@ -633,14 +631,14 @@ function Dashboard() {
               fontSize: "14px"
             }}
           >
-            <option value="default">📋 Reporte General (tabla actual)</option>
-            <option value="equipmentDecommissionLastYear">1. 🗑️ Equipos dados de baja (último año)</option>
-            <option value="equipmentMaintenanceHistory">2. 🔧 Historial mantenimiento por equipo</option>
-            <option value="equipmentTransfers">3. 🚚 Equipos trasladados entre secciones</option>
-            <option value="technicianPerformanceCorrelation">4. 📈 Correlación rendimiento técnicos</option>
-            <option value="frequentMaintenanceEquipment">5. ⚠️ Equipos con 3+ mantenimientos</option>
-            <option value="technicianPerformanceBonus">6. 💰 Rendimiento técnicos (bonificaciones)</option>
-            <option value="equipmentToDepartment">7. 📦 Equipos enviados a departamento</option>
+            <option value="default"> Reporte General (tabla actual)</option>
+            <option value="equipmentDecommissionLastYear">1. Equipos dados de baja (último año)</option>
+            <option value="equipmentMaintenanceHistory">2. Historial mantenimiento por equipo</option>
+            <option value="equipmentTransfers">3. Equipos trasladados entre secciones</option>
+            <option value="technicianPerformanceCorrelation">4. Correlación rendimiento técnicos</option>
+            <option value="frequentMaintenanceEquipment">5. Equipos con 3+ mantenimientos</option>
+            <option value="technicianPerformanceBonus">6. Rendimiento técnicos (bonificaciones)</option>
+            <option value="equipmentToDepartment">7. Equipos enviados a departamento</option>
           </select>
         </div>
 

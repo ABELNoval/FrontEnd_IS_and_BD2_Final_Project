@@ -80,6 +80,77 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
 
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
 
+  // Detectar tipo de campo basado en el nombre
+  const getColumnType = (column) => {
+    const col = column.toLowerCase();
+
+    if (col.includes("date")) return "date";
+
+    if (
+      col.includes("cost") ||
+      col.includes("score") ||
+      col.includes("experience") ||
+      col.includes("typeid") ||
+      (!col.endsWith("id") && col.match(/(count|total|qty|amount|number)$/i))
+    ) {
+      return "number";
+    }
+
+    return "string";
+  };
+
+  const renderTypedInput = (column, value, onChange) => {
+    const type = getColumnType(column);
+
+    // Para fechas
+    if (type === "date") {
+      return (
+        <input
+          type="text"
+          placeholder="Ej: >2024-01-01"
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={(e) => {
+            // Si no hay operador, cambiamos a date-picker
+            if (!value || /^[<>]=?/.test(value)) e.target.type = "date";
+          }}
+          onBlur={(e) => (e.target.type = "text")}
+          className="filter-input"
+        />
+      );
+    }
+
+    // Para números
+    if (type === "number") {
+      return (
+        <input
+          type="text"
+          placeholder="Ej: >5"
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={(e) => {
+            if (!value || /^[<>]=?/.test(value)) e.target.type = "number";
+          }}
+          onBlur={(e) => (e.target.type = "text")}
+          className="filter-input"
+        />
+      );
+    }
+
+    // Caso normal (string)
+    return (
+      <input
+        type="text"
+        placeholder={`Filter by ${column}...`}
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        className="filter-input"
+      />
+    );
+  };
+
+
+
   return (
     <div className="filter-panel">
       <button
@@ -117,15 +188,11 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
                   {!fk && (
                     <div className="filter-input-container">
                       <Search size={14} className="search-icon" />
-                      <input
-                        type="text"
-                        value={filters[column] || ""}
-                        onChange={(e) =>
-                          handleFilterChange(column, e.target.value)
-                        }
-                        placeholder={`Filter by ${column}...`}
-                        className="filter-input"
-                      />
+                     {renderTypedInput(
+                        column,
+                        filters[column],
+                        (val) => handleFilterChange(column, val)
+                      )}
                     </div>
                   )}
 

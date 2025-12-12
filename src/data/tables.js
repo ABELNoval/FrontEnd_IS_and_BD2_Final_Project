@@ -57,8 +57,8 @@ export const TABLE_METADATA = {
       name: { type: "string", required: true },
       email: {type: "string", required:true},
       password: {type: "string", required:true},
-      speciality: {type: "string", required:true},
-      experience: {type: "int", required:true}
+      specialty: {type: "string", required:true},
+      experience: {type: "number", required:true}
     }
   },
 
@@ -85,7 +85,7 @@ export const TABLE_METADATA = {
       },
       locationType: {
         type: "enum",
-        values: ["Department", "DIsposal", "Warehouse"],
+        values: ["Department", "Disposal", "Warehouse"],
         required: true
       }
     }
@@ -103,19 +103,19 @@ export const TABLE_METADATA = {
     }
   },
 
-  Maintenance: {
+  Maintenances: {
     apiPath: "/Maintenances",
     columns: {
       id: { type: "uuid", readonly: true },
       equipmentId: { type: "fk", ref: "Equipments", required: true },
       technicalId: { type: "fk", ref: "Technicals", required: true },
-      startDate: { type: "date", required: true },
-      maintenanceType :{
+      maintenanceDate: {type: "date", required: true},
+      maintenanceTypeId :{
         type: "enum",
-        values: ["Prevention", "Correction", "Privention", "Emergency"],
+        values: ["Preventive", "Corrective", "Predective", "Emergency"],
         required: true
       },
-      maintenanceDate: {type: "date", required: true}
+      cost: { type: "number", required: true },
     }
   },
 
@@ -128,23 +128,23 @@ export const TABLE_METADATA = {
       decommissionDate: { type: "date", required: true },
       technicalId: {type: "fk", ref: "Technicals", required: true},
       departmentId: {type: "fk", ref: "Departments", required: false},
-      destinyType: {
+      destinyTypeId: {
         type: "enum",
-        values: ["Department", "Store", "Trash"],
+        values: ["Department", "Disposal", "Warehouse"],
         required: true
       } 
-    },
+    }
+  },
 
-    Assessments : {
-      apiPath: "/Assessments",
-      columns: {
-        id: { type: "uuid", readonly: true },
-        technicalId: { type: "fk", ref: "Technicals", required: true },
-        directorId: { type: "fk", ref: "Directors", required: true },
-        score: { type: "number", required: true },
-        comment: { type: "string", required: false },
-        assessmentDate: { type: "date", required: true }
-      }
+  Assessments: {
+    apiPath: "/Assessments",
+    columns: {
+      id: { type: "uuid", readonly: true },
+      technicalId: { type: "fk", ref: "Technicals", required: true },
+      directorId: { type: "fk", ref: "Directors", required: true },
+      score: { type: "number", required: true },
+      comment: { type: "string", required: false },
+      assessmentDate: { type: "date", required: true }
     }
   }
 };

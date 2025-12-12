@@ -1,50 +1,65 @@
 import api from "./api";
 
+  // ========================= REPORT SERVICE =========================
+  export const reportService = {
+  // ========================= EXPORTACIÓN (NUEVOS ENDPOINTS GET) =========================
+  
+  // 🔥 Exportar: Equipos dados de baja en el último año
+  exportEquipmentDecommissionLastYear: async (format) => {
+    return api.get(`/report/export/decommission-last-year/${format}`, {
+      responseType: "blob"
+    });
+  },
 
-// En dashboardService.js, después de la definición de buildService
-export const reportService = {
-  export: async (format) => {
-    return api.get(`/report?format=${format}`, {
+  // 🔥 Exportar: Historial de mantenimiento por equipo
+  exportEquipmentMaintenanceHistory: async (equipmentId, format) => {
+    return api.get(`/report/export/maintenance-history/${equipmentId}/${format}`, {
       responseType: "blob"
     });
   },
-  // Agregar nuevos endpoints para consultas específicas
-  equipmentDecommissionLastYear: async (format) => {
-    return api.get(`/report/equipment-decommission-last-year?format=${format}`, {
+
+  // 🔥 Exportar: Equipos con mantenimientos frecuentes
+  exportFrequentMaintenanceEquipment: async (format) => {
+    return api.get(`/report/export/frequent-maintenance/${format}`, {
       responseType: "blob"
     });
   },
-  equipmentMaintenanceHistory: async (equipmentId, format) => {
-    return api.get(`/report/equipment-maintenance-history/${equipmentId}?format=${format}`, {
+
+  // 🔥 Exportar: Bonificación de técnicos
+  exportTechnicianPreformanceBonus: async (format) => {
+    return api.get(`/report/export/technician-bonus/${format}`, {
       responseType: "blob"
     });
   },
-  equipmentTransfers: async (format) => {
-    return api.get(`/report/equipment-transfers?format=${format}`, {
+
+  // ========================= GET NORMALS (JSON) =========================
+  // (Mantener estos para mostrar datos en la interfaz si es necesario)
+  equipmentDecommissionLastYear: async () => {
+    return api.get(`/report/decommission-last-year`);
+  },
+
+  equipmentMaintenanceHistory: async (equipmentId) => {
+    return api.get(`/report/maintenance-history/${equipmentId}`);
+  },
+
+  frequentMaintenanceEquipment: async () => {
+    return api.get(`/report/frequent-maintenance`);
+  },
+
+  technicianPerformanceBonus: async () => {
+    return api.get(`/report/technician-bonus`);
+  },
+
+  // ========================= EXPORTACIÓN GENERAL (mantener por compatibilidad) =========================
+  export: async (format, request) => {
+    return api.post(`/report/export/${format}`, request, {
       responseType: "blob"
     });
   },
-  technicianPerformanceCorrelation: async (format) => {
-    return api.get(`/report/technician-performance-correlation?format=${format}`, {
-      responseType: "blob"
-    });
-  },
-  frequentMaintenanceEquipment: async (format) => {
-    return api.get(`/report/frequent-maintenance-equipment?format=${format}`, {
-      responseType: "blob"
-    });
-  },
-  technicianPerformanceBonus: async (format) => {
-    return api.get(`/report/technician-performance-bonus?format=${format}`, {
-      responseType: "blob"
-    });
-  },
-  equipmentToDepartment: async (departmentId, format) => {
-    return api.get(`/report/equipment-to-department/${departmentId}?format=${format}`, {
-      responseType: "blob"
-    });
-  }
 };
+
+
+// ========================= CRUD SERVICE BUILDER =========================
 
 function buildService(controllerName) {
   return {
@@ -70,6 +85,9 @@ function buildService(controllerName) {
     }
   };
 }
+
+
+// ========================= DASHBOARD SERVICE =========================
 
 export const dashboardService = {
   Department: buildService("department"),
