@@ -1,70 +1,77 @@
 .dashboard-root, .body-dashboard {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
-  text-align: center !important; /* o left según quieras */
+  text-align: center !important;
   display: block !important;
+  overflow-x: hidden;
 }
 
 
-.main-title-dashboard {
-  text-align: center;
-  font-size: 5.5rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin: 40px 0 20px 0;
-  padding: 0;
-  color: white;
-  display: inline-flex;
+/* ===== DASHBOARD HEADER ===== */
+.dashboard-header {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: 64px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 15, 15, 0.85);
+  border-bottom: 1px solid rgba(255, 140, 0, 0.25);
+  backdrop-filter: blur(6px);
+}
+
+/* Logo pequeño */
+.dashboard-logo {
+  display: flex;
   align-items: baseline;
-  justify-content: center;
-  gap: 2px;
-  margin: 0;            
-  padding-bottom: 8px; 
-}
-
-/* Ges y Tec (normales, blancas) */
-.brand-part-dashboard.ges,
-.brand-part-dashboard.tec {
-  color: white;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  font-style: normal;
+  font-size: 1.8rem;
   font-weight: 600;
-  font-size: 7.5rem;
 }
 
-/* H y K (azules, itálicas, fuente distinta) */
-.brand-part-dashboard.highlight {
-  color: #00aaff;
-  font-family: "Playfair Display", serif;
-  font-style: italic;
+.dashboard-logo .highlight {
+  color: var(--accent-orange);
+  margin: 0 2px;
+}
+
+/* User zone */
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  color: black;
   font-weight: 700;
-  font-size: 7.8rem;
-  text-shadow: 0 0 10px rgba(0, 170, 255, 0.6);
-  transform: rotate(-3deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (max-height: 700px) {
-  .main-title {
-      font-size: 3.5rem;
-      margin: 20px 0 10px 0;
-  }
-  
-  .brand-part.ges,
-  .brand-part.tec {
-      font-size: 3.5rem;
-  }
-  
-  .brand-part.highlight {
-      font-size: 3.8rem;
-  }
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--accent-orange);
+  color: var(--accent-orange);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
-.brand-part.highlight {
-  animation: hkGlow 3s ease-in-out infinite alternate;
+.logout-btn:hover {
+  background: var(--accent-orange);
+  color: black;
 }
+
 
 
 .table-scroll {

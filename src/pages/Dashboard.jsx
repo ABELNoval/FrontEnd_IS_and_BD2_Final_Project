@@ -589,12 +589,61 @@ function Dashboard() {
   return (
     <div className="body-dashboard">
       <div className="dashboard-header">
-        <h1 className="main-title-dashboard">
-          <span className="brand-part-dashboard ges">Ges</span>
-          <span className="brand-part-dashboard highlight">H</span>
-          <span className="brand-part-dashboard tec">Tec</span>
-          <span className="brand-part-dashboard highlight">K</span>
-        </h1>
+        <div className="dashboard-logo">
+          Ges<span className="highlight">H</span>Tec<span className="highlight">K</span>
+        </div>
+
+        <div className="dashboard-user">
+          <div className="user-avatar">A</div>
+          <button className="logout-btn">Logout</button>
+        </div>
+      </div>
+
+      {/* ===================================== */}
+      {/* SECCIÓN DE TABLAS Y SELECTOR */}
+      {/* ===================================== */}
+      <div className="dashboard-container">
+        <TableSelector
+          tables={tables}
+          onSelect={handleSelectTable}
+          activeTable={selectedTable?.name}
+        />
+
+        {selectedTable ? (
+          <TableViewer
+            table={tableWithFilters}
+            tables={tables}
+            onForeignClick={handleForeignClick}
+            onToggleRow={toggleRowSelection}
+            onCreateClick={toggleCreateForm}
+            onEdit={(item) => {
+              setEditingItem(item);
+              setShowCreateForm(true);
+            }}
+            onDelete={handleDelete}
+            onFilter={handleFilter}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
+        ) : (
+          <p className="table-empty">Selecciona una tabla para verla</p>
+        )}
+
+        {showCreateForm && (
+          <CreateForm
+            table={selectedTable}
+            tables={tables}
+            editingItem={editingItem}
+            onClose={() => {
+              setShowCreateForm(false);
+              setEditingItem(null);
+            }}
+            onSave={editingItem ? handleUpdateItem : handleCreateItem}
+          />
+        )}
       </div>
 
       {/* ===================================== */}
@@ -733,53 +782,6 @@ function Dashboard() {
             Exportar Reporte
           </button>
         </div>
-      </div>
-
-      {/* ===================================== */}
-      {/* SECCIÓN ORIGINAL MANTENIDA: TABLAS Y SELECTOR */}
-      {/* ===================================== */}
-      <div className="dashboard-container">
-        <TableSelector
-          tables={tables}
-          onSelect={handleSelectTable}
-          activeTable={selectedTable?.name}
-        />
-
-        {selectedTable ? (
-          <TableViewer
-            table={tableWithFilters}
-            tables={tables}
-            onForeignClick={handleForeignClick}
-            onToggleRow={toggleRowSelection}
-            onCreateClick={toggleCreateForm}
-            onEdit={(item) => {
-              setEditingItem(item);
-              setShowCreateForm(true);
-            }}
-            onDelete={handleDelete}
-            onFilter={handleFilter}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
-          />
-        ) : (
-          <p className="table-empty">Selecciona una tabla para verla</p>
-        )}
-
-        {showCreateForm && (
-          <CreateForm
-            table={selectedTable}
-            tables={tables}
-            editingItem={editingItem}
-            onClose={() => {
-              setShowCreateForm(false);
-              setEditingItem(null);
-            }}
-            onSave={editingItem ? handleUpdateItem : handleCreateItem}
-          />
-        )}
       </div>
     </div>
   );
