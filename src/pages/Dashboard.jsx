@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
 import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
+import { LogOut } from "lucide-react";
 
 // =====================================
 // 1) TODOS LOS SERVICIOS DE TODAS LAS TABLAS
@@ -131,6 +133,7 @@ function Dashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [loading, setLoading] = useState(false);
   const [exportFormat, setExportFormat] = useState("pdf");
+  const navigate = useNavigate();
 
   // =====================================
   // 🆕 NUEVO ESTADO 1: Tipo de reporte seleccionado
@@ -579,7 +582,10 @@ function Dashboard() {
           rowsTotalCount: rowsToDisplay.length
         }
       : null;
-
+  
+  function logOut (){
+    navigate("/");
+  }
 
   // ============================
   // RENDER
@@ -588,199 +594,201 @@ function Dashboard() {
 
   return (
     <div className="body-dashboard">
-      <div className="dashboard-header">
-        <div className="dashboard-logo">
-          Ges<span className="highlight">H</span>Tec<span className="highlight">K</span>
+      <div className="dashboard-bg">
+        <div className="dashboard-header">
+          <div className="dashboard-logo">
+            Ges<span className="highlight">H</span>Tec<span className="highlight">K</span>
+          </div>
+
+          <div className="dashboard-user">
+            <div className="user-avatar">A</div>
+            <button className="logout-btn" onClick = {logOut}>Logout</button>
+          </div>
         </div>
 
-        <div className="dashboard-user">
-          <div className="user-avatar">A</div>
-          <button className="logout-btn">Logout</button>
-        </div>
-      </div>
-
-      {/* ===================================== */}
-      {/* SECCIÓN DE TABLAS Y SELECTOR */}
-      {/* ===================================== */}
-      <div className="dashboard-container">
-        <TableSelector
-          tables={tables}
-          onSelect={handleSelectTable}
-          activeTable={selectedTable?.name}
-        />
-
-        {selectedTable ? (
-          <TableViewer
-            table={tableWithFilters}
+        {/* ===================================== */}
+        {/* SECCIÓN DE TABLAS Y SELECTOR */}
+        {/* ===================================== */}
+        <div className="dashboard-container">
+          <TableSelector
             tables={tables}
-            onForeignClick={handleForeignClick}
-            onToggleRow={toggleRowSelection}
-            onCreateClick={toggleCreateForm}
-            onEdit={(item) => {
-              setEditingItem(item);
-              setShowCreateForm(true);
-            }}
-            onDelete={handleDelete}
-            onFilter={handleFilter}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
+            onSelect={handleSelectTable}
+            activeTable={selectedTable?.name}
           />
-        ) : (
-          <p className="table-empty">Selecciona una tabla para verla</p>
-        )}
 
-        {showCreateForm && (
-          <CreateForm
-            table={selectedTable}
-            tables={tables}
-            editingItem={editingItem}
-            onClose={() => {
-              setShowCreateForm(false);
-              setEditingItem(null);
-            }}
-            onSave={editingItem ? handleUpdateItem : handleCreateItem}
-          />
-        )}
-      </div>
+          {selectedTable ? (
+            <TableViewer
+              table={tableWithFilters}
+              tables={tables}
+              onForeignClick={handleForeignClick}
+              onToggleRow={toggleRowSelection}
+              onCreateClick={toggleCreateForm}
+              onEdit={(item) => {
+                setEditingItem(item);
+                setShowCreateForm(true);
+              }}
+              onDelete={handleDelete}
+              onFilter={handleFilter}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={setPageSize}
+            />
+          ) : (
+            <p className="table-empty">Selecciona una tabla para verla</p>
+          )}
 
-      {/* ===================================== */}
-      {/* 🆕 SECCIÓN COMPLETAMENTE REESCRITA: CONTROLES DE EXPORTACIÓN */}
-      {/* ===================================== */}
-      <div style={{ 
-        display: "flex", 
-        gap: "10px", 
-        marginBottom: "15px", 
-        flexWrap: "wrap",
-        alignItems: "center",
-        padding: "15px",
-        backgroundColor: "#1276daff",
-        borderRadius: "8px",
-        // border: "1px solid #dee2e6"
-      }}>
-        {/* SELECTOR DE TIPO DE REPORTE */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#dbedffff" }}>
-            Tipo de Reporte:
-          </label>
-          <select
-            value={selectedReport}
-            onChange={(e) => {
-              // Cuando cambia el reporte, reseteamos los filtros
-              setSelectedReport(e.target.value);
-              setReportFilter({ equipmentId: "", departmentId: "" });
-            }}
-            style={{ 
-              padding: "8px 12px", 
-              minWidth: "300px",
-              borderRadius: "4px",
-              border: "1px solid #256badff",
-              fontSize: "14px"
-            }}
-          >
-            <option value="default"> Reporte General (tabla actual)</option>
-            <option value="equipmentDecommissionLastYear">1. Equipos dados de baja (último año)</option>
-            <option value="equipmentMaintenanceHistory">2. Historial mantenimiento por equipo</option>
-            <option value="equipmentTransfers">3. Equipos trasladados entre secciones</option>
-            <option value="technicianPerformanceCorrelation">4. Correlación rendimiento técnicos</option>
-            <option value="frequentMaintenanceEquipment">5. Equipos con 3+ mantenimientos</option>
-            <option value="technicianPerformanceBonus">6. Rendimiento técnicos (bonificaciones)</option>
-            <option value="equipmentToDepartment">7. Equipos enviados a departamento</option>
-          </select>
+          {showCreateForm && (
+            <CreateForm
+              table={selectedTable}
+              tables={tables}
+              editingItem={editingItem}
+              onClose={() => {
+                setShowCreateForm(false);
+                setEditingItem(null);
+              }}
+              onSave={editingItem ? handleUpdateItem : handleCreateItem}
+            />
+          )}
         </div>
 
-        {/* CAMPOS DE FILTRO ESPECÍFICOS - SOLO APARECEN CUANDO SE NECESITAN */}
-        {selectedReport === "equipmentMaintenanceHistory" && (
+        {/* ===================================== */}
+        {/* 🆕 SECCIÓN COMPLETAMENTE REESCRITA: CONTROLES DE EXPORTACIÓN */}
+        {/* ===================================== */}
+        <div style={{ 
+          display: "flex", 
+          gap: "10px", 
+          marginBottom: "15px", 
+          flexWrap: "wrap",
+          alignItems: "center",
+          padding: "15px",
+          backgroundColor: "#3d3d3dff",
+          borderRadius: "8px",
+          // border: "1px solid #dee2e6"
+        }}>
+          {/* SELECTOR DE TIPO DE REPORTE */}
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#c1d7ecff" }}>
-              ID del Equipo:
+            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#dbedffff" }}>
+              Tipo de Reporte:
             </label>
-            <input
-              type="text"
-              placeholder="Ej: EQ-001 o el ID real del equipo"
-              value={reportFilter.equipmentId}
-              onChange={(e) => setReportFilter({...reportFilter, equipmentId: e.target.value})}
+            <select
+              value={selectedReport}
+              onChange={(e) => {
+                // Cuando cambia el reporte, reseteamos los filtros
+                setSelectedReport(e.target.value);
+                setReportFilter({ equipmentId: "", departmentId: "" });
+              }}
               style={{ 
                 padding: "8px 12px", 
-                width: "180px",
+                minWidth: "300px",
                 borderRadius: "4px",
-                border: "1px solid #01376dff",
+                border: "1px solid #256badff",
                 fontSize: "14px"
               }}
-            />
+            >
+              <option value="default"> Reporte General (tabla actual)</option>
+              <option value="equipmentDecommissionLastYear">1. Equipos dados de baja (último año)</option>
+              <option value="equipmentMaintenanceHistory">2. Historial mantenimiento por equipo</option>
+              <option value="equipmentTransfers">3. Equipos trasladados entre secciones</option>
+              <option value="technicianPerformanceCorrelation">4. Correlación rendimiento técnicos</option>
+              <option value="frequentMaintenanceEquipment">5. Equipos con 3+ mantenimientos</option>
+              <option value="technicianPerformanceBonus">6. Rendimiento técnicos (bonificaciones)</option>
+              <option value="equipmentToDepartment">7. Equipos enviados a departamento</option>
+            </select>
           </div>
-        )}
 
-        {selectedReport === "equipmentToDepartment" && (
+          {/* CAMPOS DE FILTRO ESPECÍFICOS - SOLO APARECEN CUANDO SE NECESITAN */}
+          {selectedReport === "equipmentMaintenanceHistory" && (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#c1d7ecff" }}>
+                ID del Equipo:
+              </label>
+              <input
+                type="text"
+                placeholder="Ej: EQ-001 o el ID real del equipo"
+                value={reportFilter.equipmentId}
+                onChange={(e) => setReportFilter({...reportFilter, equipmentId: e.target.value})}
+                style={{ 
+                  padding: "8px 12px", 
+                  width: "180px",
+                  borderRadius: "4px",
+                  border: "1px solid #01376dff",
+                  fontSize: "14px"
+                }}
+              />
+            </div>
+          )}
+
+          {selectedReport === "equipmentToDepartment" && (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#abcef0ff" }}>
+                ID del Departamento:
+              </label>
+              <input
+                type="text"
+                placeholder="Ej: DEP-001 o el ID real"
+                value={reportFilter.departmentId}
+                onChange={(e) => setReportFilter({...reportFilter, departmentId: e.target.value})}
+                style={{ 
+                  padding: "8px 12px", 
+                  width: "180px",
+                  borderRadius: "4px",
+                  border: "1px solid #ced4da",
+                  fontSize: "14px"
+                }}
+              />
+            </div>
+          )}
+
+          {/* SELECTOR DE FORMATO (MANTENIDO PERO MEJORADO) */}
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#abcef0ff" }}>
-              ID del Departamento:
+            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#b6cde3ff" }}>
+              Formato de Salida:
             </label>
-            <input
-              type="text"
-              placeholder="Ej: DEP-001 o el ID real"
-              value={reportFilter.departmentId}
-              onChange={(e) => setReportFilter({...reportFilter, departmentId: e.target.value})}
+            <select
+              value={exportFormat}
+              onChange={(e) => setExportFormat(e.target.value)}
               style={{ 
                 padding: "8px 12px", 
-                width: "180px",
                 borderRadius: "4px",
                 border: "1px solid #ced4da",
-                fontSize: "14px"
+                fontSize: "14px",
+                minWidth: "120px"
               }}
-            />
+            >
+              <option value="pdf">📄 PDF (para imprimir)</option>
+              <option value="excel">📊 Excel (para analizar)</option>
+              <option value="word">📝 Word (para documentos)</option>
+            </select>
           </div>
-        )}
-
-        {/* SELECTOR DE FORMATO (MANTENIDO PERO MEJORADO) */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#b6cde3ff" }}>
-            Formato de Salida:
-          </label>
-          <select
-            value={exportFormat}
-            onChange={(e) => setExportFormat(e.target.value)}
-            style={{ 
-              padding: "8px 12px", 
-              borderRadius: "4px",
-              border: "1px solid #ced4da",
-              fontSize: "14px",
-              minWidth: "120px"
-            }}
-          >
-            <option value="pdf">📄 PDF (para imprimir)</option>
-            <option value="excel">📊 Excel (para analizar)</option>
-            <option value="word">📝 Word (para documentos)</option>
-          </select>
-        </div>
-        
-        {/* BOTÓN DE EXPORTAR (MANTENIDO PERO MEJORADO) */}
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%" }}>
-          <button
-            onClick={handleExportReport}
-            style={{ 
-              padding: "10px 20px", 
-              cursor: "pointer",
-              backgroundColor: "#28a745",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              fontWeight: "bold",
-              fontSize: "14px",
-              transition: "background-color 0.3s",
-              height: "40px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px"
-            }}
-            onMouseOver={(e) => e.target.style.backgroundColor = "#218838"}
-            onMouseOut={(e) => e.target.style.backgroundColor = "#28a745"}
-          >
-            <span>⬇️</span>
-            Exportar Reporte
-          </button>
+          
+          {/* BOTÓN DE EXPORTAR (MANTENIDO PERO MEJORADO) */}
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%" }}>
+            <button
+              onClick={handleExportReport}
+              style={{ 
+                padding: "10px 20px", 
+                cursor: "pointer",
+                backgroundColor: "#28a745",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                fontWeight: "bold",
+                fontSize: "14px",
+                transition: "background-color 0.3s",
+                height: "40px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = "#218838"}
+              onMouseOut={(e) => e.target.style.backgroundColor = "#28a745"}
+            >
+              <span>⬇️</span>
+              Exportar Reporte
+            </button>
+          </div>
         </div>
       </div>
     </div>

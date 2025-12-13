@@ -100,3 +100,14 @@
 .table-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 170, 255, 0.7);
 }
+
+.dashboard-bg {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #141414;
+  background-image: url('../../assets/fondo-oficial-nuevo.png');
+  background-size: cover;
+  background-position: bottom left;
+  background-repeat: no-repeat; 
+} 
