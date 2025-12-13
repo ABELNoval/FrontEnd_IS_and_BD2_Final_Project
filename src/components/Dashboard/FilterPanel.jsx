@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Filter, X, Search, ChevronRight, ChevronDown } from "lucide-react";
-import "./FilterPanel.css";
+import "../../styles/components/FilterPanel.css";
 
 function FilterPanel({ table, tables, onFilter, onClear }) {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,35 +1,30 @@
 .input-container {
   position: relative;
   width: 100%;
-  margin: 10px 0;
 }
 
-/* El campo de texto */
 .input {
   width: 100%;
-  padding: 12px 42px 12px 14px; /* espacio a la derecha para el botón del ojo */
+  padding: 12px 42px 12px 14px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(186, 106, 0, 0.06);
   color: white;
   font-size: 15px;
   outline: none;
   transition: all 0.3s ease;
 }
 
-/* Efecto al enfocar */
 .input:focus {
-  border-color: #0077ff;
+  border-color: var(--accent-orange);
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 6px rgba(0, 119, 255, 0.3);
 }
 
-/* Placeholder más tenue */
 .input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Botón del ojo */
 .button-toggle {
   position: absolute;
   right: 10px;
@@ -50,11 +45,6 @@
   color: #fff;
 }
 
-/* Para mejorar la alineación si hay varios inputs seguidos */
-.input-container + .input-container {
-  margin-top: 16px;
-}
-
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px rgba(255,255,255,0.06) inset !important;
   -webkit-text-fill-color: white !important;
@@ -63,4 +53,18 @@ input:-webkit-autofill {
 
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px rgba(255,255,255,0.1) inset !important;
+}
+
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* margin-bottom: 16px; */
+}
+
+.input-error {
+  min-height: 16px;           /* RESERVA el espacio */
+  font-size: 0.85rem;
+  color: #fb5530;             /* naranja del tema */
+  opacity: 0.9;
 }

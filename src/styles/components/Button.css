@@ -1,0 +1,217 @@
+/* ============================== */
+/* 🎯 CLASE BASE PARA TODOS LOS BOTONES */
+/* ============================== */
+
+.btn-base {
+  position: relative;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(90deg, var(--accent-orange-light), var(--accent-orange));
+  transition: all 0.4s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--accent-orange);
+  text-align: center;
+  
+  /* Asegurar que los textos no se salgan */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================== */
+/* 🔥 TODAS LAS ANIMACIONES ORIGINALES */
+/* ============================== */
+
+/* ——— Fase 1: Absorción azul ——— */
+.btn-base.loading {
+  background: radial-gradient(circle at center, var(--accent-orange-light), var(--accent-orange));
+  box-shadow: 0 0 25px var(--accent-orange),
+              0 0 60px var(--accent-orange-light);
+  animation: absorb 1.2s ease forwards;
+}
+
+@keyframes absorb {
+  0% {
+    background: linear-gradient(90deg,var(--accent-orange-light), var(--accent-orange));
+    box-shadow: 0 0 10px var(--accent-orange);
+  }
+  50% {
+    background: radial-gradient(circle at center, var(--accent-orange-light), var(--accent-orange));
+    box-shadow: 0 0 30px var(--accent-orange);
+  }
+  100% {
+    background: radial-gradient(circle at center, var(--accent-orange-light), var(--accent-orange));
+    box-shadow: 0 0 20px var(--accent-orange);
+  }
+}
+
+/* ——— Fase 2: Engranaje aparece y gira ——— */
+.gear-icon {
+  color: white;
+  animation: spin-gear 1s ease-in-out forwards;
+}
+
+@keyframes spin-gear {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* ——— Texto original ——— */
+.btn-text {
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.btn-base.loading .btn-text {
+  opacity: 0;
+}
+
+/* ——— Pequeña pulsación al hacer clic ——— */
+.btn-base:active {
+  transform: scale(0.97);
+}
+
+/* === Hover Neon Sweep === */
+.btn-base::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    var(--accent-orange),
+    transparent
+  );
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.btn-base:hover::before {
+  left: 150%;
+  opacity: 1;
+}
+
+/* ——— Después del barrido, el botón queda iluminado ——— */
+.btn-base:hover {
+  box-shadow:
+    0 0 15px var(--accent-orange-light),
+    0 0 30px var(--accent-orange);
+  background: linear-gradient(90deg, var(--accent-orange-light), var(--accent-orange));
+  transition: all 0.7s ease-in-out;
+  transform: translateY(-2px);
+}
+
+/* ============================== */
+/* 🎨 VARIANTES DE BOTONES (colores diferentes) */
+/* ============================== */
+
+/* Botón azul principal (el default ya es azul) */
+.btn-blue {
+  /* Hereda todo de btn-base */
+}
+
+/* Botón verde (create, save, success) */
+.btn-green {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
+}
+
+.btn-green:hover {
+  background: linear-gradient(90deg, #218838, #1e7e34);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35);
+}
+
+/* Botón gris (cancel, secondary) */
+.btn-gray {
+  background: linear-gradient(90deg, #6c757d, #5a6268);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
+}
+
+.btn-gray:hover {
+  background: linear-gradient(90deg, #5a6268, #4e555b);
+  box-shadow: 0 6px 16px rgba(108, 117, 125, 0.35);
+}
+
+/* ============================== */
+/* 📏 VARIANTES DE TAMAÑO */
+/* ============================== */
+
+/* Botón de tabla (para TableSelector) */
+.btn-table {
+  flex: 1 1 calc(11% - 16px);
+  min-width: 120px;
+  max-width: 160px;
+}
+
+/* Botón compacto (para forms) */
+.btn-compact {
+  padding: 10px 20px;
+  width: auto;
+  min-width: 120px;
+  max-width: 150px;
+  font-size: 0.9rem;
+}
+
+/* Botón pequeño (para acciones en tabla) */
+.btn-small {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  width: auto;
+}
+
+/* ============================== */
+/* 🎭 ESTADOS ESPECIALES */
+/* ============================== */
+
+/* Botón activo/seleccionado (para TableSelector) */
+.btn-base.active {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+}
+
+/* Botón deshabilitado */
+.btn-base:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-base:disabled:hover {
+  transform: none !important;
+  box-shadow: 0 4px 12px var(--accent-orange);
+}
+
+/* ============================== */
+/* 📱 RESPONSIVE */
+/* ============================== */
+
+@media (max-width: 768px) {
+  .btn-table {
+    min-width: 100px;
+    max-width: 140px;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  
+  .btn-compact {
+    min-width: 100px;
+    padding: 8px 16px;
+  }
+}

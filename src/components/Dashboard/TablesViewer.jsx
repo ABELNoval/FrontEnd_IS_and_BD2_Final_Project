@@ -2,7 +2,7 @@ import React from "react";
 import { Edit, Trash2 } from "lucide-react";
 import Button from "../Button/Button";
 import FilterPanel from "./FilterPanel";
-import "./TableViewer.css";
+import "../../styles/components/Table.css";
 
 function TableViewer({
   table,
@@ -89,7 +89,7 @@ function TableViewer({
           <Button
             text={`Create ${table.name.slice(0, -1)}`}
             onClick={onCreateClick}
-            variant="create-button"
+            variant="btn-base"
           />
         </div>
       </div>

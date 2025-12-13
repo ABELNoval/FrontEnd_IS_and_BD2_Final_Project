@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 import Button from "../Button/Button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import "./TableSelector.css";
+import "../../styles/components/Table.css";
 
-function TableSelector({ tables, onSelect, activeTable }) {
+function TableSelector({ tables, onSelect /*activeTable*/ }) {
   const scrollContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -57,7 +57,7 @@ function TableSelector({ tables, onSelect, activeTable }) {
             <Button
               key={`${table.name}-${index}`}
               text={table.name}
-              variant={`table-button ${activeTable === table.name ? "active" : ""}`}
+              variant="btn-base"
               onClick={() => {
                 console.log("👉 Tabla seleccionada:", table.name);
                 onSelect(table.name);

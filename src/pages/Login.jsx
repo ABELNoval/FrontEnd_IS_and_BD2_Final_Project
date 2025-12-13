@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import Button from '../components/Button/Button.jsx'
 import Input from '../components/Input/Input.jsx'
-import AuthBox from "../components/AuthBox/AuthBox.jsx";
+import '../styles/pages/Login.css'
 
 function Login() {
   const [userOrEmail, setUserOrEmail] = useState("")
@@ -26,29 +26,37 @@ function Login() {
   }
 
    return (
-    <div>
-      <h1 className="main-title">
-        <span className="brand-part ges">Ges</span>
-        <span className="brand-part highlight">H</span>
-        <span className="brand-part tec">Tec</span>
-        <span className="brand-part highlight">K</span>
-      </h1>
-
-      <AuthBox title="Log in with your account">
-        <Input
-          type="text"
-          value={userOrEmail}
-          placeholder="Enter your user or email"
-          onChange={setUserOrEmail}
-        />
-        <Input
-          type="password"
-          value={password}
-          placeholder="Enter your password"
-          onChange={setPassword}
-        />
-        <Button text="Login" onClick={handleLogin} variant="app-button" />
-      </AuthBox>
+    <div className='login-bg'>
+      <div className= 'login-wrapper'>
+        <h1 className="main-title">
+          <span className="brand-part ges">Ges</span>
+          <span className="brand-part highlight">H</span>
+          <span className="brand-part tec">Tec</span>
+          <span className="brand-part highlight">K</span>
+        </h1>
+        <div className='auth-container'>
+          <div className="auth-shell">
+            <div className="auth-box">
+              <h1 className="auth-title">Log in with your account</h1>
+              <Input
+                type="text"
+                value={userOrEmail}
+                placeholder="Enter your user or email"
+                onChange={setUserOrEmail}
+                error=""
+                />
+              <Input
+                type="password"
+                value={password}
+                placeholder="Enter your password"
+                onChange={setPassword}
+                error=""
+                />
+              <Button text="Login" onClick={handleLogin} variant="btn-base" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

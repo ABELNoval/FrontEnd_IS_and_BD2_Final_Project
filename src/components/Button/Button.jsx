@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Settings } from "lucide-react"; // ícono de engranaje
-import "./Button.css";
+import "../../styles/components/Button.css";
 
 function Button({ text, onClick , variant}) {
   const [loading, setLoading] = useState(false);

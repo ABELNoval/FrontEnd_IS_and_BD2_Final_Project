@@ -4,7 +4,7 @@ import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
 import { downloadBlob } from "../utils/download.js";
-import "./Dashboard.css";
+import "../styles/pages/Dashboard.css";
 
 // =====================================
 // 1) TODOS LOS SERVICIOS DE TODAS LAS TABLAS

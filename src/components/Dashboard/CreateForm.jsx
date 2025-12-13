@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Button from "../Button/Button";
 import { TABLE_METADATA } from "../../data/tables";
-import "./CreateForm.css";
+import "../../styles/components/CreateForm.css";
 
 
 function CreateForm({ table, tables, onClose, onSave, editingItem }) {
@@ -194,8 +194,8 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
       </div>
 
       <div className="form-actions">
-        <Button text="Cancel" onClick={onClose} variant="cancel-button" />
-        <Button text={editingItem ? "Update" : "Save"} onClick={onSubmit} variant="save-button" />
+        <Button text="Cancel" onClick={onClose} variant="btn-base" />
+        <Button text={editingItem ? "Update" : "Save"} onClick={onSubmit} variant="btn-base" />
       </div>
     </div>
   );
