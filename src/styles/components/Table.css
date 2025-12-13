@@ -231,8 +231,8 @@
 
 .page-size-selector {
   background: #0d1b2a;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #8fc9ff;
+  border: 1px solid var(--accent-orange);
+  color: var(--accent-orange);
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -241,44 +241,45 @@
 }
 
 .page-size-selector:hover {
-  color: #c8e6ff;
-  border-color: #4a90e2;
+  color: var(--accent-orange);
+  border-color: var(--accent-orange);
 }
 
-.pagination-controls {
+.table-pagination {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  gap: 7px;
+  gap: 10px;
+  padding: 12px 6px 0;
 }
 
 .pagination-btn {
-  padding: 6px 12px;
-  background: linear-gradient(145deg, #0d1b2a, #12263f);
-  color: #8fc9ff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--accent-orange);
   cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
   transition: 0.25s;
-  font-weight: 600;
 }
 
-.pagination-btn:hover {
-  color: #d4eeff;
-  border-color: #4a90e2;
-  transform: translateY(-1px);
-  background: linear-gradient(145deg, #12263f, #1b3b63);
+.pagination-btn:hover:not(:disabled) {
+  transform: scale(1.15);
+  text-shadow: 0 0 8px rgba(255, 140, 0, 0.6);
 }
 
 .pagination-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
+  opacity: 0.5;
+  cursor: default;
 }
 
 .pagination-info {
-  color: #a9cfff;
-  font-weight: 500;
-  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  margin: 0 4px;
 }
+
 
 /* Scrollbar */
 .table-scroll::-webkit-scrollbar {

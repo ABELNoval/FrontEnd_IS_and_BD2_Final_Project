@@ -94,28 +94,6 @@ function TableViewer({
         </div>
       </div>
 
-      {/* PAGINATION */}
-      <div className="pagination-controls">
-        <button onClick={() => onPageChange(1)} disabled={currentPage === 1}>⏮ First</button>
-        <button onClick={() => onPageChange(prev => Math.max(1, prev - 1))} disabled={currentPage === 1}>◀ Prev</button>
-
-        <span className="page-info">Page {currentPage} of {totalPages}</span>
-
-        <button onClick={() => onPageChange(prev => Math.min(totalPages, prev + 1))} disabled={currentPage === totalPages}>Next ▶</button>
-        <button onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages}>Last ⏭</button>
-
-        <select
-          className="page-size-selector"
-          value={pageSize}
-          onChange={e => onPageSizeChange(Number(e.target.value))}
-        >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
-        </select>
-      </div>
-
       {/* TABLE */}
       <div className="table-scroll">
         <table className="table-viewer">
@@ -181,6 +159,28 @@ function TableViewer({
         {displayRows?.length === 0 && (
           <div className="no-results">No matching records found</div>
         )}
+      </div>
+
+      {/* PAGINATION */}
+      <div className="table-pagination">
+        <button className="pagination-btn" onClick={() => onPageChange(1)} disabled={currentPage === 1}>⏮</button>
+        <button className="pagination-btn" onClick={() => onPageChange(prev => Math.max(1, prev - 1))} disabled={currentPage === 1}>◀</button>
+
+        <span className="page-info">Page {currentPage} of {totalPages}</span>
+
+        <button className="pagination-btn" onClick={() => onPageChange(prev => Math.min(totalPages, prev + 1))} disabled={currentPage === totalPages}>▶</button>
+        <button className="pagination-btn" onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages}>⏭</button>
+
+        <select
+          className="page-size-selector"
+          value={pageSize}
+          onChange={e => onPageSizeChange(Number(e.target.value))}
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
       </div>
     </div>
   );
