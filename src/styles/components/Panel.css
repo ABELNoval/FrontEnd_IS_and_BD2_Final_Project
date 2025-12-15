@@ -1,52 +1,162 @@
 /* src/styles/components/Panel.css */
-.panel--menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  min-width: 140px;
-  background: var(--bg-dark-3);
-  border: 1px solid var(--border-orange);
-  border-radius: 10px;
-  padding: 8px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  box-shadow: var(--shadow-orange);
+
+/* ===== CLASE BASE PARA TODOS LOS PANELES ===== */
+.panel-base {
+  position: fixed;
+  background: rgba(20, 20, 20, 0.98);
+  border: 1px solid rgba(255, 140, 0, 0.8);
+  backdrop-filter: blur(10px);
   z-index: 1000;
-  animation: panelFadeIn 0.15s ease;
+  box-shadow: 0 0 30px rgba(255, 140, 0, 0.2);
+  animation: panel-fade-in 0.3s ease;
 }
 
-@keyframes panelFadeIn {
+@keyframes panel-fade-in {
   from {
     opacity: 0;
-    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-/* Side Panel para CreateForm */
-.side-panel {
-  position: fixed;
+/* ===== PANEL LATERAL DERECHO (el actual) ===== */
+.panel-right {
   top: 70px;
   right: 0;
   width: 400px;
   height: calc(100vh - 70px);
-  background: var(--bg-dark-3);
-  border-left: 1px solid var(--border-orange);
-  padding: 0;
-  overflow-y: auto;
-  animation: slideIn 0.25s ease;
-  z-index: 1000;
+  border-left: 1px solid rgba(255, 140, 0, 0.8);
+  animation: slide-in-right 0.25s ease;
 }
 
-@keyframes slideIn {
+@keyframes slide-in-right {
   from {
     transform: translateX(100%);
   }
   to {
     transform: translateX(0);
   }
+}
+
+/* ===== PANEL INFERIOR HORIZONTAL (NUEVO) ===== */
+.panel-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 400px; /* Altura fija, ajustable */
+  border-top: 1px solid rgba(255, 140, 0, 0.8);
+  animation: slide-up 0.25s ease;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ===== PANEL COMPLETO (modal) ===== */
+.panel-modal {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  border-radius: 10px;
+  animation: scale-in 0.2s ease;
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ===== MODIFICADORES DE TAMAÑO ===== */
+.panel-full-height {
+  height: 100vh !important;
+  top: 0 !important;
+}
+
+.panel-full-width {
+  width: 100vw !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* ===== PANEL DE MENÚ DROPDOWN ===== */
+.panel-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 140px;
+  background: rgba(20, 20, 20, 1);
+  border: 1px solid rgba(255, 140, 0, 1);
+  border-radius: 10px;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+  z-index: 1000;
+  animation: panel-fade-in 0.15s ease;
+}
+
+/* ===== BOTÓN DE CERRAR PARA PANELES ===== */
+.panel-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 140, 0, 0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.panel-close-btn:hover {
+  color: rgba(255, 140, 0, 1);
+  background: rgba(255, 140, 0, 0.1);
+}
+
+/* ===== CONTENIDO DEL PANEL ===== */
+.panel-content {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Scrollbar personalizada para paneles */
+.panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 140, 0, 0.5);
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 140, 0, 0.7);
 }

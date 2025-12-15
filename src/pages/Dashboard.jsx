@@ -690,21 +690,24 @@ function Dashboard() {
             setShowCreateForm(false);
             setEditingItem(null);
           }}
-          className="create-form-modal"
-          portal={true} // <-- Añadir esta línea
+          className="create-form-panel"
+          position="bottom"
+          portal={true}
           closeOnOutside={true}
           closeOnEsc={true}
         >
-          <CreateForm
-            table={selectedTable}
-            tables={tables}
-            editingItem={editingItem}
-            onClose={() => {
-              setShowCreateForm(false);
-              setEditingItem(null);
-            }}
-            onSave={editingItem ? handleUpdateItem : handleCreateItem}
-          />
+          <div className="panel-content">
+            <CreateForm
+              table={selectedTable}
+              tables={tables}
+              editingItem={editingItem}
+              onClose={() => {
+                setShowCreateForm(false);
+                setEditingItem(null);
+              }}
+              onSave={editingItem ? handleUpdateItem : handleCreateItem}
+            />
+          </div>
         </Panel>
       </div> 
     </div>

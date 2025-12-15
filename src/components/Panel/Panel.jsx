@@ -1,5 +1,7 @@
+// Panel.jsx - VERSIÓN MEJORADA Y FLEXIBLE
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import "../../styles/components/Panel.css";
 
 function Panel({
   open,
@@ -9,7 +11,10 @@ function Panel({
   style = {},
   closeOnOutside = true,
   closeOnEsc = true,
-  portal = false
+  portal = false,
+  position = "right",
+  fullHeight = false,
+  fullWidth = false
 }) {
   const panelRef = useRef(null);
 
@@ -43,10 +48,14 @@ function Panel({
 
   if (!open) return null;
 
+  // 👇 Clases CSS según la posición
+  const positionClass = `panel-${position}`;
+  const sizeClass = `${fullHeight ? 'panel-full-height' : ''} ${fullWidth ? 'panel-full-width' : ''}`.trim();
+
   const panelContent = (
     <div 
       ref={panelRef} 
-      className={`${className} ${open ? 'open' : ''}`}
+      className={`panel-base ${positionClass} ${sizeClass} ${className}`}
       style={style}
       open={open ? 'true' : undefined}
     >

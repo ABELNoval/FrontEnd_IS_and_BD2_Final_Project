@@ -60,37 +60,126 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
   };
 
   const validate = () => {
-    const newErrors = {};
+    const errors = {};
 
     for (const col of columns) {
       const metaCol = columnsMeta[col];
       if (!metaCol || metaCol.readonly) continue;
 
-      const val = formData[col];
+      const rawVal = formData[col];
+      const val = typeof rawVal === "string" ? rawVal.trim() : rawVal;
 
-      // required
+      // ========================
+      // REQUIRED
+      // ========================
       if (metaCol.required) {
-        if (val === null || val === undefined || String(val).trim() === "") {
-          newErrors[col] = "This field is requiered";
+        if (val === "" || val === null || val === undefined) {
+          errors[col] = "This field is required";
           continue;
         }
       }
 
-      // type checks
-      if (val) {
-        if (metaCol.type === "number" && isNaN(Number(val))) {
-          newErrors[col] = "Invalid number";
+      // ========================
+      // STRING
+      // ========================
+      if (metaCol.type === "string" && val) {
+        if (val.length < 3) {
+          errors[col] = "The field must be at least 3 characters long.";
+        }
+      }
+
+      // ========================
+      // NUMBER
+      // ========================
+      if (metaCol.type === "number" && val !== "" && val !== null) {
+        const num = Number(val);
+
+        if (isNaN(num)) {
+          errors[col] = "This field must to be a valid number";
+          continue;
         }
 
-        if (metaCol.type === "date" && isNaN(Date.parse(val))) {
-          newErrors[col] = "Invalid date";
+        if (num < 0) {
+          errors[col] = "This field cannot be negative";
+          continue;
+        }
+
+        // enteros específicos
+        if (
+          ["experience", "score"].includes(col) &&
+          !Number.isInteger(num)
+        ) {
+          errors[col] = "This field must be an integer value";
         }
       }
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    // ========================
+    // DEPENDENCIAS ENTRE CAMPOS
+    // ========================
+
+    // Equipments
+    if (table.name === "Equipments") {
+      if (
+        formData.LocationTypeId === "Department" &&
+        !formData.departmentId
+      ) {
+        errors.departmentId = "This field is required when Location Type is Department";
+      }
+
+      if (formData.LocationTypeId !== "Department" && formData.departmentId) {
+        errors.departmentId = "This field must be empty when Location Type is not Department";
+      }
+
+      if ((formData.StateId === "Operative" || formData.StateId === "UnderMaintenance")) {
+        if(formData.LocationTypeId !== "Department"){
+          errors.LocationTypeId = "Location Type must be Department for Operative or Under Maintenance equipments";
+        }
+        if(!formData.departmentId){
+          errors.departmentIdId = "This field is required for Operative or Under Maintenance equipments";
+        }
+      }
+      else if (formData.StateId === "Decommissioned" && formData.LocationTypeId !== "Warehouse") {
+        errors.LocationTypeId = "Location Type must be Warehouse for Decommissioned equipments";
+      }
+      else if (formData.StateId === "Disposed" && formData.LocationTypeId !== "Disposal") {
+        errors.LocationTypeId = "Location Type must be Disposal for Disposed equipments";
+      }
+    }
+
+    // EquipmentDecommissions
+    if (table.name === "EquipmentDecommissions") {
+      if (formData.DestinyTypeId === "Department") {
+        if (!formData.departmentId) {
+          errors.departmentId = "DepartmentId is requiered for Department destiny";
+        }
+        if (!formData.recipientId) {
+          errors.recipientId = "RecipientId is required for Department destiny";
+        }
+      }
+      else {
+        if (formData.departmentId) {
+          errors.departmentId = "DepartmentId must be empty for non-Department destiny";
+        }
+        if (formData.recipientId) {
+          errors.recipientId = "RecipientId must be empty for non-Department destiny";
+        }
+      }
+    }
+
+    // ========================
+    // RESULTADO
+    // ========================
+    if (Object.keys(errors).length > 0) {
+      console.log("Validation errors:", errors);
+      setErrors(errors);
+      return false;
+    }
+
+    setErrors({});
+    return true;
   };
+
 
 
   const preparePayload = () => {
@@ -223,8 +312,20 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
       </div>
 
       <div className="form-actions">
-        <Button text="Cancel" onClick={onClose} variant="btn-base" />
-        <Button text={editingItem ? "Update" : "Save"} onClick={onSubmit} variant="btn-base" />
+        <button 
+          type="button" 
+          className="btn-base btn-gray btn-compact"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          className="btn-base btn-green btn-compact"
+          onClick={onSubmit}
+        >
+          {editingItem ? 'Update' : 'Save'}
+        </button>
       </div>
     </div>
   );
