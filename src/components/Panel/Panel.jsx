@@ -57,7 +57,7 @@ function Panel({
       ref={panelRef} 
       className={`panel-base ${positionClass} ${sizeClass} ${className}`}
       style={style}
-      open={open ? 'true' : undefined}
+      open={open ? true : undefined}
     >
       {children}
     </div>

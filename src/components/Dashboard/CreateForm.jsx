@@ -136,7 +136,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
           errors.LocationTypeId = "Location Type must be Department for Operative or Under Maintenance equipments";
         }
         if(!formData.departmentId){
-          errors.departmentIdId = "This field is required for Operative or Under Maintenance equipments";
+          errors.departmentId = "This field is required for Operative or Under Maintenance equipments";
         }
       }
       else if (formData.StateId === "Decommissioned" && formData.LocationTypeId !== "Warehouse") {

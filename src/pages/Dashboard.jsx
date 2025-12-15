@@ -361,12 +361,12 @@ function Dashboard() {
           
         case "equipmentTransfers":
           console.log("🚚 Exportando reporte 3: Equipos trasladados entre secciones");
-          response = await reportService.equipmentTransfers(exportFormat);
+          response = await reportService.exportEquipmentTransfersBetweenSections(exportFormat);
           break;
           
         case "technicianPerformanceCorrelation":
           console.log("📈 Exportando reporte 4: Correlación rendimiento técnicos");
-          response = await reportService.technicianPerformanceCorrelation(exportFormat);
+          response = await reportService.exportTechnicianCorrelationWorst(exportFormat);
           break;
           
         case "frequentMaintenanceEquipment":
@@ -381,7 +381,7 @@ function Dashboard() {
           
         case "equipmentToDepartment":
           console.log(`📦 Exportando reporte 7: Equipos al departamento ${reportFilter.departmentId}`);
-          response = await reportService.equipmentToDepartment(
+          response = await reportService.exportEquipmentSentToDepartment(
             reportFilter.departmentId, 
             exportFormat
           );

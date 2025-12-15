@@ -132,7 +132,7 @@ export const TABLE_METADATA = {
         values: ["Department", "Disposal", "Warehouse"],
         required: true
       },
-      recipientId: {type: "fk", ref: "Employees", required: false}
+      recipientId: {type: "fk", ref: "Employees", required: false}  
     }
   },
 

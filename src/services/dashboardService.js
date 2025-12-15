@@ -32,6 +32,26 @@ import api from "./api";
     });
   },
 
+    // Traslados entre secciones
+  exportEquipmentTransfersBetweenSections: async (format) => {
+    return api.get(`/report/export/equipment-transfers-between-sections/${format}`, {
+      responseType: "blob"
+    });
+  },
+
+  // Correlación técnicos (peores)
+  exportTechnicianCorrelationWorst: async (format) => {
+    return api.get(`/report/export/technician-correlation-worst/${format}`, {
+      responseType: "blob"
+    });
+  },
+
+  // Equipos enviados a un departamento específico
+  exportEquipmentSentToDepartment: async (departmentId, format) => {
+    return api.get(`/report/export/equipment-sent-to-department/${departmentId}/${format}`, {
+      responseType: "blob"
+    });
+  },
   // ========================= GET NORMALS (JSON) =========================
   // (Mantener estos para mostrar datos en la interfaz si es necesario)
   equipmentDecommissionLastYear: async () => {

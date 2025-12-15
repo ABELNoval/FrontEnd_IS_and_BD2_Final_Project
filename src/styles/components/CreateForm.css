@@ -118,9 +118,9 @@
 }
 
 .form-select:focus {
-  border-color: #0077ff;
+  border-color: var(--accent-orange);
   background: #111111 !important;
-  box-shadow: 0 0 6px rgba(0, 119, 255, 0.3);
+  box-shadow: 0 0 6px var(--accent-orange-light);
 }
 
 .form-select option {
