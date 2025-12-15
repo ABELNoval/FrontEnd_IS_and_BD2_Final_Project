@@ -2,27 +2,36 @@
       VARIABLES CSS (Tema oscuro)
    ============================ */
 :root {
-  /* Tema oscuro */
-  --bg-dark: #0a0a0a;
-  --bg-dark-2: #1e1e1e;
-  --bg-dark-3: #1a1a1a;
-
-  /* Naranja principal */
+  /* Colores principales */
   --accent-orange: #ff7b25;
-  --accent-orange-light: #ff9e57;
-
+  --accent-orange-light: #ff9d5c;
+  --accent-orange-dark: #e6691a;
+  
+  /* Fondo */
+  --bg-dark-1: #0a0a0a;
+  --bg-dark-2: #141414;
+  --bg-dark-3: #1a1a1a;
+  
   /* Texto */
   --text-main: #ffffff;
-  --text-soft: #cfcfcf;
-
-  /* Sombras */
-  --shadow-orange: 0px 0px 12px rgba(255, 123, 37, 0.45);
-  --shadow-orange-soft: 0px 0px 8px rgba(255, 123, 37, 0.25);
-
-  /* Bordes */
-  --border-orange: rgba(255, 123, 37, 0.7);
-  --border-orange-soft: rgba(255, 123, 37, 0.4);
+  --text-secondary: #cccccc;
+  --text-muted: #888888;
   
+  /* Bordes */
+  --border-orange: rgba(255, 123, 37, 0.5);
+  --border-orange-soft: rgba(255, 123, 37, 0.25);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  
+  /* Sombras */
+  --shadow-orange: 0 0 20px rgba(255, 123, 37, 0.3);
+  --shadow-orange-soft: 0 0 15px rgba(255, 123, 37, 0.15);
+  --shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.4);
+  
+  /* Estados */
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --info: #17a2b8;
 }
 
 /* ============================

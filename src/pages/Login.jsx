@@ -72,7 +72,7 @@ function Login() {
         <div className='auth-container'>
           <div className="auth-shell">
             <div className="auth-box">
-              <h1 className="auth-title">Log in with your account</h1>
+              <h1 className="auth-title">Login with your account</h1>
               <Input
                 type="text"
                 value={userOrEmail}

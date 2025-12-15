@@ -3,10 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import Button from "../Button/Button";
 import { TABLE_METADATA } from "../../data/tables";
 import "../../styles/components/CreateForm.css";
+// import { validateRequired } from "../../utils/validators";
 
 
 function CreateForm({ table, tables, onClose, onSave, editingItem }) {
   const meta = TABLE_METADATA[table.name] || { columns: {} };
+  const [errors, setErrors] = useState({});
   const columnsMeta = meta.columns || {};
   const columns = Object.keys(columnsMeta).filter(c => c !== "id"); // hide id
   const [formData, setFormData] = useState({});
@@ -46,38 +48,50 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
       || "visualId";
 
     return ref.rows.map(r => ({
-      value: r.id,                      // 👈 ESTE SIGUE SIENDO EL GUID QUE SE ENVÍA AL API
-      label: `${r.visualId} - ${r[labelCol] ?? "Item"}` // 👈 VISUAL
+      value: r.id,   
+      label: `${r.visualId} - ${r[labelCol] ?? "Item"}`
     }));
   };
 
 
   const handleChange = (col, value) => {
     setFormData(prev => ({ ...prev, [col]: value }));
+    setErrors(prev => ({ ...prev, [col]: null }));
   };
 
   const validate = () => {
+    const newErrors = {};
+
     for (const col of columns) {
       const metaCol = columnsMeta[col];
-      if (!metaCol) continue;
-      if (metaCol.readonly) continue;
+      if (!metaCol || metaCol.readonly) continue;
+
       const val = formData[col];
+
+      // required
       if (metaCol.required) {
         if (val === null || val === undefined || String(val).trim() === "") {
-          alert(`El campo "${col}" es obligatorio.`);
-          return false;
+          newErrors[col] = "This field is requiered";
+          continue;
         }
       }
-      // types basic checks
-      if (val && metaCol.type === "date") {
-        // no further
-      }
-      if (val && metaCol.type === "uuid") {
-        // can't robustly validate GUID client-side easily; skip strict check
+
+      // type checks
+      if (val) {
+        if (metaCol.type === "number" && isNaN(Number(val))) {
+          newErrors[col] = "Invalid number";
+        }
+
+        if (metaCol.type === "date" && isNaN(Date.parse(val))) {
+          newErrors[col] = "Invalid date";
+        }
       }
     }
-    return true;
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
+
 
   const preparePayload = () => {
     const payload = {};
@@ -157,6 +171,11 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
                   <option value="">{`Select ${col}`}</option>
                   {metaCol.values.map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
+                {errors[col] && (
+                  <div className="form-error">
+                    {errors[col]}
+                  </div>
+                )}
               </div>
             );
           }
@@ -173,6 +192,11 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
                   onChange={e => handleChange(col, e.target.value)}
                   className="form-input"
                 />
+                {errors[col] && (
+                  <div className="form-error">
+                    {errors[col]}
+                  </div>
+                )}
               </div>
             );
           }
@@ -188,6 +212,11 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
                 onChange={e => handleChange(col, e.target.value)}
                 className="form-input"
               />
+              {errors[col] && (
+                <div className="form-error">
+                  {errors[col]}
+                </div>
+              )}
             </div>
           );
         })}

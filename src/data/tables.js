@@ -12,8 +12,7 @@ export const TABLE_METADATA = {
     apiPath: "/Sections",
     columns: {
       id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      responsibleId: { type: "fk", ref: "Responsibles", required: true }
+      name: { type: "string", required: true }
     }
   },
 
@@ -78,12 +77,12 @@ export const TABLE_METADATA = {
       acquisitionDate: { type: "date", required: true },
       equipmentTypeId: { type: "fk", ref: "EquipmentTypes", required: true },
       departmentId: { type: "fk", ref: "Departments", required: false },
-      state: {
+      StateId: {
         type: "enum",
         values: ["Operative", "UnderMaintenance", "Decommissioned", "Disposed"],
         required: true
       },
-      locationType: {
+      LocationTypeId: {
         type: "enum",
         values: ["Department", "Disposal", "Warehouse"],
         required: true
@@ -110,7 +109,7 @@ export const TABLE_METADATA = {
       equipmentId: { type: "fk", ref: "Equipments", required: true },
       technicalId: { type: "fk", ref: "Technicals", required: true },
       maintenanceDate: {type: "date", required: true},
-      maintenanceTypeId :{
+      MaintenanceTypeId :{
         type: "enum",
         values: ["Preventive", "Corrective", "Predective", "Emergency"],
         required: true
@@ -128,11 +127,12 @@ export const TABLE_METADATA = {
       decommissionDate: { type: "date", required: true },
       technicalId: {type: "fk", ref: "Technicals", required: true},
       departmentId: {type: "fk", ref: "Departments", required: false},
-      destinyTypeId: {
+      DestinyTypeId: {
         type: "enum",
         values: ["Department", "Disposal", "Warehouse"],
         required: true
-      } 
+      },
+      recipientId: {type: "fk", ref: "Employees", required: false}
     }
   },
 

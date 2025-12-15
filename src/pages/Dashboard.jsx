@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
+import Panel from "../components/Panel/Panel.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
 import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
-import { LogOut } from "lucide-react";
 
 // =====================================
 // 1) TODOS LOS SERVICIOS DE TODAS LAS TABLAS
@@ -28,13 +28,12 @@ const TABLE_SERVICES = {
   EquipmentDecommissions: dashboardService.EquipmentDecommission
 };
 
-
 // =====================================
-// COLUMNAS DEFAULT CORRECTAS
+// COLUMNAS DEFAULT
 // =====================================
 const DEFAULT_COLUMNS = {
   Departments: ["id", "name", "sectionId"],
-  Sections: ["id", "name", "responsibleId"],
+  Sections: ["id", "name"],
   Equipments: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
   Responsibles: ["id", "name", "email", "password", "departmentId"],
   EquipmentTypes: ["id", "name"],
@@ -44,7 +43,7 @@ const DEFAULT_COLUMNS = {
   Assessments: ["id", "technicalId", "directorId", "score", "comment", "assessmentDate"],
   Maintenances: ["id", "equipmentId", "technicalId", "maintenanceDate", "maintenanceTypeId", "cost"],
   Transfers: ["id", "equipmentId", "sourceDepartmentId", "targetDepartmentId", "responsibleId", "transferDate"],
-  EquipmentDecommissions: ["id", "equipmentId", "technicalId", "departmentId", "destinyTypeId", "decommissionDate", "reason"]
+  EquipmentDecommissions: ["id", "equipmentId", "technicalId", "departmentId", "recipientId", "destinyTypeId", "decommissionDate", "reason"]
 };
 
 const allTableNames = [
@@ -63,13 +62,11 @@ const allTableNames = [
 ];
 
 const enumsValues = {
-  "state" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
-  "maintenanceTypeId": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
-  "destinyTypeId" :{"Department":1, "Disposal":2, "Warehouse":3},
-  "locationTypeId" : {"Department":1, "Disposal":2, "Warehouse":3}
-}
-
-
+  "StateId" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
+  "MaintenanceTypeId": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
+  "DestinyTypeId" :{"Department":1, "Disposal":2, "Warehouse":3},
+  "LocationTypeId" : {"Department":1, "Disposal":2, "Warehouse":3}
+};
 
 // =====================================
 // TRANSFORMAR FORMATO DE TABLAS
@@ -117,8 +114,6 @@ const transformToTableFormat = (data, tableName) => {
   };
 };
 
-
-
 // =====================================
 // COMPONENTE PRINCIPAL
 // =====================================
@@ -133,27 +128,21 @@ function Dashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [loading, setLoading] = useState(false);
   const [exportFormat, setExportFormat] = useState("pdf");
+  const [reportOpen, setReportOpen] = useState(false);
   const navigate = useNavigate();
 
   // =====================================
-  // 🆕 NUEVO ESTADO 1: Tipo de reporte seleccionado
+  // Tipo de reporte seleccionado
   // =====================================
-  // Este estado guarda cuál de los 7 reportes eligió el usuario
-  // "default" = reporte general de la tabla actual
   const [selectedReport, setSelectedReport] = useState("default");
 
   // =====================================
-  // 🆕 NUEVO ESTADO 2: Filtros específicos para reportes
+  // Filtros específicos para reportes
   // =====================================
-  // Algunos reportes necesitan datos adicionales:
-  // - Reporte #2: Necesita ID del equipo para ver su historial
-  // - Reporte #7: Necesita ID del departamento para ver qué equipos llegaron
   const [reportFilter, setReportFilter] = useState({
-    equipmentId: "",    // Para el reporte #2
-    departmentId: ""    // Para el reporte #7
+    equipmentId: "",    
+    departmentId: "" 
   });
-
-
 
   // =====================================
   // CARGAR TODAS LAS TABLAS
@@ -207,8 +196,6 @@ function Dashboard() {
       console.error("Error reloading table", tableName, e);
     }
   };
-
-
 
   // =====================================================
   // Resolver visualId de foreign keys
@@ -275,7 +262,6 @@ function Dashboard() {
     }
   };
 
-
   // =====================================
   // SELECT TABLE
   // =====================================
@@ -288,7 +274,6 @@ function Dashboard() {
     setFilteredRows(null);
     setCurrentPage(1);
   };
-
 
   // ================================
   // FOREIGN CLICK
@@ -304,7 +289,6 @@ function Dashboard() {
     }
   };
 
-
   // ================================
   // SELECCIÓN DE FILA
   // ================================
@@ -319,8 +303,6 @@ function Dashboard() {
   // =====================================
   // 🆕 FUNCIÓN AUXILIAR: Generar nombres de archivo
   // =====================================
-  // Esta función crea nombres descriptivos para los archivos descargados
-  // Ejemplo: "equipos-dados-de-baja-2024-01-15.pdf"
   const generateFileName = (reportType, format) => {
     const reportNames = {
       default: "reporte-general",
@@ -341,7 +323,7 @@ function Dashboard() {
     
     const baseName = reportNames[reportType] || "reporte";
     const extension = extensions[format] || "pdf";
-    const today = new Date().toISOString().split('T')[0]; // Fecha en formato YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
     
     return `${baseName}-${today}.${extension}`;
   };
@@ -349,25 +331,20 @@ function Dashboard() {
   // ================================
   // 🔄 FUNCIÓN COMPLETAMENTE REESCRITA: EXPORTAR REPORTE
   // ================================
-  // IMPORTANTE: Esta función reemplaza la versión anterior
-  // Ahora maneja 8 casos diferentes (7 reportes especiales + 1 general)
   const handleExportReport = async () => {
     try {
       let response;
       
-      // 🛡️ VALIDACIÓN 1: Reporte #2 necesita ID de equipo
       if (selectedReport === "equipmentMaintenanceHistory" && !reportFilter.equipmentId.trim()) {
         alert("⚠️ Por favor ingresa el ID del equipo para el historial de mantenimiento");
         return;
       }
       
-      // 🛡️ VALIDACIÓN 2: Reporte #7 necesita ID de departamento
       if (selectedReport === "equipmentToDepartment" && !reportFilter.departmentId.trim()) {
         alert("⚠️ Por favor ingresa el ID del departamento");
         return;
       }
 
-      // 🎯 DECISIÓN: ¿Cuál de los 8 reportes vamos a generar?
       switch (selectedReport) {
         case "equipmentDecommissionLastYear":
           console.log("📋 Exportando reporte 1: Equipos dados de baja (último año)");
@@ -411,27 +388,21 @@ function Dashboard() {
           break;
           
         default:
-          // 📊 Reporte general (tabla actual filtrada) - MANTIENE LA FUNCIONALIDAD ORIGINAL
-          console.log("📄 Exportando reporte general de la tabla actual");
+          console.log("Exportando reporte general de la tabla actual");
           response = await reportService.export(exportFormat);
           break;
       }
 
-      // 📝 Generar nombre del archivo con fecha
       const fileName = generateFileName(selectedReport, exportFormat);
-      
-      // ⬇️ Descargar el archivo (usa la función downloadBlob que ya tenías)
       downloadBlob(response, fileName);
-      
-      // ✅ Mensaje de confirmación
-      alert(`✅ Reporte generado: ${fileName}`);
+      alert(`Reporte generado: ${fileName}`);
+      setReportOpen(false);
       
     } catch (e) {
       console.error("❌ Error exportando reporte:", e);
       alert("❌ Error al generar el reporte. Verifica que el backend esté funcionando.");
     }
   };
-
 
   // ================================
   // CREAR / UPDATE / DELETE
@@ -444,9 +415,11 @@ function Dashboard() {
   const handleCreateItem = async (data) => { 
     const srv = TABLE_SERVICES[selectedTable.name]; 
     const apiData = { ...data }; 
-    Object.keys(apiData).forEach(k => { const value = enumsValues[k]; 
-      if (value)
+    Object.keys(apiData).forEach(k => { 
+      const value = enumsValues[k]; 
+      if (value) {
         apiData[k] = value[apiData[k]]; 
+      }
     
       if (apiData[k]?.isForeign) 
         apiData[k] = apiData[k].value; 
@@ -454,7 +427,8 @@ function Dashboard() {
 
     await srv.create(apiData); 
     const updated = await reloadTable(selectedTable.name); 
-    setSelectedTable(updated); setShowCreateForm(false); 
+    setSelectedTable(updated); 
+    setShowCreateForm(false); 
   };
 
   const handleUpdateItem = async (data) => {
@@ -483,38 +457,30 @@ function Dashboard() {
     setSelectedTable(updated);
   };
 
-
   // ============================
   // 🔥 FILTRO (NUEVO: filtra en backend)
   // ============================
   const handleFilter = async (filters) => {
     if (!selectedTable) return;
 
-    // Si no hay filtros → reset
     if (Object.keys(filters).length === 0) {
       setFilteredRows(null);
       return;
     }
 
-    // Convierte "departmentId.name" → "Department.Name"
     const convertToBackendField = (key) => {
       return key
         .split(".")
         .map((segment, index) => {
-
-          // Primer segmento: detectar FK tipo "departmentId"
           if (index === 0 && segment.toLowerCase().endsWith("id")) {
-            const base = segment.slice(0, -2); // remove "Id"
+            const base = segment.slice(0, -2);
             return base.charAt(0).toUpperCase() + base.slice(1);
           }
-
-          // Cualquier propiedad → PascalCase
           return segment.charAt(0).toUpperCase() + segment.slice(1);
         })
         .join(".");
     };
 
-    // Construimos filtros: para claves normales usamos Contains, para FKs usamos buildBackendFilter
     const backendFiltersPromises = Object.entries(filters).map(async ([key, value]) => {
       const safeValue = (value || "").trim();
       if (!safeValue) return null;
@@ -525,23 +491,18 @@ function Dashboard() {
         return `${backendField}.Contains("${safeEscaped}")`;
       }
 
-      // caso FK: p.ej. departmentId.name → resolver IDs y devolver comparaciones por Id
       return await buildBackendFilter(key, safeValue);
     });
 
     const backendFilters = (await Promise.all(backendFiltersPromises)).filter(Boolean);
 
-
     try {
       const srv = TABLE_SERVICES[selectedTable.name];
       console.log("BackendFilters:", backendFilters);
-      // 🚀 NUEVA ruta en back: POST /{table}/filter
       const response = await srv.filter(backendFilters);
 
-      // Convertimos al formato con visualId
       const filteredTable = transformToTableFormat(response, selectedTable.name);
 
-      // Resolver FK visualId
       const resolved = resolveForeignKeysVisualIds(
         tables.map(t =>
           t.name === selectedTable.name ? filteredTable : t
@@ -558,7 +519,6 @@ function Dashboard() {
     }
   };
 
-
   // ============================
   // PAGINACIÓN
   // ============================
@@ -568,7 +528,6 @@ function Dashboard() {
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-
 
   const tableWithFilters =
     selectedTable
@@ -583,7 +542,7 @@ function Dashboard() {
         }
       : null;
   
-  function logOut (){
+  function logOut() {
     navigate("/");
   }
 
@@ -593,204 +552,161 @@ function Dashboard() {
   if (loading) return <div className="loading">Loading information…</div>;
 
   return (
-    <div className="body-dashboard">
-      <div className="dashboard-bg">
-        <div className="dashboard-header">
-          <div className="dashboard-logo">
-            Ges<span className="highlight">H</span>Tec<span className="highlight">K</span>
+    <div className={`dashboard-container: ${showCreateForm?'form-open' : ''}`}>
+      <div className="body-dashboard">
+        <div className="dashboard-bg">
+          <div className="dashboard-header">
+            <div className="dashboard-logo">
+              Ges<span className="highlight">H</span>Tec<span className="highlight">K</span>
+            </div>
+
+            <div className="dashboard-user">
+              <div className="report-wrapper">
+                <button
+                  className="report-toggle-btn"
+                  onClick={() => setReportOpen(o => !o)}
+                >
+                  Reports
+                </button>
+
+                <Panel
+                  open={reportOpen}
+                  onClose={() => setReportOpen(false)}
+                  className="report-dropdown"
+                  closeOnOutside={true}
+                  closeOnEsc={true}
+                >
+                  <div className="report-field">
+                    <label>Tipo de Reporte</label>
+                    <select
+                      value={selectedReport}
+                      onChange={(e) => {
+                        setSelectedReport(e.target.value);
+                        setReportFilter({ equipmentId: "", departmentId: "" });
+                      }}
+                    >
+                      <option value="default">Reporte General</option>
+                      <option value="equipmentDecommissionLastYear">1. Equipos dados de baja</option>
+                      <option value="equipmentMaintenanceHistory">2. Historial por equipo</option>
+                      <option value="equipmentTransfers">3. Equipos trasladados</option>
+                      <option value="technicianPerformanceCorrelation">4. Rendimiento técnicos</option>
+                      <option value="frequentMaintenanceEquipment">5. Mantenimientos frecuentes</option>
+                      <option value="technicianPerformanceBonus">6. Bonificaciones técnicos</option>
+                      <option value="equipmentToDepartment">7. Equipos por departamento</option>
+                    </select>
+                  </div>
+
+                  {selectedReport === "equipmentMaintenanceHistory" && (
+                    <div className="report-field">
+                      <label>ID Equipo</label>
+                      <input
+                        value={reportFilter.equipmentId}
+                        onChange={(e) =>
+                          setReportFilter({ ...reportFilter, equipmentId: e.target.value })
+                        }
+                      />
+                    </div>
+                  )}
+
+                  {selectedReport === "equipmentToDepartment" && (
+                    <div className="report-field">
+                      <label>ID Departamento</label>
+                      <input
+                        value={reportFilter.departmentId}
+                        onChange={(e) =>
+                          setReportFilter({ ...reportFilter, departmentId: e.target.value })
+                        }
+                      />
+                    </div>
+                  )}
+
+                  <div className="report-field">
+                    <label>Formato</label>
+                    <select
+                      value={exportFormat}
+                      onChange={(e) => setExportFormat(e.target.value)}
+                    >
+                      <option value="pdf">PDF</option>
+                      <option value="excel">Excel</option>
+                      <option value="word">Word</option>
+                    </select>
+                  </div>
+
+                  <button
+                    className="report-export-btn"
+                    onClick={handleExportReport}
+                  >
+                    Exportar Reporte
+                  </button>
+                </Panel>
+              </div>
+
+              <div className="user-avatar">A</div>
+              <button className="logout-btn" onClick={logOut}>Logout</button>
+            </div>
           </div>
 
-          <div className="dashboard-user">
-            <div className="user-avatar">A</div>
-            <button className="logout-btn" onClick = {logOut}>Logout</button>
+          {/* ===================================== */}
+          {/* SECCIÓN DE TABLAS Y SELECTOR */}
+          {/* ===================================== */}
+          <div className="dashboard-container">
+            <TableSelector
+              tables={tables}
+              onSelect={handleSelectTable}
+              activeTable={selectedTable?.name}
+            />
+
+            {selectedTable ? (
+              <TableViewer
+                table={tableWithFilters}
+                tables={tables}
+                onForeignClick={handleForeignClick}
+                onToggleRow={toggleRowSelection}
+                onCreateClick={toggleCreateForm}
+                onEdit={(item) => {
+                  setEditingItem(item);
+                  setShowCreateForm(true);
+                }}
+                onDelete={handleDelete}
+                onFilter={handleFilter}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                pageSize={pageSize}
+                onPageChange={setCurrentPage}
+                onPageSizeChange={setPageSize}
+              />
+            ) : (
+              <p className="table-empty">Selecciona una tabla para verla</p>
+            )}
           </div>
         </div>
 
         {/* ===================================== */}
-        {/* SECCIÓN DE TABLAS Y SELECTOR */}
+        {/* CREATE FORM COMO PANEL MODAL */}
         {/* ===================================== */}
-        <div className="dashboard-container">
-          <TableSelector
+        <Panel
+          open={showCreateForm}
+          onClose={() => {
+            setShowCreateForm(false);
+            setEditingItem(null);
+          }}
+          className="create-form-modal"
+          portal={true} // <-- Añadir esta línea
+          closeOnOutside={true}
+          closeOnEsc={true}
+        >
+          <CreateForm
+            table={selectedTable}
             tables={tables}
-            onSelect={handleSelectTable}
-            activeTable={selectedTable?.name}
+            editingItem={editingItem}
+            onClose={() => {
+              setShowCreateForm(false);
+              setEditingItem(null);
+            }}
+            onSave={editingItem ? handleUpdateItem : handleCreateItem}
           />
-
-          {selectedTable ? (
-            <TableViewer
-              table={tableWithFilters}
-              tables={tables}
-              onForeignClick={handleForeignClick}
-              onToggleRow={toggleRowSelection}
-              onCreateClick={toggleCreateForm}
-              onEdit={(item) => {
-                setEditingItem(item);
-                setShowCreateForm(true);
-              }}
-              onDelete={handleDelete}
-              onFilter={handleFilter}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              pageSize={pageSize}
-              onPageChange={setCurrentPage}
-              onPageSizeChange={setPageSize}
-            />
-          ) : (
-            <p className="table-empty">Selecciona una tabla para verla</p>
-          )}
-
-          {showCreateForm && (
-            <CreateForm
-              table={selectedTable}
-              tables={tables}
-              editingItem={editingItem}
-              onClose={() => {
-                setShowCreateForm(false);
-                setEditingItem(null);
-              }}
-              onSave={editingItem ? handleUpdateItem : handleCreateItem}
-            />
-          )}
-        </div>
-
-        {/* ===================================== */}
-        {/* 🆕 SECCIÓN COMPLETAMENTE REESCRITA: CONTROLES DE EXPORTACIÓN */}
-        {/* ===================================== */}
-        <div style={{ 
-          display: "flex", 
-          gap: "10px", 
-          marginBottom: "15px", 
-          flexWrap: "wrap",
-          alignItems: "center",
-          padding: "15px",
-          backgroundColor: "#3d3d3dff",
-          borderRadius: "8px",
-          // border: "1px solid #dee2e6"
-        }}>
-          {/* SELECTOR DE TIPO DE REPORTE */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#dbedffff" }}>
-              Tipo de Reporte:
-            </label>
-            <select
-              value={selectedReport}
-              onChange={(e) => {
-                // Cuando cambia el reporte, reseteamos los filtros
-                setSelectedReport(e.target.value);
-                setReportFilter({ equipmentId: "", departmentId: "" });
-              }}
-              style={{ 
-                padding: "8px 12px", 
-                minWidth: "300px",
-                borderRadius: "4px",
-                border: "1px solid #256badff",
-                fontSize: "14px"
-              }}
-            >
-              <option value="default"> Reporte General (tabla actual)</option>
-              <option value="equipmentDecommissionLastYear">1. Equipos dados de baja (último año)</option>
-              <option value="equipmentMaintenanceHistory">2. Historial mantenimiento por equipo</option>
-              <option value="equipmentTransfers">3. Equipos trasladados entre secciones</option>
-              <option value="technicianPerformanceCorrelation">4. Correlación rendimiento técnicos</option>
-              <option value="frequentMaintenanceEquipment">5. Equipos con 3+ mantenimientos</option>
-              <option value="technicianPerformanceBonus">6. Rendimiento técnicos (bonificaciones)</option>
-              <option value="equipmentToDepartment">7. Equipos enviados a departamento</option>
-            </select>
-          </div>
-
-          {/* CAMPOS DE FILTRO ESPECÍFICOS - SOLO APARECEN CUANDO SE NECESITAN */}
-          {selectedReport === "equipmentMaintenanceHistory" && (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#c1d7ecff" }}>
-                ID del Equipo:
-              </label>
-              <input
-                type="text"
-                placeholder="Ej: EQ-001 o el ID real del equipo"
-                value={reportFilter.equipmentId}
-                onChange={(e) => setReportFilter({...reportFilter, equipmentId: e.target.value})}
-                style={{ 
-                  padding: "8px 12px", 
-                  width: "180px",
-                  borderRadius: "4px",
-                  border: "1px solid #01376dff",
-                  fontSize: "14px"
-                }}
-              />
-            </div>
-          )}
-
-          {selectedReport === "equipmentToDepartment" && (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#abcef0ff" }}>
-                ID del Departamento:
-              </label>
-              <input
-                type="text"
-                placeholder="Ej: DEP-001 o el ID real"
-                value={reportFilter.departmentId}
-                onChange={(e) => setReportFilter({...reportFilter, departmentId: e.target.value})}
-                style={{ 
-                  padding: "8px 12px", 
-                  width: "180px",
-                  borderRadius: "4px",
-                  border: "1px solid #ced4da",
-                  fontSize: "14px"
-                }}
-              />
-            </div>
-          )}
-
-          {/* SELECTOR DE FORMATO (MANTENIDO PERO MEJORADO) */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <label style={{ fontSize: "12px", marginBottom: "4px", fontWeight: "bold", color: "#b6cde3ff" }}>
-              Formato de Salida:
-            </label>
-            <select
-              value={exportFormat}
-              onChange={(e) => setExportFormat(e.target.value)}
-              style={{ 
-                padding: "8px 12px", 
-                borderRadius: "4px",
-                border: "1px solid #ced4da",
-                fontSize: "14px",
-                minWidth: "120px"
-              }}
-            >
-              <option value="pdf">📄 PDF (para imprimir)</option>
-              <option value="excel">📊 Excel (para analizar)</option>
-              <option value="word">📝 Word (para documentos)</option>
-            </select>
-          </div>
-          
-          {/* BOTÓN DE EXPORTAR (MANTENIDO PERO MEJORADO) */}
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%" }}>
-            <button
-              onClick={handleExportReport}
-              style={{ 
-                padding: "10px 20px", 
-                cursor: "pointer",
-                backgroundColor: "#28a745",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                fontWeight: "bold",
-                fontSize: "14px",
-                transition: "background-color 0.3s",
-                height: "40px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}
-              onMouseOver={(e) => e.target.style.backgroundColor = "#218838"}
-              onMouseOut={(e) => e.target.style.backgroundColor = "#28a745"}
-            >
-              <span>⬇️</span>
-              Exportar Reporte
-            </button>
-          </div>
-        </div>
-      </div>
+        </Panel>
+      </div> 
     </div>
   );
 }

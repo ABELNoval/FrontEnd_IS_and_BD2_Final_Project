@@ -19,3 +19,10 @@ export function hasMinLength(value, min) {
 export function isNumber(value) {
   return !isNaN(value);
 }
+
+export const validateRequired = (value) => {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "string" && value.trim() === "") return false;
+  return true;
+};
+

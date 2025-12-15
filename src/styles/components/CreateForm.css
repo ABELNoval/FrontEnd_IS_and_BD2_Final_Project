@@ -1,175 +1,209 @@
+/* src/styles/components/CreateForm.css */
+.create-form-modal {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 400px !important;
+  height: 100vh !important;
+  background: var(--bg-dark-3) !important;
+  color: var(--text-main) !important;
+  border-left: 1px solid var(--border-orange) !important;
+  box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5) !important;
+  z-index: 10001 !important;
+  overflow-y: auto !important;
+  transform: translateX(100%) !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.create-form-modal[open] {
+  transform: translateX(0) !important;
+}
+
 .create-form-container {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background-color: rgba(13, 27, 68, 0.8);
-  max-width: 100%;
+  padding: 30px;
+  background: var(--bg-dark-3);
+  color: var(--text-main);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .create-form-container h3 {
-  margin-top: 0;
-  color: #00aaff;
-  margin-bottom: 16px;
+  color: var(--accent-orange);
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-orange-soft);
+  text-shadow: 0 0 8px rgba(255, 123, 37, 0.2);
 }
 
 .create-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 .form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
+  margin-bottom: 20px;
 }
 
 .form-field label {
-  color: white;
-  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
   font-weight: 500;
 }
 
-.create-form .input-container {
-  width: 100%;
-  min-width: 0;
-}
-
-.create-form .input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* 👇 Estilos para los dropdowns (select) */
+.form-input,
 .form-select {
   width: 100%;
-  padding: 12px 42px 12px 14px;
+  padding: 14px 16px;
+  background: var(--bg-dark-2);
+  border: 1px solid var(--border-dark);
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
-  color: white;
-  font-size: 15px;
-  outline: none;
-  transition: all 0.3s ease;
-  appearance: none; /* Quita la apariencia por defecto del select */
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23ffffff' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px;
-}
-
-.form-select:focus {
-  border-color: #0077ff;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 6px rgba(0, 119, 255, 0.3);
-}
-
-.form-select option {
-  background: rgb(13, 27, 68);
-  color: white;
-}
-
-.form-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-}
-
-.create-form-container {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background-color: rgba(13, 27, 68, 0.8);
-  max-width: 100%;
-}
-
-.create-form-container h3 {
-  margin-top: 0;
-  color: #00aaff;
-  margin-bottom: 16px;
-}
-
-.create-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-
-.form-field label {
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-/* 🔄 NUEVO: Estilos para inputs nativos del formulario */
-.form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
-  color: white;
-  font-size: 15px;
-  outline: none;
+  color: var(--text-main);
+  font-size: 14px;
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
-.form-input:focus {
-  border-color: #0077ff;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 6px rgba(0, 119, 255, 0.3);
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--accent-orange);
+  background: rgba(255, 123, 37, 0.05);
+  box-shadow: 0 0 0 3px rgba(255, 123, 37, 0.1);
+}
+
+.form-input:hover,
+.form-select:hover {
+  border-color: var(--border-orange);
 }
 
 .form-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
 }
 
-/* Estilos para los dropdowns (select) */
+.form-input:disabled {
+  background: var(--bg-dark-1);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Estilo especial para selects */
+/* En CreateForm.css - actualiza la clase .form-select */
 .form-select {
   width: 100%;
   padding: 12px 42px 12px 14px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
+  background: #000000; /* Cambiado a negro */
   color: white;
   font-size: 15px;
   outline: none;
   transition: all 0.3s ease;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23ffffff' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+  cursor: pointer;
+  
+  /* Flecha personalizada */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300aaff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  background-size: 12px;
+  background-size: 16px;
+  background-color: #000000 !important; /* Forzar fondo negro */
 }
 
 .form-select:focus {
   border-color: #0077ff;
-  background: rgba(255, 255, 255, 0.1);
+  background: #111111 !important;
   box-shadow: 0 0 6px rgba(0, 119, 255, 0.3);
 }
 
 .form-select option {
-  background: rgb(13, 27, 68);
+  background: #000000;
+  color: white;
+  padding: 10px;
+}
+
+/* Para selects dentro de formularios de filtro */
+.filter-input {
+  /* ... otros estilos ... */
+  background: #000000 !important;
+}
+
+.filter-input option {
+  background: #000000;
   color: white;
 }
 
 .form-actions {
   display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  flex-wrap: wrap;
+  gap: 15px;
+  padding-top: 25px;
+  border-top: 1px solid var(--border-orange-soft);
+  margin-top: 20px;
+}
+
+.form-actions .btn-base {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Botón Cancelar */
+.form-actions .btn-base:first-child {
+  background: linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2));
+  color: var(--text-secondary);
+  border: 1px solid var(--border-dark);
+}
+
+.form-actions .btn-base:first-child:hover {
+  background: linear-gradient(135deg, var(--bg-dark-2), var(--bg-dark-3));
+  color: var(--text-main);
+  border-color: var(--border-orange);
+}
+
+/* Botón Guardar/Actualizar */
+.form-actions .btn-base:last-child {
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+  color: #000;
+  font-weight: 700;
+  border: 1px solid var(--accent-orange);
+  box-shadow: var(--shadow-orange-soft);
+}
+
+.form-actions .btn-base:last-child:hover {
+  background: linear-gradient(135deg, var(--accent-orange-light), var(--accent-orange));
+  box-shadow: var(--shadow-orange);
+  transform: translateY(-2px);
+}
+
+/* Scrollbar personalizado */
+.create-form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.create-form::-webkit-scrollbar-track {
+  background: var(--bg-dark-2);
+  border-radius: 3px;
+}
+
+.create-form::-webkit-scrollbar-thumb {
+  background: rgba(255, 123, 37, 0.3);
+  border-radius: 3px;
+}
+
+.create-form::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 123, 37, 0.5);
 }
