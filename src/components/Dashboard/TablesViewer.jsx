@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Plus } from "lucide-react"; // <-- Añadir esta importación
+import React, { useState, useEffect } from "react";
 import Button from "../Button/Button";
 import FilterPanel from "./FilterPanel";
 import Panel from "../Panel/Panel";
@@ -22,11 +21,10 @@ function TableViewer({
 }) {
   const [openMenuRow, setOpenMenuRow] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-  const dotsRefs = useRef({});
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (openMenuRow !== null && !event.target.closest('.row-actions-panel') && !event.target.closest('.dots-btn')) {
+      if (openMenuRow !== null && !event.target.closest('.row-actions-panel') && !event.target.closest('.btn-dots')) {
         setOpenMenuRow(null);
       }
     };
@@ -155,13 +153,12 @@ function TableViewer({
 
                   {/* Actions */}
                   <td className="actions-cell">
-                    <button
-                      className="dots-btn"
-                      ref={(el) => (dotsRefs.current[row.Id] = el)}
+                    <Button
+                      variant="btn-dots"
                       onClick={(e) => toggleRowMenu(row.Id, e)}
                     >
                       ⋮
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -175,11 +172,11 @@ function TableViewer({
 
         {/* PAGINATION */}
         <div className="table-pagination">
-          <button className="pagination-btn" onClick={() => onPageChange(1)} disabled={currentPage === 1}>⏮</button>
-          <button className="pagination-btn" onClick={() => onPageChange(prev => Math.max(1, prev - 1))} disabled={currentPage === 1}>◀</button>
+          <Button variant="btn-pagination" onClick={() => onPageChange(1)} disabled={currentPage === 1}>⏮</Button>
+          <Button variant="btn-pagination" onClick={() => onPageChange(prev => Math.max(1, prev - 1))} disabled={currentPage === 1}>◀</Button>
           <span className="page-info">Page {currentPage} of {totalPages}</span>
-          <button className="pagination-btn" onClick={() => onPageChange(prev => Math.min(totalPages, prev + 1))} disabled={currentPage === totalPages}>▶</button>
-          <button className="pagination-btn" onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages}>⏭</button>
+          <Button variant="btn-pagination" onClick={() => onPageChange(prev => Math.min(totalPages, prev + 1))} disabled={currentPage === totalPages}>▶</Button>
+          <Button variant="btn-pagination" onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages}>⏭</Button>
           <select
             className="page-size-selector"
             value={pageSize}
@@ -199,6 +196,7 @@ function TableViewer({
           open={true}
           onClose={() => setOpenMenuRow(null)}
           className="row-actions-panel"
+          position="dropdown"
           portal={true}
           closeOnOutside={true}
           closeOnEsc={true}

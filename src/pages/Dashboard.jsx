@@ -4,6 +4,8 @@ import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
 import Panel from "../components/Panel/Panel.jsx";
+import Button from "../components/Button/Button.jsx";
+import Input from "../components/Input/Input.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
 import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
@@ -562,17 +564,17 @@ function Dashboard() {
 
             <div className="dashboard-user">
               <div className="report-wrapper">
-                <button
-                  className="report-toggle-btn"
+                <Button
+                  variant="btn-report-toggle"
                   onClick={() => setReportOpen(o => !o)}
-                >
-                  Reports
-                </button>
+                  text="Reports"
+                />
 
                 <Panel
                   open={reportOpen}
                   onClose={() => setReportOpen(false)}
                   className="report-dropdown"
+                  position="dropdown"
                   closeOnOutside={true}
                   closeOnEsc={true}
                 >
@@ -599,11 +601,13 @@ function Dashboard() {
                   {selectedReport === "equipmentMaintenanceHistory" && (
                     <div className="report-field">
                       <label>ID Equipo</label>
-                      <input
+                      <Input
                         value={reportFilter.equipmentId}
-                        onChange={(e) =>
-                          setReportFilter({ ...reportFilter, equipmentId: e.target.value })
+                        onChange={(val) =>
+                          setReportFilter({ ...reportFilter, equipmentId: val })
                         }
+                        variant="input-report"
+                        placeholder="Ingrese ID del equipo"
                       />
                     </div>
                   )}
@@ -611,11 +615,13 @@ function Dashboard() {
                   {selectedReport === "equipmentToDepartment" && (
                     <div className="report-field">
                       <label>ID Departamento</label>
-                      <input
+                      <Input
                         value={reportFilter.departmentId}
-                        onChange={(e) =>
-                          setReportFilter({ ...reportFilter, departmentId: e.target.value })
+                        onChange={(val) =>
+                          setReportFilter({ ...reportFilter, departmentId: val })
                         }
+                        variant="input-report"
+                        placeholder="Ingrese ID del departamento"
                       />
                     </div>
                   )}
@@ -632,17 +638,16 @@ function Dashboard() {
                     </select>
                   </div>
 
-                  <button
-                    className="report-export-btn"
+                  <Button
+                    variant="btn-report-export"
                     onClick={handleExportReport}
-                  >
-                    Exportar Reporte
-                  </button>
+                    text="Exportar Reporte"
+                  />
                 </Panel>
               </div>
 
               <div className="user-avatar">A</div>
-              <button className="logout-btn" onClick={logOut}>Logout</button>
+              <Button variant="btn-logout" onClick={logOut} text="Logout" />
             </div>
           </div>
 

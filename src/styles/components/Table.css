@@ -487,18 +487,7 @@
   overflow-y: auto;
 }
 
-/* Estilos para el panel de acciones fuera de la tabla */
-.row-actions-panel {
-  position: fixed !important;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  min-width: 150px;
-  z-index: 10000;
-  animation: fadeIn 0.2s ease;
-  overflow: hidden !important
-}
+/* Los estilos principales de .row-actions-panel están más abajo en este archivo */
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
@@ -535,21 +524,7 @@
   font-size: 14px;
 }
 
-/* Botón de tres puntos */
-.dots-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  padding: 0 8px;
-  color: #666;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.dots-btn:hover {
-  background-color: #f0f0f0;
-}
+/* Los estilos de .dots-btn se movieron a Button.css como btn-dots */
 
 /* Estilos para el modal de CreateForm con portal */
 .create-form-modal {
@@ -602,28 +577,7 @@
 /* src/styles/components/Table.css - Añade estos estilos */
 
 /* Estilos para el panel de acciones fuera de la tabla */
-.row-actions-panel {
-  position: fixed !important;
-  background: #252525 !important;
-  border: 1px solid #444 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
-  min-width: 160px !important;
-  z-index: 10000 !important;
-  animation: slideIn 0.2s ease-out !important;
-  padding: 8px 0 !important;
-}
-
-@keyframes slideIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(-10px) scale(0.95); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0) scale(1); 
-  }
-}
+/* .row-actions-panel principal está más abajo (usa variables CSS del tema) */
 
 .row-actions-content {
   padding: 0 !important;
@@ -668,27 +622,7 @@
   border-bottom: 1px solid #333;
 }
 
-/* Botón de tres puntos */
-.dots-btn {
-  background: #333;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  padding: 5px 12px;
-  color: #bbb;
-  border-radius: 4px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-}
-
-.dots-btn:hover {
-  background: #444;
-  color: #fff;
-}
+/* Los estilos de .dots-btn se movieron a Button.css como btn-dots */
 
 /* Ajustes para la tabla en general */
 .table-container {
@@ -772,30 +706,7 @@
   text-align: center;
 }
 
-.dots-btn {
-  background: rgba(255, 123, 37, 0.1);
-  border: 1px solid var(--border-orange-soft);
-  border-radius: 6px;
-  color: var(--accent-orange);
-  cursor: pointer;
-  font-size: 20px;
-  padding: 5px 10px;
-  transition: all 0.25s;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
-.dots-btn:hover {
-  background: rgba(255, 123, 37, 0.2);
-  border-color: var(--accent-orange);
-  box-shadow: 0 0 10px rgba(255, 123, 37, 0.3);
-  transform: scale(1.1);
-}
+/* Los estilos de .dots-btn se movieron a Button.css como btn-dots */
 
 /* MENÚ DESPLEGABLE - POSICIONADO CORRECTAMENTE */
 .row-actions-panel {
@@ -805,11 +716,14 @@
   border-radius: 10px !important;
   box-shadow: var(--shadow-orange) !important;
   min-width: 150px !important;
+  width: auto !important;
+  height: auto !important;
   z-index: 10000 !important;
   padding: 8px 0 !important;
   animation: panelSlideIn 0.2s ease-out !important;
   transform-origin: top left !important;
   margin-top: 5px !important; /* Espacio entre botón y menú */
+  overflow: hidden !important; /* Sin scroll */
 }
 
 @keyframes panelSlideIn {

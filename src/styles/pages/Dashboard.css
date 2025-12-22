@@ -1,12 +1,14 @@
 .dashboard-root, .body-dashboard {
   width: 100% !important;
   max-width: 100% !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
   text-align: center !important;
   display: block !important;
-  overflow-x: hidden;
+  overflow: hidden !important; /* Sin scroll en el body del dashboard */
 }
 
 
@@ -57,20 +59,7 @@
   justify-content: center;
 }
 
-.logout-btn {
-  background: transparent;
-  border: 1px solid var(--accent-orange);
-  color: var(--accent-orange);
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.logout-btn:hover {
-  background: var(--accent-orange);
-  color: black;
-}
+/* Los estilos de .logout-btn se movieron a Button.css como btn-logout */
 
 
 
@@ -105,11 +94,15 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
+  height: 100vh; /* Altura exacta de viewport */
+  max-height: 100vh; /* Evitar que crezca más */
+  overflow: hidden; /* Sin scroll en el contenedor principal */
   background-color: #141414;
   background-image: url('../../assets/fondo-oficial-nuevo.png');
   background-size: cover;
   background-position: bottom left;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Fondo fijo al hacer scroll interno */
 } 
 
 /* ===== REPORT DROPDOWN ===== */
@@ -118,62 +111,30 @@
   position: relative;
 }
 
-.report-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #0f0f0f;
-  border: 1px solid var(--accent-orange);
-  color: var(--accent-orange);
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.report-btn:hover {
-  background: var(--accent-orange);
-  color: black;
-}
-
-.report-toggle-btn {
-  background: transparent;
-  border: none;
-  color: var(--accent-orange);
-  font-weight: 500;
-  cursor: pointer;
-  padding: 6px 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: 0.25s;
-}
-
-.report-toggle-btn:hover {
-  text-shadow: 0 0 10px rgba(255, 140, 0, 0.818);
-}
-
-.report-toggle-btn:focus {
-  outline: none;
-}
-
+/* Los estilos de .report-btn, .report-toggle-btn se movieron a Button.css 
+   como btn-report-toggle */
 
 .report-dropdown {
-  position: absolute;
+  position: absolute !important;
   right: 0;
   width: 260px;
-  background: rgba(20, 20, 20,1);
+  height: auto !important;
+  background: rgba(20, 20, 20, 1);
   border: 1px solid rgba(255, 140, 0, 1);
   border-radius: 10px;
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  z-index: 3;
+  z-index: 1001;
   backdrop-filter: none;
-  top: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(100% + 10px) !important;
+  left: 50% !important;
+  bottom: auto !important;
+  /* Animación integrada */
+  opacity: 0;
+  transform: translateX(-50%) translateY(-8px) scale(0.95);
+  animation: report-pop 0.25s ease forwards;
 }
 
 .report-dropdown::before {
@@ -182,18 +143,11 @@
   top: -8px;
   left: 50%;
   transform: translateX(-50%);
-  
   width: 0;
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   border-bottom: 8px solid rgba(255, 140, 0, 1);
-}
-
-.report-dropdown {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-8px) scale(0.95);
-  animation: report-pop 0.25s ease forwards;
 }
 
 @keyframes report-pop {
@@ -215,8 +169,7 @@
   color: rgba(255,255,255,0.7);
 }
 
-.report-field select,
-.report-field input {
+.report-field select {
   background: #0f0f0f;
   border: 1px solid rgba(255,255,255,0.2);
   color: white;
@@ -224,32 +177,24 @@
   border-radius: 6px;
 }
 
-.report-export-btn {
-  margin-top: 8px;
-  background: var(--accent-orange);
-  color: black;
-  border: none;
-  border-radius: 8px;
-  padding: 8px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.report-export-btn:hover {
-  box-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
-}
+/* Los estilos de .report-field input se movieron a Input.css como input-report */
+/* Los estilos de .report-export-btn se movieron a Button.css como btn-report-export */
 
 
 /* src/styles/pages/Dashboard.css - Añade esto al final */
 .body-dashboard {
   background: #121212;
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   color: #fff;
 }
 
 .dashboard-container {
   transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 20px;
+  height: calc(100vh - 64px); /* Restar altura del header */
+  overflow-y: auto; /* Scroll solo en el contenedor de tablas */
 }
 
 /* Cuando el formulario está abierto, la tabla se contrae */

@@ -111,6 +111,34 @@
   animation: panel-fade-in 0.15s ease;
 }
 
+/* ===== PANEL DROPDOWN (tamaño automático basado en contenido) ===== */
+.panel-dropdown {
+  /* Resetear posicionamiento del panel-base */
+  position: fixed;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  /* Tamaño automático basado en contenido */
+  width: auto;
+  height: auto;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  animation: dropdown-fade-in 0.2s ease;
+}
+
+@keyframes dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ===== BOTÓN DE CERRAR PARA PANELES ===== */
 .panel-close-btn {
   position: absolute;

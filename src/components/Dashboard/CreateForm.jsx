@@ -312,20 +312,16 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
       </div>
 
       <div className="form-actions">
-        <button 
-          type="button" 
-          className="btn-base btn-gray btn-compact"
+        <Button 
+          variant="btn-base btn-gray btn-compact"
           onClick={onClose}
-        >
-          Cancel
-        </button>
-        <button 
-          type="submit" 
-          className="btn-base btn-green btn-compact"
+          text="Cancel"
+        />
+        <Button 
+          variant="btn-base btn-green btn-compact"
           onClick={onSubmit}
-        >
-          {editingItem ? 'Update' : 'Save'}
-        </button>
+          text={editingItem ? 'Update' : 'Save'}
+        />
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Filter, X, Search, ChevronRight, ChevronDown } from "lucide-react";
+import Button from "../Button/Button";
+import Input from "../Input/Input";
 import "../../styles/components/FilterPanel.css";
 
 function FilterPanel({ table, tables, onFilter, onClear }) {
@@ -105,17 +107,17 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
     // Para fechas
     if (type === "date") {
       return (
-        <input
+        <Input
           type="text"
           placeholder="Ej: >2024-01-01"
           value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={onChange}
+          variant="input-filter"
+          showSearchIcon={true}
           onFocus={(e) => {
-            // Si no hay operador, cambiamos a date-picker
             if (!value || /^[<>]=?/.test(value)) e.target.type = "date";
           }}
           onBlur={(e) => (e.target.type = "text")}
-          className="filter-input"
         />
       );
     }
@@ -123,28 +125,30 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
     // Para números
     if (type === "number") {
       return (
-        <input
+        <Input
           type="text"
           placeholder="Ej: >5"
           value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={onChange}
+          variant="input-filter"
+          showSearchIcon={true}
           onFocus={(e) => {
             if (!value || /^[<>]=?/.test(value)) e.target.type = "number";
           }}
           onBlur={(e) => (e.target.type = "text")}
-          className="filter-input"
         />
       );
     }
 
     // Caso normal (string)
     return (
-      <input
+      <Input
         type="text"
         placeholder={`Filter by ${column}...`}
         value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        className="filter-input"
+        onChange={onChange}
+        variant="input-filter"
+        showSearchIcon={true}
       />
     );
   };
@@ -153,8 +157,8 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
 
   return (
     <div className="filter-panel">
-      <button
-        className={`filter-toggle ${hasActiveFilters ? "has-filters" : ""}`}
+      <Button
+        variant={`btn-filter-toggle ${hasActiveFilters ? "has-filters" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <Filter size={18} />
@@ -163,15 +167,15 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
             {Object.keys(activeFilters).length}
           </span>
         )}
-      </button>
+      </Button>
 
       {isOpen && (
         <div className="filter-dropdown">
           <div className="filter-header">
             <h4>Filter Table</h4>
-            <button className="close-filter" onClick={() => setIsOpen(false)}>
+            <Button variant="btn-close" onClick={() => setIsOpen(false)}>
               <X size={16} />
-            </button>
+            </Button>
           </div>
 
           <div className="filter-content">
@@ -187,7 +191,6 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
                   ------------------------ */}
                   {!fk && (
                     <div className="filter-input-container">
-                      <Search size={14} className="search-icon" />
                      {renderTypedInput(
                         column,
                         filters[column],
@@ -201,8 +204,8 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
                   ------------------------ */}
                   {fk && (
                     <div className="fk-filter-block">
-                      <button
-                        className="fk-expand-btn"
+                      <Button
+                        variant="btn-fk-expand"
                         onClick={() =>
                           setExpandedFK(expandedFK === column ? null : column)
                         }
@@ -213,7 +216,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
                           <ChevronRight size={14} />
                         )}
                         Filter FK Fields
-                      </button>
+                      </Button>
 
                       {expandedFK === column && (
                         <div className="fk-subpanel">
@@ -235,21 +238,16 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
                                   <label>
                                     {refName}.{sc}
                                   </label>
-                                  <div className="filter-input-container">
-                                    <Search
-                                      size={14}
-                                      className="search-icon"
-                                    />
-                                    <input
-                                      type="text"
-                                      value={filters[key] || ""}
-                                      onChange={(e) =>
-                                        handleFilterChange(key, e.target.value)
-                                      }
-                                      placeholder={`Filter by ${sc}...`}
-                                      className="filter-input"
-                                    />
-                                  </div>
+                                  <Input
+                                    type="text"
+                                    value={filters[key] || ""}
+                                    onChange={(val) =>
+                                      handleFilterChange(key, val)
+                                    }
+                                    placeholder={`Filter by ${sc}...`}
+                                    variant="input-filter"
+                                    showSearchIcon={true}
+                                  />
                                 </div>
                               );
                             });
@@ -264,12 +262,8 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
           </div>
 
           <div className="filter-actions">
-            <button className="filter-clear" onClick={clearAllFilters}>
-              Clear All
-            </button>
-            <button className="filter-apply" onClick={applyFilters}>
-              Apply Filters
-            </button>
+            <Button variant="btn-filter-clear" onClick={clearAllFilters} text="Clear All" />
+            <Button variant="btn-filter-apply" onClick={applyFilters} text="Apply Filters" />
           </div>
         </div>
       )}
@@ -279,9 +273,9 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
           {Object.entries(activeFilters).map(([column, value]) => (
             <span key={column} className="active-filter-tag">
               {column}: {value}
-              <button onClick={() => removeFilter(column)}>
+              <Button variant="btn-remove-filter" onClick={() => removeFilter(column)}>
                 <X size={12} />
-              </button>
+              </Button>
             </span>
           ))}
         </div>

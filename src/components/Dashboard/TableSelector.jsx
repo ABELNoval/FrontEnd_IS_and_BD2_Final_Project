@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Button from "../Button/Button";
 import "../../styles/components/Table.css";
 
 function TableSelector({ tables, onSelect, activeTable }) {
@@ -23,8 +24,8 @@ function TableSelector({ tables, onSelect, activeTable }) {
   return (
     <div className="table-selector-container">
       {showLeftArrow && (
-        <button
-          className="nav-arrow left-arrow"
+        <Button
+          variant="btn-nav-arrow left"
           onClick={() =>
             scrollContainerRef.current.scrollBy({
               left: -200,
@@ -33,7 +34,7 @@ function TableSelector({ tables, onSelect, activeTable }) {
           }
         >
           <ChevronLeft size={20} />
-        </button>
+        </Button>
       )}
 
       <div
@@ -70,8 +71,8 @@ function TableSelector({ tables, onSelect, activeTable }) {
       </div>
 
       {showRightArrow && (
-        <button
-          className="nav-arrow right-arrow"
+        <Button
+          variant="btn-nav-arrow right"
           onClick={() =>
             scrollContainerRef.current.scrollBy({
               left: 200,
@@ -80,7 +81,7 @@ function TableSelector({ tables, onSelect, activeTable }) {
           }
         >
           <ChevronRight size={20} />
-        </button>
+        </Button>
       )}
     </div>
   );

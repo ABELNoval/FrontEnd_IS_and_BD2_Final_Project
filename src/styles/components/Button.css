@@ -215,3 +215,340 @@
     padding: 8px 16px;
   }
 }
+
+/* ============================== */
+/* 🔘 BOTONES SIMPLES (sin animación de carga) */
+/* ============================== */
+
+/* Botón simple - base para botones sin animación */
+.btn-simple {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-simple:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================== */
+/* 🔧 BOTÓN DE FILTRO (Filter Toggle) */
+/* ============================== */
+
+.btn-filter-toggle {
+  background: rgba(255, 123, 37, 0.1);
+  border: 1px solid var(--border-orange);
+  color: var(--accent-orange);
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-filter-toggle:hover {
+  background: rgba(255, 123, 37, 0.2);
+  box-shadow: var(--shadow-orange-soft);
+  transform: translateY(-2px);
+}
+
+.btn-filter-toggle.has-filters {
+  background: rgba(255, 123, 37, 0.25);
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 15px rgba(255, 123, 37, 0.2);
+}
+
+.filter-badge {
+  background: var(--accent-orange);
+  color: #000;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+/* ============================== */
+/* ❌ BOTÓN DE CERRAR */
+/* ============================== */
+
+.btn-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover {
+  background: rgba(255, 123, 37, 0.1);
+  color: var(--accent-orange);
+}
+
+/* ============================== */
+/* 🔽 BOTÓN EXPANDIR FK */
+/* ============================== */
+
+.btn-fk-expand {
+  background: rgba(255, 123, 37, 0.1);
+  border: 1px solid var(--border-orange);
+  color: var(--accent-orange);
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.btn-fk-expand:hover {
+  background: rgba(255, 123, 37, 0.2);
+}
+
+/* ============================== */
+/* 🧹 BOTÓN LIMPIAR FILTROS */
+/* ============================== */
+
+.btn-filter-clear {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2));
+  color: var(--text-secondary);
+  border: 1px solid var(--border-dark);
+}
+
+.btn-filter-clear:hover {
+  background: linear-gradient(135deg, var(--bg-dark-2), var(--bg-dark-3));
+  color: var(--text-main);
+  border-color: var(--border-orange);
+}
+
+/* ============================== */
+/* ✅ BOTÓN APLICAR FILTROS */
+/* ============================== */
+
+.btn-filter-apply {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+  color: #000;
+  border: 1px solid var(--accent-orange);
+  box-shadow: var(--shadow-orange-soft);
+}
+
+.btn-filter-apply:hover {
+  background: linear-gradient(135deg, var(--accent-orange-light), var(--accent-orange));
+  box-shadow: var(--shadow-orange);
+  transform: translateY(-2px);
+}
+
+/* ============================== */
+/* ➡️ BOTÓN DE NAVEGACIÓN (Flechas) */
+/* ============================== */
+
+.btn-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20, 20, 20, 0.9);
+  border: 1px solid rgba(255, 165, 0, 0.35);
+  color: var(--accent-orange);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s ease;
+}
+
+.btn-nav-arrow:hover {
+  background: var(--accent-orange);
+  color: #111;
+  box-shadow: 0 0 12px rgba(255, 165, 0, 0.5);
+}
+
+.btn-nav-arrow.left {
+  left: 0;
+}
+
+.btn-nav-arrow.right {
+  right: 0;
+}
+
+/* ============================== */
+/* ⋮ BOTÓN DOTS (Tres puntos) */
+/* ============================== */
+
+.btn-dots {
+  background: rgba(255, 123, 37, 0.1);
+  border: 1px solid var(--border-orange-soft);
+  border-radius: 6px;
+  color: var(--accent-orange);
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px 10px;
+  transition: all 0.25s;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-dots:hover {
+  background: rgba(255, 123, 37, 0.2);
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 10px rgba(255, 123, 37, 0.3);
+  transform: scale(1.1);
+}
+
+/* ============================== */
+/* ⏮⏭ BOTÓN DE PAGINACIÓN */
+/* ============================== */
+
+.btn-pagination {
+  background: transparent;
+  border: none;
+  color: var(--accent-orange);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  transition: 0.25s;
+}
+
+.btn-pagination:hover:not(:disabled) {
+  transform: scale(1.15);
+  text-shadow: 0 0 8px rgba(255, 165, 0, 0.6);
+}
+
+.btn-pagination:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ============================== */
+/* 📊 BOTÓN REPORT TOGGLE */
+/* ============================== */
+
+.btn-report-toggle {
+  background: transparent;
+  border: none;
+  color: var(--accent-orange);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.25s;
+}
+
+.btn-report-toggle:hover {
+  text-shadow: 0 0 10px rgba(255, 140, 0, 0.818);
+}
+
+.btn-report-toggle:focus {
+  outline: none;
+}
+
+/* ============================== */
+/* 📤 BOTÓN EXPORTAR REPORTE */
+/* ============================== */
+
+.btn-report-export {
+  margin-top: 8px;
+  background: var(--accent-orange);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.25s;
+}
+
+.btn-report-export:hover {
+  box-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+}
+
+/* ============================== */
+/* 🚪 BOTÓN LOGOUT */
+/* ============================== */
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--accent-orange);
+  color: var(--accent-orange);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.btn-logout:hover {
+  background: var(--accent-orange);
+  color: black;
+}
+
+/* ============================== */
+/* 🏷️ BOTÓN REMOVE FILTER TAG */
+/* ============================== */
+
+.btn-remove-filter {
+  background: none;
+  border: none;
+  color: var(--accent-orange);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.btn-remove-filter:hover {
+  background: var(--accent-orange);
+  color: #000;
+}
