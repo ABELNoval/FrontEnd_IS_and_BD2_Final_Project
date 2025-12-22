@@ -10,13 +10,13 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
   const meta = TABLE_METADATA[table.name] || { columns: {} };
   const [errors, setErrors] = useState({});
   const columnsMeta = meta.columns || {};
-  const columns = Object.keys(columnsMeta).filter(c => c !== "id"); // hide id
+  const columns = Object.keys(columnsMeta).filter(c => c !== "Id"); // hide id
   const [formData, setFormData] = useState({});
   const lastEditedId = useRef(null);
 
   useEffect(() => {
     // Inicializar el formData tanto para create como para edit
-    if (editingItem && editingItem.id !== lastEditedId.current) {
+    if (editingItem && editingItem.Id !== lastEditedId.current) {
       const initial = {};
       columns.forEach(col => {
         const val = editingItem[col];
@@ -28,7 +28,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
         }
       });
       setFormData(initial);
-      lastEditedId.current = editingItem.id;
+      lastEditedId.current = editingItem.Id;
     } else if (!editingItem) {
       const empty = {};
       columns.forEach(col => (empty[col] = ""));
@@ -43,12 +43,12 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
 
     // Buscar columna de label preferida (name, title, o la primera que no sea id)
     const labelCol =
-      ref.columns.find(c => c !== "id" && (c.toLowerCase().includes("name") || c.toLowerCase().includes("title")))
-      || ref.columns.find(c => c !== "id")
+      ref.columns.find(c => c !== "Id" && (c.toLowerCase().includes("name") || c.toLowerCase().includes("title")))
+      || ref.columns.find(c => c !== "Id")
       || "visualId";
 
     return ref.rows.map(r => ({
-      value: r.id,   
+      value: r.Id,   
       label: `${r.visualId} - ${r[labelCol] ?? "Item"}`
     }));
   };

@@ -59,7 +59,7 @@ function TableViewer({
     return <div className="table-empty">Selecciona una tabla para verla</div>;
   }
 
-  const visibleColumns = table?.columns?.filter(col => col !== "id") || [];
+  const visibleColumns = table?.columns?.filter(col => col !== "Id") || [];
   const displayRows = table.filteredRows || table.rows;
 
   const formatCell = (cell) => {
@@ -131,15 +131,15 @@ function TableViewer({
             <tbody>
               {displayRows?.map((row) => (
                 <tr
-                  key={row.id}
-                  className={table.selectedRows?.has(row.id) ? "selected" : ""}
+                  key={row.Id}
+                  className={table.selectedRows?.has(row.Id) ? "selected" : ""}
                 >
                   {/* Checkbox */}
                   <td className="checkbox-cell">
                     <input
                       type="checkbox"
-                      checked={table.selectedRows?.has(row.id) || false}
-                      onChange={() => onToggleRow(row.id)}
+                      checked={table.selectedRows?.has(row.Id) || false}
+                      onChange={() => onToggleRow(row.Id)}
                     />
                   </td>
 
@@ -157,8 +157,8 @@ function TableViewer({
                   <td className="actions-cell">
                     <button
                       className="dots-btn"
-                      ref={(el) => (dotsRefs.current[row.id] = el)}
-                      onClick={(e) => toggleRowMenu(row.id, e)}
+                      ref={(el) => (dotsRefs.current[row.Id] = el)}
+                      onClick={(e) => toggleRowMenu(row.Id, e)}
                     >
                       ⋮
                     </button>
@@ -213,7 +213,7 @@ function TableViewer({
             <div
               className="action-item"
               onClick={() => {
-                const row = displayRows.find(r => r.id === openMenuRow);
+                const row = displayRows.find(r => r.Id === openMenuRow);
                 if (row) onEdit(row);
                 setOpenMenuRow(null);
               }}

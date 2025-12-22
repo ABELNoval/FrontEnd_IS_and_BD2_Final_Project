@@ -10,13 +10,13 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
 
 
   const visibleColumns =
-    table?.columns?.filter((col) => col !== "id" && col !== "visualId") || [];
+    table?.columns?.filter((col) => col !== "Id" && col !== "visualId") || [];
 
   // -------------------------------
   // Detectar si una columna es FK
   // -------------------------------
   const isForeignKey = (col) =>
-    col.toLowerCase().endsWith("id") && col !== "id";
+    col.toLowerCase().endsWith("id") && col !== "Id";
 
   // departmentId → Departments
   const getReferencedTable = (fk) => {
@@ -35,7 +35,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
     const t = tables.find((t) => t.name === refTableName);
     if (!t) return [];
     return t.columns.filter(
-      (c) => c !== "id" && c !== "visualId"
+      (c) => c !== "Id" && c !== "visualId"
     );
   };
 

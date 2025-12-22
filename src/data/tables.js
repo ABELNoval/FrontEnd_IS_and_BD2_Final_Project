@@ -2,49 +2,49 @@ export const TABLE_METADATA = {
   Departments: {
     apiPath: "/Departments",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      sectionId: { type: "fk", ref: "Sections", required: true }
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true },
+      SectionId: { type: "fk", ref: "Sections", required: true }
     }
   },
 
   Sections: {
     apiPath: "/Sections",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true }
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true }
     }
   },
 
   Responsibles: {
     apiPath: "/Responsibles",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      email: {type: "string", required:true},
-      password: {type: "string", required:true},
-      departmentId: {type: "fk", ref: "Departments", required: true}
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true },
+      Email: {type: "string", required:true},
+      Password: {type: "string", required:true},
+      DepartmentId: {type: "fk", ref: "Departments", required: true}
     }
   },
 
   Employees: {
     apiPath: "/Employees",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      email: {type: "string", required:true},
-      password: {type: "string", required:true},
-      departmentId: { type: "fk", ref: "Departments", required: true }
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true },
+      Email: {type: "string", required:true},
+      Password: {type: "string", required:true},
+      DepartmentId: { type: "fk", ref: "Departments", required: true }
     }
   },
 
   Directors: {
     apiPath: "/Directors",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      email: {type: "string", required:true},
-      password: {type: "string", required:true},
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true },
+      Email: {type: "string", required:true},
+      Password: {type: "string", required:true},
   }
 
   },
@@ -52,31 +52,31 @@ export const TABLE_METADATA = {
   Technicals: {
     apiPath: "/Technicals",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      email: {type: "string", required:true},
-      password: {type: "string", required:true},
-      specialty: {type: "string", required:true},
-      experience: {type: "number", required:true}
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true },
+      Email: {type: "string", required:true},
+      Password: {type: "string", required:true},
+      Specialty: {type: "string", required:true},
+      Experience: {type: "number", required:true}
     }
   },
 
   EquipmentTypes: {
     apiPath: "/EquipmentTypes",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true }
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true }
     }
   },
 
   Equipments: {
     apiPath: "/Equipments",
     columns: {
-      id: { type: "uuid", readonly: true },
-      name: { type: "string", required: true },
-      acquisitionDate: { type: "date", required: true },
-      equipmentTypeId: { type: "fk", ref: "EquipmentTypes", required: true },
-      departmentId: { type: "fk", ref: "Departments", required: false },
+      Id: { type: "uuid", readonly: true },
+      Name: { type: "string", required: true },
+      AcquisitionDate: { type: "date", required: true },
+      EquipmentTypeId: { type: "fk", ref: "EquipmentTypes", required: true },
+      DepartmentId: { type: "fk", ref: "Departments", required: false },
       StateId: {
         type: "enum",
         values: ["Operative", "UnderMaintenance", "Decommissioned", "Disposed"],
@@ -93,11 +93,11 @@ export const TABLE_METADATA = {
   Transfers: {
     apiPath: "/Transfers",
     columns: {
-      id: { type: "uuid", readonly: true },
-      equipmentId: { type: "fk", ref: "Equipments", required: true },
+      Id: { type: "uuid", readonly: true },
+      EquipmentId: { type: "fk", ref: "Equipments", required: true },
       SourceDepartmentId: { type: "fk", ref: "Departments", required: true },
       TargetDepartmentId: { type: "fk", ref: "Departments", required: true },
-      transferDate: { type: "date", required: true },
+      TransferDate: { type: "date", required: true },
       ResponsibleId: {type: "fk", ref: "Responsibles", required: true}
     }
   },
@@ -105,46 +105,46 @@ export const TABLE_METADATA = {
   Maintenances: {
     apiPath: "/Maintenances",
     columns: {
-      id: { type: "uuid", readonly: true },
-      equipmentId: { type: "fk", ref: "Equipments", required: true },
-      technicalId: { type: "fk", ref: "Technicals", required: true },
-      maintenanceDate: {type: "date", required: true},
+      Id: { type: "uuid", readonly: true },
+      EquipmentId: { type: "fk", ref: "Equipments", required: true },
+      TechnicalId: { type: "fk", ref: "Technicals", required: true },
+      MaintenanceDate: {type: "date", required: true},
       MaintenanceTypeId :{
         type: "enum",
         values: ["Preventive", "Corrective", "Predective", "Emergency"],
         required: true
       },
-      cost: { type: "number", required: true },
+      Cost: { type: "number", required: true },
     }
   },
 
   EquipmentDecommissions: {
     apiPath: "/EquipmentDecommission",
     columns: {
-      id: { type: "uuid", readonly: true },
-      equipmentId: { type: "fk", ref: "Equipments", required: true },
-      reason: { type: "string", required: true },
-      decommissionDate: { type: "date", required: true },
-      technicalId: {type: "fk", ref: "Technicals", required: true},
-      departmentId: {type: "fk", ref: "Departments", required: false},
+      Id: { type: "uuid", readonly: true },
+      EquipmentId: { type: "fk", ref: "Equipments", required: true },
+      Reason: { type: "string", required: true },
+      DecommissionDate: { type: "date", required: true },
+      TechnicalId: {type: "fk", ref: "Technicals", required: true},
+      DepartmentId: {type: "fk", ref: "Departments", required: false},
       DestinyTypeId: {
         type: "enum",
         values: ["Department", "Disposal", "Warehouse"],
         required: true
       },
-      recipientId: {type: "fk", ref: "Employees", required: false}  
+      RecipientId: {type: "fk", ref: "Employees", required: false}  
     }
   },
 
   Assessments: {
     apiPath: "/Assessments",
     columns: {
-      id: { type: "uuid", readonly: true },
-      technicalId: { type: "fk", ref: "Technicals", required: true },
-      directorId: { type: "fk", ref: "Directors", required: true },
-      score: { type: "number", required: true },
-      comment: { type: "string", required: false },
-      assessmentDate: { type: "date", required: true }
+      Id: { type: "uuid", readonly: true },
+      TechnicalId: { type: "fk", ref: "Technicals", required: true },
+      DirectorId: { type: "fk", ref: "Directors", required: true },
+      Score: { type: "number", required: true },
+      Comment: { type: "string", required: false },
+      AssessmentDate: { type: "date", required: true }
     }
   }
 };

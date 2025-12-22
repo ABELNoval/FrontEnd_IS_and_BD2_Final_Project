@@ -110,18 +110,18 @@ function buildService(controllerName) {
 // ========================= DASHBOARD SERVICE =========================
 
 export const dashboardService = {
-  Department: buildService("department"),
-  Section: buildService("section"),
-  Equipment: buildService("equipment"),
-  EquipmentType: buildService("equipmentType"),
-  Responsible: buildService("responsible"),
+  Department: buildService("Department"),
+  Section: buildService("Section"),
+  Equipment: buildService("Equipment"),
+  EquipmentType: buildService("EquipmentType"),
+  Responsible: buildService("Responsible"),
 
-  Employee: buildService("employee"),
-  Director: buildService("director"),
-  Technical: buildService("technical"),
+  Employee: buildService("Employee"),
+  Director: buildService("Director"),
+  Technical: buildService("Technical"),
 
-  Assessment: buildService("assessment"),
-  Transfer: buildService("transfer"),
-  Maintenance: buildService("maintenance"),
-  EquipmentDecommission: buildService("equipmentDecommission")
+  Assessment: buildService("Assessment"),
+  Transfer: buildService("Transfer"),
+  Maintenance: buildService("Maintenance"),
+  EquipmentDecommission: buildService("EquipmentDecommission")
 };

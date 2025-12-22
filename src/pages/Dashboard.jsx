@@ -32,18 +32,18 @@ const TABLE_SERVICES = {
 // COLUMNAS DEFAULT
 // =====================================
 const DEFAULT_COLUMNS = {
-  Departments: ["id", "name", "sectionId"],
-  Sections: ["id", "name"],
-  Equipments: ["id", "name", "acquisitionDate", "equipmentTypeId", "departmentId", "state", "locationType"],
-  Responsibles: ["id", "name", "email", "password", "departmentId"],
-  EquipmentTypes: ["id", "name"],
-  Technicals: ["id", "name", "email", "password", "specialty", "experience"],
-  Employees: ["id", "name", "email", "password", "departmentId"],
-  Directors: ["id", "name", "email", "password"],
-  Assessments: ["id", "technicalId", "directorId", "score", "comment", "assessmentDate"],
-  Maintenances: ["id", "equipmentId", "technicalId", "maintenanceDate", "maintenanceTypeId", "cost"],
-  Transfers: ["id", "equipmentId", "sourceDepartmentId", "targetDepartmentId", "responsibleId", "transferDate"],
-  EquipmentDecommissions: ["id", "equipmentId", "technicalId", "departmentId", "recipientId", "destinyTypeId", "decommissionDate", "reason"]
+  Departments: ["Id", "Name", "SectionId"],
+  Sections: ["Id", "Name"],
+  Equipments: ["Id", "Name", "AcquisitionDate", "EquipmentTypeId", "DepartmentId", "StateId", "LocationTypeId"],
+  Responsibles: ["Id", "Name", "Email", "Password", "DepartmentId"],
+  EquipmentTypes: ["Id", "Name"],
+  Technicals: ["Id", "Name", "Email", "Password", "Specialty", "Experience"],
+  Employees: ["Id", "Name", "Email", "Password", "DepartmentId"],
+  Directors: ["Id", "Name", "Email", "Password"],
+  Assessments: ["Id", "TechnicalId", "DirectorId", "Score", "Comment", "AssessmentDate"],
+  Maintenances: ["Id", "EquipmentId", "TechnicalId", "MaintenanceDate", "MaintenanceTypeId", "Cost"],
+  Transfers: ["Id", "EquipmentId", "SourceDepartmentId", "TargetDepartmentId", "ResponsibleId", "TransferDate"],
+  EquipmentDecommissions: ["Id", "EquipmentId", "TechnicalId", "DepartmentId", "RecipientId", "DestinyTypeId", "DecommissionDate", "Reason"]
 };
 
 const allTableNames = [
@@ -96,7 +96,7 @@ const transformToTableFormat = (data, tableName) => {
       Object.keys(item).forEach((key) => {
         if (key.endsWith("Id")) {
           var refTable = key.replace("Id", "");
-          if (key.startsWith("source") || key.startsWith("target")) { refTable = "department";} 
+          if (key.startsWith("Source") || key.startsWith("Target")) { refTable = "Department";} 
           const upRefTable = refTable.charAt(0).toLocaleUpperCase() + refTable.slice(1) + "s";
           if (allTableNames.includes(upRefTable)) {
             row[key] = {
@@ -210,7 +210,7 @@ function Dashboard() {
           const cell = newRow[key];
           if (cell?.isForeign) {
             const refTable = tablesList.find(t => t.name === cell.ref);
-            const refRow = refTable?.rows.find(r => r.id === cell.value);
+            const refRow = refTable?.rows.find(r => r.Id === cell.value);
             if (refRow) cell.visual = refRow.visualId;
           }
         });
@@ -247,7 +247,7 @@ function Dashboard() {
       });
 
       // collect only valid ids
-      const ids = matches.map((r) => r && r.id).filter(Boolean);
+      const ids = matches.map((r) => r && r.Id).filter(Boolean);
       if (ids.length === 0) return null;
 
       if (ids.length === 1) {
@@ -376,7 +376,7 @@ function Dashboard() {
           
         case "technicianPerformanceBonus":
           console.log("💰 Exportando reporte 6: Rendimiento técnicos para bonificaciones");
-          response = await reportService.exportTechnicianPerformanceBonus(exportFormat);
+          response = await reportService.exportTechnicianPreformanceBonus(exportFormat);
           break;
           
         case "equipmentToDepartment":
@@ -439,7 +439,7 @@ function Dashboard() {
       if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
     });
 
-    await srv.update(editingItem.id, apiData);
+    await srv.update(editingItem.Id, apiData);
 
     const updated = await reloadTable(selectedTable.name);
     setSelectedTable(updated);
