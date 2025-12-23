@@ -154,14 +154,8 @@ export const TABLE_METADATA = {
       Id: { type: "uuid", readonly: true },
       Name: { type: "string", readonly: true },
       Email: { type: "string", readonly: true },
-      RoleId: {
-        type: "enum",
-        values: ["Administrator", "Director", "Technical", "Employee", "Responsible", "Receptor"],
-        enumMap: { "Administrator": 1, "Director": 2, "Technical": 3, "Employee": 4, "Responsible": 5, "Receptor": 6 },
-        required: true
-      },
-      Role: { type: "string", readonly: true, hidden: true }
+      Role: { type: "string", readonly: true }
     },
-    editOnly: true  // Cannot create new users, only edit existing
+    viewOnly: true  // Cannot create or edit, only view and delete
   }
 };

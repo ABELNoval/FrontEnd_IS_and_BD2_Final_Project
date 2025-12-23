@@ -464,12 +464,7 @@ function Dashboard() {
       if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
     });
 
-    // Special handling for Users table - use updateRole instead of update
-    if (selectedTable.name === "Users" && srv.updateRole) {
-      await srv.updateRole(editingItem.Id, apiData.RoleId);
-    } else {
-      await srv.update(editingItem.Id, apiData);
-    }
+    await srv.update(editingItem.Id, apiData);
 
     const updated = await reloadTable(selectedTable.name);
     setSelectedTable(updated);
@@ -701,14 +696,18 @@ function Dashboard() {
                 onForeignClick={handleForeignClick}
                 onToggleRow={toggleRowSelection}
                 onCreateClick={
-                  roleConfig.canCreate && !TABLE_METADATA[selectedTable.name]?.editOnly
+                  roleConfig.canCreate && !TABLE_METADATA[selectedTable.name]?.viewOnly
                     ? toggleCreateForm 
                     : null
                 }
-                onEdit={roleConfig.canEdit ? (item) => {
-                  setEditingItem(item);
-                  setShowCreateForm(true);
-                } : null}
+                onEdit={
+                  roleConfig.canEdit && !TABLE_METADATA[selectedTable.name]?.viewOnly 
+                    ? (item) => {
+                        setEditingItem(item);
+                        setShowCreateForm(true);
+                      } 
+                    : null
+                }
                 onDelete={roleConfig.canDelete ? handleDelete : null}
                 onFilter={handleFilter}
                 currentPage={currentPage}
