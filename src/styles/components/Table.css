@@ -35,11 +35,11 @@
 
 .table-segmented-bar {
   display: flex;
-  background: rgba(30, 30, 30, 0.9);
+  background: var(--bg-dark-3);
   border-radius: 12px;
   padding: 6px;
   width: max-content;
-  border: 1px solid rgba(255, 165, 0, 0.25);
+  border: 1px solid var(--border-orange-soft);
 }
 
 /* Base segment */
@@ -64,7 +64,7 @@
   top: 20%;
   height: 60%;
   width: 1px;
-  background: rgba(255, 165, 0, 0.25);
+  background: var(--border-orange-soft);
 }
 
 /* Animated background */
@@ -76,10 +76,10 @@
   /* Gradient covering full width */
   background: linear-gradient(
     90deg,
-    rgba(255, 106, 0, 0.85) 0%,
-    rgba(255, 128, 9, 0.95) 20%,
-    rgba(255, 128, 9, 0.95) 80%,
-    rgba(255, 106, 0, 0.85) 100%
+    var(--accent-orange) 0%,
+    var(--accent-orange-light) 20%,
+    var(--accent-orange-light) 80%,
+    var(--accent-orange) 100%
   );
   border-radius: 8px;
 
@@ -143,8 +143,8 @@
   overflow-y: auto;
   max-height: 500px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 165, 0, 0.25);
-  background: rgba(18, 18, 18, 0.95);
+  border: 1px solid var(--border-orange-soft);
+  background: var(--bg-dark-2);
   /* Hide scrollbar but keep functionality */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
@@ -158,7 +158,7 @@
 .table-viewer {
   width: 100%;
   border-collapse: collapse;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-main);
   font-size: 0.95rem;
   text-align: left;
 }
@@ -167,8 +167,8 @@
 .table-viewer thead {
   background: linear-gradient(
     180deg,
-    rgba(28, 28, 28, 0.95),
-    rgba(18, 18, 18, 0.95)
+    var(--bg-dark-3),
+    var(--bg-dark-2)
   );
   position: sticky;
   top: 0;
@@ -191,19 +191,19 @@
 
 /* Filas alternas */
 .table-viewer tr:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--bg-dark-3);
 }
 
 /* Hover */
 .table-viewer tr:hover {
-  background-color: rgba(255, 165, 0, 0.12);
+  background-color: var(--border-orange-soft);
   transition: background-color 0.25s ease;
 }
 
 /* Fila seleccionada */
 .table-viewer tr.selected {
-  background-color: rgba(255, 165, 0, 0.2) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 165, 0, 0.35);
+  background-color: var(--border-orange-soft) !important;
+  box-shadow: inset 0 0 0 1px var(--border-orange);
 }
 
 /* ============================= */
@@ -233,7 +233,7 @@
 }
 
 .foreign:hover {
-  text-shadow: 0 0 6px rgba(255, 165, 0, 0.6);
+  text-shadow: 0 0 6px var(--shadow-orange);
 }
 
 /* ============================= */
@@ -293,7 +293,7 @@
 
 .edit-btn:hover {
   transform: scale(1.15);
-  text-shadow: 0 0 6px rgba(255, 165, 0, 0.6);
+  text-shadow: 0 0 6px var(--shadow-orange);
 }
 
 .delete-btn {
@@ -353,12 +353,12 @@
 }
 
 .table-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 165, 0, 0.35);
+  background: var(--border-orange-soft);
   border-radius: 6px;
 }
 
 .table-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 165, 0, 0.55);
+  background: var(--border-orange);
 }
 
 
@@ -387,7 +387,7 @@
 }
 
 .page-size-selector:hover {
-  box-shadow: 0 0 6px rgba(255, 165, 0, 0.5);
+  box-shadow: 0 0 6px var(--shadow-orange);
 }
 
 /* button container */
@@ -412,7 +412,7 @@
 
 .pagination-btn:hover:not(:disabled) {
   transform: scale(1.15);
-  text-shadow: 0 0 8px rgba(255, 165, 0, 0.6);
+  text-shadow: 0 0 8px var(--shadow-orange);
 }
 
 .pagination-btn:disabled {
@@ -441,7 +441,7 @@
 }
 
 .row-actions-btn:hover {
-  text-shadow: 0 0 8px rgba(255, 140, 0, 0.8);
+  text-shadow: 0 0 8px var(--shadow-orange);
 }
 
 .row-actions-menu {
@@ -450,8 +450,8 @@
   top: 100%;
   margin-top: 6px;
 
-  background: rgba(15, 15, 15, 0.98);
-  border: 1px solid rgba(255, 140, 0, 0.35);
+  background: var(--bg-dark-2);
+  border: 1px solid var(--border-orange-soft);
   border-radius: 8px;
 
   display: flex;
@@ -464,12 +464,12 @@
 .row-actions-menu div {
   padding: 10px 14px;
   cursor: pointer;
-  color: white;
+  color: var(--text-main);
   font-size: 0.9rem;
 }
 
 .row-actions-menu div:hover {
-  background: rgba(255, 140, 0, 0.15);
+  background: var(--border-orange-soft);
   color: var(--accent-orange);
 }
 
@@ -652,15 +652,15 @@
 }
 
 .action-item:hover {
-  background-color: #333;
+  background-color: var(--bg-dark-3);
 }
 
 .action-item.delete {
-  color: #ff6b6b;
+  color: var(--danger);
 }
 
 .action-item.delete:hover {
-  background-color: #3a2525;
+  background-color: rgba(220, 53, 69, 0.1);
 }
 
 .action-icon {
@@ -671,7 +671,7 @@
 
 /* Separator between items */
 .row-actions-content .action-item:not(:last-child) {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-dark);
 }
 
 /* .dots-btn styles moved to Button.css as btn-dots */
@@ -679,19 +679,25 @@
 /* General table adjustments */
 .table-container {
   position: relative;
-  background: #1e1e1e;
+  background: var(--bg-dark-3);
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  border: 1px solid #333;
+  border: 1px solid var(--border-dark);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='light'] .table-container {
+  background: rgba(255, 255, 255, 0.85); /* Semi-transparent white */
+  backdrop-filter: blur(10px); /* Glassmorphism effect */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
 .table-scroll {
   overflow-x: auto;
   max-height: 65vh;
   overflow-y: auto;
-  background: #1e1e1e;
+  background: var(--bg-dark-2);
 }
 
 /* Custom scrollbar for table */
@@ -701,12 +707,12 @@
 }
 
 .table-scroll::-webkit-scrollbar-track {
-  background: #2d2d2d;
+  background: var(--bg-dark-3);
   border-radius: 4px;
 }
 
 .table-scroll::-webkit-scrollbar-thumb {
-  background: #555;
+  background: var(--text-muted);
   border-radius: 4px;
 }
 
@@ -721,13 +727,13 @@
 
 /* Styles for table header */
 .table-header {
-  background: linear-gradient(135deg, #252525 0%, #2d2d2d 100%);
-  border-bottom: 1px solid #333;
+  background: linear-gradient(135deg, var(--bg-dark-2) 0%, var(--bg-dark-3) 100%);
+  border-bottom: 1px solid var(--border-dark);
   padding: 20px 25px;
 }
 
 .table-title {
-  color: #fff;
+  color: var(--text-main);
   margin: 0;
   font-size: 22px;
   font-weight: 600;

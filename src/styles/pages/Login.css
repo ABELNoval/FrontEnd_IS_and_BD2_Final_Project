@@ -94,8 +94,8 @@
   background:
     radial-gradient(
       ellipse at center,
-      rgba(255, 123, 37, 0.35),
-      rgba(255, 123, 37, 0.18),
+      var(--shadow-orange),
+      var(--shadow-orange-soft),
       rgba(255, 123, 37, 0.08),
       transparent 70%
     );
@@ -130,13 +130,13 @@
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255, 123, 37, 0.6),
-    rgba(255, 123, 37, 0.9),
-    rgba(255, 123, 37, 0.6),
+    var(--border-orange),
+    var(--accent-orange),
+    var(--border-orange),
     transparent
   );
 
-  box-shadow: 0 0 8px rgba(255, 123, 37, 0.4);
+  box-shadow: 0 0 8px var(--shadow-orange);
 }
 
 /* ============================
@@ -168,7 +168,7 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background-color: #141414;
+  background-color: var(--bg-dark-2);
   background-image: url('../../assets/fondo-oficial-nuevo.png');
   background-size: cover;
   background-position: bottom left;

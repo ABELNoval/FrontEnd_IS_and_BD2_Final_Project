@@ -111,9 +111,9 @@
   width: 100%;
   padding: 12px 42px 12px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #000000; /* Changed to black */
-  color: white;
+  border: 1px solid var(--border-dark);
+  background: var(--bg-dark-1);
+  color: var(--text-main);
   font-size: 15px;
   outline: none;
   transition: all 0.3s ease;
@@ -125,30 +125,30 @@
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
-  background-color: #000000 !important; /* Force black background */
+  background-color: var(--bg-dark-1) !important;
 }
 
 .form-select:focus {
   border-color: var(--accent-orange);
-  background: #111111 !important;
+  background: var(--bg-dark-2) !important;
   box-shadow: 0 0 6px var(--accent-orange-light);
 }
 
 .form-select option {
-  background: #000000;
-  color: white;
+  background: var(--bg-dark-1);
+  color: var(--text-main);
   padding: 10px;
 }
 
 /* For selects inside filter forms */
 .filter-input {
   /* ... other styles ... */
-  background: #000000 !important;
+  background: var(--bg-dark-1) !important;
 }
 
 .filter-input option {
-  background: #000000;
-  color: white;
+  background: var(--bg-dark-1);
+  color: var(--text-main);
 }
 
 .form-actions {

@@ -22,8 +22,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(15, 15, 15, 0.85);
-  border-bottom: 1px solid rgba(255, 140, 0, 0.25);
+  background: var(--bg-dark-2);
+  border-bottom: 1px solid var(--border-orange-soft);
   backdrop-filter: none;
 }
 
@@ -97,12 +97,17 @@
   height: 100vh; /* Altura exacta de viewport */
   max-height: 100vh; /* Prevent from growing more */
   overflow: hidden; /* No scroll in main container */
-  background-color: #141414;
+  background-color: var(--bg-dark-2);
   background-image: url('../../assets/fondo-oficial-nuevo.png');
   background-size: cover;
   background-position: bottom left;
   background-repeat: no-repeat;
   background-attachment: fixed; /* Fixed background on internal scroll */
+} 
+
+[data-theme='light'] .dashboard-bg {
+  /* Keep the image but ensure background color blends well if image has transparency */
+  background-color: var(--bg-dark-2);
 } 
 
 /* ===== REPORT DROPDOWN ===== */
@@ -119,8 +124,8 @@
   right: 0;
   width: 260px;
   height: auto !important;
-  background: rgba(20, 20, 20, 1);
-  border: 1px solid rgba(255, 140, 0, 1);
+  background: var(--bg-dark-2);
+  border: 1px solid var(--accent-orange);
   border-radius: 10px;
   padding: 14px;
   display: flex;
@@ -166,13 +171,13 @@
 
 .report-field label {
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.7);
+  color: var(--text-secondary);
 }
 
 .report-field select {
-  background: #0f0f0f;
-  border: 1px solid rgba(255,255,255,0.2);
-  color: white;
+  background: var(--bg-dark-1);
+  border: 1px solid var(--border-dark);
+  color: var(--text-main);
   padding: 6px 8px;
   border-radius: 6px;
 }
@@ -183,11 +188,11 @@
 
 /* Dashboard body styles */
 .body-dashboard {
-  background: #121212;
+  background: var(--bg-dark-1);
   height: 100vh;
   max-height: 100vh;
   overflow: hidden;
-  color: #fff;
+  color: var(--text-main);
 }
 
 .dashboard-container {
@@ -209,16 +214,16 @@
 
 /* Styles for table with dark theme */
 .table-container {
-  background: #1e1e1e;
+  background: var(--bg-dark-2);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
+  border: 1px solid var(--border-dark);
 }
 
 .table-header {
-  background: #252525;
-  border-bottom: 1px solid #333;
+  background: var(--bg-dark-3);
+  border-bottom: 1px solid var(--border-dark);
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -226,7 +231,7 @@
 }
 
 .table-title {
-  color: #fff;
+  color: var(--text-main);
   margin: 0;
   font-size: 24px;
   font-weight: 600;
@@ -241,34 +246,34 @@
 .table-viewer {
   width: 100%;
   border-collapse: collapse;
-  background: #1e1e1e;
+  background: var(--bg-dark-2);
 }
 
 .table-viewer thead {
-  background: #2d2d2d;
+  background: var(--bg-dark-3);
 }
 
 .table-viewer th {
   padding: 15px;
   text-align: left;
-  color: #bbb;
+  color: var(--text-secondary);
   font-weight: 600;
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid var(--border-dark);
   font-size: 14px;
 }
 
 .table-viewer td {
   padding: 15px;
-  border-bottom: 1px solid #333;
-  color: #ddd;
+  border-bottom: 1px solid var(--border-dark);
+  color: var(--text-main);
 }
 
 .table-viewer tbody tr:hover {
-  background: #2d2d2d;
+  background: var(--bg-dark-3);
 }
 
 .table-viewer tbody tr.selected {
-  background: #3a3a3a;
+  background: var(--bg-dark-3);
 }
 
 .foreign {
@@ -294,9 +299,9 @@
 }
 
 .dots-btn {
-  background: #333;
+  background: var(--bg-dark-3);
   border: none;
-  color: #bbb;
+  color: var(--text-secondary);
   width: 32px;
   height: 32px;
   border-radius: 4px;
@@ -309,23 +314,23 @@
 }
 
 .dots-btn:hover {
-  background: #444;
-  color: #fff;
+  background: var(--bg-dark-3);
+  color: var(--text-main);
 }
 
 .table-pagination {
-  background: #252525;
+  background: var(--bg-dark-3);
   padding: 15px 20px;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border-dark);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .pagination-btn {
-  background: #333;
+  background: var(--bg-dark-3);
   border: none;
-  color: #bbb;
+  color: var(--text-secondary);
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -334,8 +339,8 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #444;
-  color: #fff;
+  background: var(--bg-dark-3);
+  color: var(--text-main);
 }
 
 .pagination-btn:disabled {
@@ -344,14 +349,14 @@
 }
 
 .page-info {
-  color: #bbb;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .page-size-selector {
-  background: #333;
-  border: 1px solid #444;
-  color: #fff;
+  background: var(--bg-dark-3);
+  border: 1px solid var(--border-dark);
+  color: var(--text-main);
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -365,16 +370,16 @@
 .no-results {
   padding: 40px;
   text-align: center;
-  color: #888;
+  color: var(--text-muted);
   font-size: 16px;
 }
 
 .table-empty {
   text-align: center;
   padding: 40px;
-  color: #888;
+  color: var(--text-muted);
   font-size: 18px;
-  background: #1e1e1e;
+  background: var(--bg-dark-2);
   border-radius: 8px;
   margin: 20px 0;
 }
@@ -396,8 +401,8 @@
 .create-form-panel {
   /* El panel ya tiene position: fixed por el componente Panel */
   height: 500px; /* Panel height */
-  background: rgba(28, 28, 28, 0.95);
-  border-top: 2px solid rgba(255, 140, 0, 0.8);
+  background: var(--bg-dark-2);
+  border-top: 2px solid var(--accent-orange);
   box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -434,9 +439,9 @@
 .create-form-panel h3 {
   text-align: center;
   margin-bottom: 24px;
-  color: #ff6a00;
+  color: var(--accent-orange);
   font-size: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-dark);
   padding-bottom: 10px;
 }
 
@@ -476,7 +481,7 @@
 
 /* Special button for bulk selection */
 .bulk-action-btn {
-  background: linear-gradient(90deg, #ffc107, #ff9800);
+  background: linear-gradient(90deg, var(--warning), #ff9800);
   border: none;
   border-radius: 8px;
   padding: 12px 24px;
@@ -509,9 +514,9 @@
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255, 140, 0, 0.1);
-  border: 1px solid rgba(255, 140, 0, 0.5);
-  color: rgba(255, 140, 0, 0.8);
+  background: var(--border-orange-soft);
+  border: 1px solid var(--border-orange);
+  color: var(--accent-orange);
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -524,22 +529,22 @@
 }
 
 .panel-close-btn:hover {
-  background: rgba(255, 140, 0, 0.2);
-  color: rgba(255, 140, 0, 1);
+  background: var(--border-orange);
+  color: var(--accent-orange-light);
   transform: rotate(90deg);
 }
 
 /* ===== SELECTOR STYLES FOR BOTTOM PANEL ===== */
 .create-form-panel select,
 .create-form-panel input {
-  background: rgba(0, 0, 0, 0.7) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  background: var(--bg-dark-1) !important;
+  border: 1px solid var(--border-dark);
+  color: var(--text-main);
 }
 
 .create-form-panel select option {
-  background: #000 !important;
-  color: white !important;
+  background: var(--bg-dark-1) !important;
+  color: var(--text-main) !important;
 }
 
 /* ===== RESPONSIVE FOR BOTTOM PANEL ===== */

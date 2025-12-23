@@ -160,7 +160,7 @@ function TableViewer({
 
         {/* TABLE WITH HORIZONTAL NAVIGATION */}
         <div className="table-scroll-wrapper">
-          {/* Left arrow */}}
+          {/* Left arrow */}
           {canScrollLeft && (
             <Button
               variant="btn-table-scroll btn-table-scroll-left"

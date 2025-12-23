@@ -48,7 +48,7 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 600;
-  text-shadow: 0 0 8px rgba(255, 123, 37, 0.2);
+  text-shadow: 0 0 8px var(--shadow-orange-soft);
 }
 
 /* .close-filter styles moved to Button.css as btn-close */
@@ -130,7 +130,7 @@
 }
 
 .active-filter-tag {
-  background: rgba(255, 123, 37, 0.2);
+  background: var(--border-orange-soft);
   border: 1px solid var(--accent-orange);
   color: var(--accent-orange-light);
   padding: 8px 16px;
@@ -156,10 +156,10 @@
 }
 
 .filter-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 123, 37, 0.3);
+  background: var(--border-orange-soft);
   border-radius: 3px;
 }
 
 .filter-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 123, 37, 0.5);
+  background: var(--border-orange);
 }

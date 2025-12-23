@@ -3,11 +3,11 @@
 /* ===== BASE CLASS FOR ALL PANELS ===== */
 .panel-base {
   position: fixed;
-  background: rgba(20, 20, 20, 0.98);
-  border: 1px solid rgba(255, 140, 0, 0.8);
+  background: var(--bg-dark-2);
+  border: 1px solid var(--accent-orange);
   backdrop-filter: blur(10px);
   z-index: 1000;
-  box-shadow: 0 0 30px rgba(255, 140, 0, 0.2);
+  box-shadow: var(--shadow-orange);
   animation: panel-fade-in 0.3s ease;
 }
 
@@ -26,7 +26,7 @@
   right: 0;
   width: 400px;
   height: calc(100vh - 70px);
-  border-left: 1px solid rgba(255, 140, 0, 0.8);
+  border-left: 1px solid var(--accent-orange);
   animation: slide-in-right 0.25s ease;
 }
 
@@ -45,7 +45,7 @@
   left: 0;
   right: 0;
   height: 400px; /* Fixed height, adjustable */
-  border-top: 1px solid rgba(255, 140, 0, 0.8);
+  border-top: 1px solid var(--accent-orange);
   animation: slide-up 0.25s ease;
 }
 

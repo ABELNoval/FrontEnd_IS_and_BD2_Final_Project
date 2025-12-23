@@ -34,6 +34,33 @@
   --info: #17a2b8;
 }
 
+[data-theme='light'] {
+  /* Colores principales - Blue tones for better contrast on light mode */
+  --accent-orange: #0066cc;       /* Primary Blue */
+  --accent-orange-light: #3399ff; /* Lighter Blue */
+  --accent-orange-dark: #004c99;  /* Darker Blue */
+  
+  /* Fondo - Inverted */
+  --bg-dark-1: #ffffff; 
+  --bg-dark-2: #f4f6f8; /* Slight blueish gray tint */
+  --bg-dark-3: #e1e4e8; 
+  
+  /* Texto - Inverted */
+  --text-main: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  
+  /* Bordes */
+  --border-orange: rgba(0, 102, 204, 0.5);
+  --border-orange-soft: rgba(0, 102, 204, 0.2);
+  --border-dark: rgba(0, 0, 0, 0.12); 
+  
+  /* Sombras */
+  --shadow-orange: 0 0 20px rgba(0, 102, 204, 0.15);
+  --shadow-orange-soft: 0 0 15px rgba(0, 102, 204, 0.1);
+  --shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
 /* ============================
           RESET / BASE
    ============================ */

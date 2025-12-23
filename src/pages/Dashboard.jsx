@@ -6,6 +6,7 @@ import CreateForm from "../components/Dashboard/CreateForm.jsx";
 import Panel from "../components/Panel/Panel.jsx";
 import Button from "../components/Button/Button.jsx";
 import Input from "../components/Input/Input.jsx";
+import ThemeToggle from "../components/ThemeToggle/ThemeToggle.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
 import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
@@ -563,6 +564,7 @@ function Dashboard() {
             </div>
 
             <div className="dashboard-user">
+              <ThemeToggle />
               <div className="report-wrapper">
                 <Button
                   variant="btn-report-toggle"
