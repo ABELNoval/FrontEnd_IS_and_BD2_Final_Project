@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
@@ -9,6 +9,8 @@ import Input from "../components/Input/Input.jsx";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
 import authService from "../services/authService.js";
+import { getRoleConfig } from "../config/roleConfig.js";
+import { TABLE_METADATA } from "../data/tables.js";
 import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
 
@@ -29,7 +31,10 @@ const TABLE_SERVICES = {
   Assessments: dashboardService.Assessment,
   Maintenances: dashboardService.Maintenance,
   Transfers: dashboardService.Transfer,
-  EquipmentDecommissions: dashboardService.EquipmentDecommission
+  EquipmentDecommissions: dashboardService.EquipmentDecommission,
+  
+  // Users table (all users with role management)
+  Users: dashboardService.User
 };
 
 // =====================================
@@ -47,7 +52,8 @@ const DEFAULT_COLUMNS = {
   Assessments: ["Id", "TechnicalId", "DirectorId", "Score", "Comment", "AssessmentDate"],
   Maintenances: ["Id", "EquipmentId", "TechnicalId", "MaintenanceDate", "MaintenanceTypeId", "Cost"],
   Transfers: ["Id", "EquipmentId", "SourceDepartmentId", "TargetDepartmentId", "ResponsibleId", "TransferDate"],
-  EquipmentDecommissions: ["Id", "EquipmentId", "TechnicalId", "DepartmentId", "RecipientId", "DestinyTypeId", "DecommissionDate", "Reason"]
+  EquipmentDecommissions: ["Id", "EquipmentId", "TechnicalId", "DepartmentId", "RecipientId", "DestinyTypeId", "DecommissionDate", "Reason"],
+  Users: ["Id", "Name", "Email", "RoleId", "Role"]
 };
 
 const allTableNames = [
@@ -62,14 +68,16 @@ const allTableNames = [
   "Assessments",
   "Maintenances",
   "Transfers",
-  "EquipmentDecommissions"
+  "EquipmentDecommissions",
+  "Users"
 ];
 
 const enumsValues = {
   "StateId" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
   "MaintenanceTypeId": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
   "DestinyTypeId" :{"Department":1, "Disposal":2, "Warehouse":3},
-  "LocationTypeId" : {"Department":1, "Disposal":2, "Warehouse":3}
+  "LocationTypeId" : {"Department":1, "Disposal":2, "Warehouse":3},
+  "RoleId": {"Administrator": 1, "Director": 2, "Technical": 3, "Employee": 4, "Responsible": 5, "Receptor": 6}
 };
 
 // =====================================
@@ -136,6 +144,18 @@ function Dashboard() {
   const navigate = useNavigate();
 
   // =====================================
+  // ROLE-BASED CONFIGURATION
+  // =====================================
+  const user = authService.getUser();
+  const userRole = user?.role || user?.Role || 'Employee';
+  const roleConfig = useMemo(() => getRoleConfig(userRole), [userRole]);
+  
+  // Filter table names based on role
+  const allowedTableNames = useMemo(() => {
+    return roleConfig.tables.filter(name => TABLE_SERVICES[name]);
+  }, [roleConfig]);
+
+  // =====================================
   // Selected report type
   // =====================================
   const [selectedReport, setSelectedReport] = useState("default");
@@ -153,13 +173,14 @@ function Dashboard() {
   // =====================================
   useEffect(() => {
     loadAllTables();
-  }, []);
+  }, [allowedTableNames]);
 
   const loadAllTables = async () => {
     setLoading(true);
 
     try {
-      const tableNames = Object.keys(TABLE_SERVICES);
+      // Only load tables allowed for this role
+      const tableNames = allowedTableNames;
 
       const data = await Promise.all(tableNames.map(async (table) => {
         const result = await TABLE_SERVICES[table].get().catch(() => []);
@@ -443,7 +464,12 @@ function Dashboard() {
       if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
     });
 
-    await srv.update(editingItem.Id, apiData);
+    // Special handling for Users table - use updateRole instead of update
+    if (selectedTable.name === "Users" && srv.updateRole) {
+      await srv.updateRole(editingItem.Id, apiData.RoleId);
+    } else {
+      await srv.update(editingItem.Id, apiData);
+    }
 
     const updated = await reloadTable(selectedTable.name);
     setSelectedTable(updated);
@@ -567,6 +593,7 @@ function Dashboard() {
 
             <div className="dashboard-user">
               <ThemeToggle />
+              {roleConfig.canExportReports && (
               <div className="report-wrapper">
                 <Button
                   variant="btn-report-toggle"
@@ -649,6 +676,7 @@ function Dashboard() {
                   />
                 </Panel>
               </div>
+              )}
 
               <div className="user-avatar">{authService.getUserInitial()}</div>
               <Button variant="btn-logout" onClick={logOut} text="Logout" />
@@ -672,12 +700,16 @@ function Dashboard() {
                 tables={tables}
                 onForeignClick={handleForeignClick}
                 onToggleRow={toggleRowSelection}
-                onCreateClick={toggleCreateForm}
-                onEdit={(item) => {
+                onCreateClick={
+                  roleConfig.canCreate && !TABLE_METADATA[selectedTable.name]?.editOnly
+                    ? toggleCreateForm 
+                    : null
+                }
+                onEdit={roleConfig.canEdit ? (item) => {
                   setEditingItem(item);
                   setShowCreateForm(true);
-                }}
-                onDelete={handleDelete}
+                } : null}
+                onDelete={roleConfig.canDelete ? handleDelete : null}
                 onFilter={handleFilter}
                 currentPage={currentPage}
                 totalPages={totalPages}

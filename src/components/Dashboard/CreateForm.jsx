@@ -11,20 +11,37 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
   const meta = TABLE_METADATA[table.name] || { columns: {} };
   const [errors, setErrors] = useState({});
   const columnsMeta = meta.columns || {};
-  const columns = Object.keys(columnsMeta).filter(c => c !== "Id"); // hide id
+  // hide Id and columns marked as hidden
+  const columns = Object.keys(columnsMeta).filter(c => c !== "Id" && !columnsMeta[c]?.hidden);
   const [formData, setFormData] = useState({});
   const lastEditedId = useRef(null);
+
+  // Create reverse enum map (numeric ID -> string name)
+  const getReverseEnumMap = (enumMap) => {
+    if (!enumMap) return null;
+    return Object.fromEntries(
+      Object.entries(enumMap).map(([name, id]) => [id, name])
+    );
+  };
 
   useEffect(() => {
     // Initialize formData for both create and edit
     if (editingItem && editingItem.Id !== lastEditedId.current) {
       const initial = {};
       columns.forEach(col => {
-        const val = editingItem[col];
+        const metaCol = columnsMeta[col];
+        let val = editingItem[col];
+        
         // if value comes as foreign object in rows: keep only the value
         if (val && typeof val === "object" && val.isForeign) {
           initial[col] = val.value;
-        } else {
+        } 
+        // If enum with enumMap, convert numeric ID to string name
+        else if (metaCol?.type === "enum" && metaCol?.enumMap && typeof val === "number") {
+          const reverseMap = getReverseEnumMap(metaCol.enumMap);
+          initial[col] = reverseMap[val] ?? val;
+        }
+        else {
           initial[col] = val ?? "";
         }
       });
@@ -201,6 +218,9 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
         payload[col] = val ? new Date(val).toISOString() : null;
       } else if (metaCol.type === "number") {
         payload[col] = val === "" ? null : Number(val);
+      } else if (metaCol.type === "enum" && metaCol.enumMap) {
+        // Convert enum string value to numeric ID using enumMap
+        payload[col] = metaCol.enumMap[val] ?? val;
       } else {
         payload[col] = val;
       }
@@ -234,7 +254,12 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
             return (
               <div key={col} className="form-field">
                 <label>{col}:</label>
-                <input type="text" value={formData[col] ?? ""} disabled />
+                <input 
+                  type="text" 
+                  value={formData[col] ?? ""} 
+                  disabled 
+                  className="form-input form-input-readonly"
+                />
               </div>
             );
           }

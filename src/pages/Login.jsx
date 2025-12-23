@@ -4,6 +4,7 @@ import Button from '../components/Button/Button.jsx'
 import Input from '../components/Input/Input.jsx'
 import {isEmpty, isValidEmail, isValidPassword} from '../utils/validators.js'
 import authService from '../services/authService.js'
+import { getRoleRedirectPath } from '../utils/roleUtils.js'
 import '../styles/pages/Login.css'
 
 function Login() {
@@ -51,7 +52,12 @@ function Login() {
     try {
       const authData = await authService.login(userOrEmail, password);
       authService.saveAuth(authData);
-      navigate("/dashboard");
+      
+      // Get user role and redirect to appropriate dashboard
+      const user = authData.user || authData.User;
+      const role = user?.role || user?.Role;
+      const redirectPath = getRoleRedirectPath(role);
+      navigate(redirectPath);
     } catch (error) {
       if (error.response?.status === 401) {
         newErrors.userOrEmail = "Your account or your password are incorrect";

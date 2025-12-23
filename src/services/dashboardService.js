@@ -123,5 +123,14 @@ export const dashboardService = {
   Assessment: buildService("Assessment"),
   Transfer: buildService("Transfer"),
   Maintenance: buildService("Maintenance"),
-  EquipmentDecommission: buildService("EquipmentDecommission")
+  EquipmentDecommission: buildService("EquipmentDecommission"),
+  
+  // User service with special update for role
+  User: {
+    ...buildService("User"),
+    updateRole: async (id, roleId) => {
+      const res = await api.put(`/User/${id}/role`, { roleId });
+      return res.data;
+    }
+  }
 };

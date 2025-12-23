@@ -105,6 +105,18 @@
   cursor: not-allowed;
 }
 
+/* Readonly fields styling */
+.form-input-readonly {
+  background: var(--bg-dark-1) !important;
+  color: var(--text-secondary) !important;
+  border-style: dashed !important;
+  opacity: 0.7;
+}
+
+.form-input-readonly:hover {
+  border-color: var(--border-dark) !important;
+}
+
 /* Special style for selects */
 /* In CreateForm.css - update .form-select class */
 .form-select {

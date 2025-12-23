@@ -153,8 +153,10 @@ function TableViewer({
               onClear={() => onFilter({})}
             />
             
-            {/* Create Button */}
-            <Button text = "Create" onClick = {onCreateClick} variant = "btn-base"/>
+            {/* Create Button - only show if user has permission */}
+            {onCreateClick && (
+              <Button text = "Create" onClick = {onCreateClick} variant = "btn-base"/>
+            )}
           </div>
         </div>
 
@@ -179,7 +181,7 @@ function TableViewer({
                 {visibleColumns.map((col) => (
                   col !== "visualId" && <th key={col}>{col}</th>
                 ))}
-                <th className="actions-header">Actions</th>
+                {(onEdit || onDelete) && <th className="actions-header">Actions</th>}
               </tr>
             </thead>
 
@@ -208,7 +210,8 @@ function TableViewer({
                     return <td key={col}>{formatCell(cell)}</td>;
                   })}
 
-                  {/* Actions */}
+                  {/* Actions - only show if user has edit or delete permission */}
+                  {(onEdit || onDelete) && (
                   <td className="actions-cell">
                     <Button
                       variant="btn-dots"
@@ -217,6 +220,7 @@ function TableViewer({
                       ⋮
                     </Button>
                   </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -276,6 +280,7 @@ function TableViewer({
           }}
         >
           <div className="row-actions-content">
+            {onEdit && (
             <div
               className="action-item"
               onClick={() => {
@@ -286,6 +291,8 @@ function TableViewer({
             >
               <span>Edit</span>
             </div>
+            )}
+            {onDelete && (
             <div
               className="action-item delete"
               onClick={() => {
@@ -295,6 +302,7 @@ function TableViewer({
             >
               <span>Delete</span>
             </div>
+            )}
           </div>
         </Panel>
       )}
