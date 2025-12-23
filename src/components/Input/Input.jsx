@@ -3,19 +3,19 @@ import '../../styles/components/Input.css';
 import { Eye, EyeOff, Search } from "lucide-react";
 
 /**
- * Input Component - Componente de input reutilizable
+ * Input Component - Reusable input component
  * 
- * @param {string} type - Tipo de input ("text", "password", "date", "number", etc.)
- * @param {string} value - Valor del input
- * @param {string} placeholder - Placeholder del input
- * @param {function} onChange - Función que recibe el nuevo valor
- * @param {string} error - Mensaje de error a mostrar
- * @param {string} variant - Variante de estilo ("input-default", "input-filter", "input-form", "input-report")
- * @param {boolean} disabled - Si true, desactiva el input
- * @param {boolean} showSearchIcon - Si true, muestra icono de búsqueda
- * @param {string} className - Clases CSS adicionales
- * @param {function} onFocus - Función al hacer focus
- * @param {function} onBlur - Función al perder focus
+ * @param {string} type - Input type ("text", "password", "date", "number", etc.)
+ * @param {string} value - Input value
+ * @param {string} placeholder - Input placeholder
+ * @param {function} onChange - Function that receives the new value
+ * @param {string} error - Error message to display
+ * @param {string} variant - Style variant ("input-default", "input-filter", "input-form", "input-report")
+ * @param {boolean} disabled - If true, disables the input
+ * @param {boolean} showSearchIcon - If true, shows search icon
+ * @param {string} className - Additional CSS classes
+ * @param {function} onFocus - Function on focus
+ * @param {function} onBlur - Function on blur
  */
 function Input({ 
   type = "text", 

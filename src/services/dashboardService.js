@@ -2,58 +2,58 @@ import api from "./api";
 
   // ========================= REPORT SERVICE =========================
   export const reportService = {
-  // ========================= EXPORTACIÓN (NUEVOS ENDPOINTS GET) =========================
+  // ========================= EXPORT (NEW GET ENDPOINTS) =========================
   
-  // 🔥 Exportar: Equipos dados de baja en el último año
+  // 🔥 Export: Decommissioned equipment in the last year
   exportEquipmentDecommissionLastYear: async (format) => {
     return api.get(`/report/export/decommission-last-year/${format}`, {
       responseType: "blob"
     });
   },
 
-  // 🔥 Exportar: Historial de mantenimiento por equipo
+  // 🔥 Export: Equipment maintenance history
   exportEquipmentMaintenanceHistory: async (equipmentId, format) => {
     return api.get(`/report/export/maintenance-history/${equipmentId}/${format}`, {
       responseType: "blob"
     });
   },
 
-  // 🔥 Exportar: Equipos con mantenimientos frecuentes
+  // 🔥 Export: Equipment with frequent maintenance
   exportFrequentMaintenanceEquipment: async (format) => {
     return api.get(`/report/export/frequent-maintenance/${format}`, {
       responseType: "blob"
     });
   },
 
-  // 🔥 Exportar: Bonificación de técnicos
+  // 🔥 Export: Technician bonuses
   exportTechnicianPreformanceBonus: async (format) => {
     return api.get(`/report/export/technician-bonus/${format}`, {
       responseType: "blob"
     });
   },
 
-    // Traslados entre secciones
+    // Transfers between sections
   exportEquipmentTransfersBetweenSections: async (format) => {
     return api.get(`/report/export/equipment-transfers-between-sections/${format}`, {
       responseType: "blob"
     });
   },
 
-  // Correlación técnicos (peores)
+  // Technician correlation (worst performers)
   exportTechnicianCorrelationWorst: async (format) => {
     return api.get(`/report/export/technician-correlation-worst/${format}`, {
       responseType: "blob"
     });
   },
 
-  // Equipos enviados a un departamento específico
+  // Equipment sent to a specific department
   exportEquipmentSentToDepartment: async (departmentId, format) => {
     return api.get(`/report/export/equipment-sent-to-department/${departmentId}/${format}`, {
       responseType: "blob"
     });
   },
   // ========================= GET NORMALS (JSON) =========================
-  // (Mantener estos para mostrar datos en la interfaz si es necesario)
+  // (Keep these to display data in the interface if needed)
   equipmentDecommissionLastYear: async () => {
     return api.get(`/report/decommission-last-year`);
   },
@@ -70,7 +70,7 @@ import api from "./api";
     return api.get(`/report/technician-bonus`);
   },
 
-  // ========================= EXPORTACIÓN GENERAL (mantener por compatibilidad) =========================
+  // ========================= GENERAL EXPORT (keep for compatibility) =========================
   export: async (format, request) => {
     return api.post(`/report/export/${format}`, request, {
       responseType: "blob"

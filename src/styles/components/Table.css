@@ -4,7 +4,7 @@
 /* SEGMENTED TABLE SELECTOR */
 /* ============================= */
 
-/* Contenedor principal del selector de tablas */
+/* Main container for table selector */
 .table-selector-container {
   position: relative;
   display: flex;
@@ -14,13 +14,13 @@
   transition: margin-right 0.3s ease, width 0.3s ease;
 }
 
-/* Cuando el panel lateral está abierto */
+/* When side panel is open */
 .table-selector-container.panel-open {
   margin-right: 390px;
   width: calc(100% - 390px);
 }
 
-/* Scroll container del selector */
+/* Selector scroll container */
 .table-selector-scroll {
   overflow-x: auto;
   overflow-y: hidden;
@@ -42,7 +42,7 @@
   border: 1px solid rgba(255, 165, 0, 0.25);
 }
 
-/* Segmento base */
+/* Base segment */
 .table-segment {
   position: relative;
   padding: 10px 18px;
@@ -57,7 +57,7 @@
   isolation: isolate;
 }
 
-/* Separador vertical */
+/* Vertical divider */
 .segment-divider {
   position: absolute;
   right: 0;
@@ -67,13 +67,13 @@
   background: rgba(255, 165, 0, 0.25);
 }
 
-/* Fondo animado */
+/* Animated background */
 .table-segment::before {
   content: "";
   position: absolute;
   inset: 0;
 
-  /* Gradiente que cubre todo el ancho */
+  /* Gradient covering full width */
   background: linear-gradient(
     90deg,
     rgba(255, 106, 0, 0.85) 0%,
@@ -91,16 +91,16 @@
   pointer-events: none;
 }
 
-/* Texto */
+/* Text */
 .table-segment-text {
   position: relative;
   z-index: 3;
   color: inherit;
   transition: color 0.3s ease;
-  white-space: nowrap; /* Evitar que el texto se rompa */
+  white-space: nowrap; /* Prevent text from breaking */
 }
 
-/* Estado activo */
+/* Active state */
 .table-segment.active {
   color: #111;
 }
@@ -126,13 +126,13 @@
   transition: margin-right 0.3s ease, width 0.3s ease;
 }
 
-/* Cuando el panel lateral está abierto, la tabla se contrae */
+/* When side panel is open, table contracts */
 .table-container.panel-open {
-  margin-right: 390px; /* Ancho del panel + algo de espacio */
+  margin-right: 390px; /* Panel width + some space */
   width: calc(100% - 390px);
 }
 
-/* Wrapper para navegación horizontal de tabla */
+/* Wrapper for horizontal table navigation */
 .table-scroll-wrapper {
   position: relative;
   width: 100%;
@@ -145,13 +145,13 @@
   border-radius: 12px;
   border: 1px solid rgba(255, 165, 0, 0.25);
   background: rgba(18, 18, 18, 0.95);
-  /* Ocultar scrollbar pero mantener funcionalidad */
+  /* Hide scrollbar but keep functionality */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
 }
 
 .table-scroll::-webkit-scrollbar {
-  display: none; /* Chrome/Safari - ocultar scrollbar horizontal */
+  display: none; /* Chrome/Safari - hide horizontal scrollbar */
 }
 
 /* Tabla base */
@@ -374,7 +374,7 @@
   padding: 10px 6px;
 }
 
-/* selector de tamaño de página */
+/* page size selector */
 .page-size-selector {
   background: rgba(18, 18, 18, 0.9);
   border: 1px solid var(--accent-orange);
@@ -390,7 +390,7 @@
   box-shadow: 0 0 6px rgba(255, 165, 0, 0.5);
 }
 
-/* contenedor de botones */
+/* button container */
 .table-pagination {
   display: flex;
   justify-content: flex-end;
@@ -398,7 +398,7 @@
   gap: 10px;
 }
 
-/* botones */
+/* buttons */
 .pagination-btn {
   background: transparent;
   border: none;
@@ -420,7 +420,7 @@
   cursor: default;
 }
 
-/* info de página */
+/* page info */
 .pagination-info {
   color: rgba(255, 255, 255, 0.55);
   font-size: 0.85rem;
@@ -481,7 +481,7 @@
   background: rgba(255, 0, 0, 0.15);
 }
 
-/* Estilos para el menú de acciones en filas */
+/* Styles for row actions menu */
 .actions-cell {
   position: relative;
 }
@@ -522,7 +522,7 @@
   background: #ffeaea;
 }
 
-/* Estilos para el modal de CreateForm */
+/* Styles for CreateForm modal */
 .create-form-modal {
   position: fixed;
   top: 50%;
@@ -539,7 +539,7 @@
   overflow-y: auto;
 }
 
-/* Los estilos principales de .row-actions-panel están más abajo en este archivo */
+/* Main styles for .row-actions-panel are further down in this file */
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
@@ -578,7 +578,7 @@
 
 /* Los estilos de .dots-btn se movieron a Button.css como btn-dots */
 
-/* Estilos para el modal de CreateForm con portal */
+/* Styles for CreateForm modal with portal */
 .create-form-modal {
   position: fixed !important;
   top: 50% !important;
@@ -595,7 +595,7 @@
   overflow-y: auto;
 }
 
-/* Estilos para el dropdown de filtros con portal */
+/* Styles for filter dropdown with portal */
 .filter-dropdown {
   position: fixed !important;
   z-index: 10002;
@@ -603,10 +603,10 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  /* El posicionamiento específico se manejará en FilterPanel.css */
+  /* Specific positioning will be handled in FilterPanel.css */
 }
 
-/* Asegurar que la tabla se vea correctamente */
+/* Ensure table displays correctly */
 .table-container {
   position: relative;
   background: white;
@@ -626,10 +626,10 @@
   width: 60px;
 }
 
-/* src/styles/components/Table.css - Añade estos estilos */
+/* src/styles/components/Table.css - Add these styles */
 
-/* Estilos para el panel de acciones fuera de la tabla */
-/* .row-actions-panel principal está más abajo (usa variables CSS del tema) */
+/* Styles for actions panel outside the table */
+/* Main .row-actions-panel is below (uses CSS theme variables) */
 
 .row-actions-content {
   padding: 0 !important;
@@ -669,14 +669,14 @@
   text-align: center;
 }
 
-/* Separador entre items */
+/* Separator between items */
 .row-actions-content .action-item:not(:last-child) {
   border-bottom: 1px solid #333;
 }
 
-/* Los estilos de .dots-btn se movieron a Button.css como btn-dots */
+/* .dots-btn styles moved to Button.css as btn-dots */
 
-/* Ajustes para la tabla en general */
+/* General table adjustments */
 .table-container {
   position: relative;
   background: #1e1e1e;
@@ -694,7 +694,7 @@
   background: #1e1e1e;
 }
 
-/* Scrollbar personalizado para la tabla */
+/* Custom scrollbar for table */
 .table-scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -719,7 +719,7 @@
   width: 80px;
 }
 
-/* Estilos para la cabecera de la tabla */
+/* Styles for table header */
 .table-header {
   background: linear-gradient(135deg, #252525 0%, #2d2d2d 100%);
   border-bottom: 1px solid #333;
@@ -734,7 +734,7 @@
   letter-spacing: 0.5px;
 }
 
-/* Efecto de hover en filas */
+/* Row hover effect */
 .table-viewer tbody tr {
   transition: background-color 0.2s;
 }
@@ -749,18 +749,18 @@
 }
 
 
-/* Añade esto al final de Table.css */
+/* Add this at the end of Table.css */
 
-/* MENÚ DE ACCIONES - MEJOR POSICIONAMIENTO */
+/* ACTIONS MENU - BETTER POSITIONING */
 .actions-cell {
   position: relative;
   width: 60px;
   text-align: center;
 }
 
-/* Los estilos de .dots-btn se movieron a Button.css como btn-dots */
+/* .dots-btn styles moved to Button.css as btn-dots */
 
-/* MENÚ DESPLEGABLE - POSICIONADO CORRECTAMENTE */
+/* DROPDOWN MENU - CORRECTLY POSITIONED */
 .row-actions-panel {
   position: fixed !important;
   background: var(--bg-dark-3) !important;
@@ -774,8 +774,8 @@
   padding: 8px 0 !important;
   animation: panelSlideIn 0.2s ease-out !important;
   transform-origin: top left !important;
-  margin-top: 5px !important; /* Espacio entre botón y menú */
-  overflow: hidden !important; /* Sin scroll */
+  margin-top: 5px !important; /* Space between button and menu */
+  overflow: hidden !important; /* No scroll */
 }
 
 @keyframes panelSlideIn {
@@ -789,7 +789,7 @@
   }
 }
 
-/* FLECHA INDICADORA (opcional) */
+/* INDICATOR ARROW (optional) */
 .row-actions-panel::before {
   content: '';
   position: absolute;
@@ -857,12 +857,12 @@
   text-align: center;
 }
 
-/* Separador entre items */
+/* Separator between items */
 .row-actions-content .action-item:not(:last-child) {
   border-bottom: 1px solid var(--border-dark);
 }
 
-/* Asegurar que el menú no se salga de la pantalla */
+/* Ensure menu doesn't overflow screen */
 @media (max-width: 768px) {
   .row-actions-panel {
     max-width: 200px;
@@ -872,7 +872,7 @@
   }
 }
 
-/* ===== BOTÓN CREATE - MISMO ESTILO QUE SAVE/UPDATE DEL CREATEFORM ===== */
+/* ===== CREATE BUTTON - SAME STYLE AS SAVE/UPDATE FROM CREATEFORM ===== */
 .create-action-btn {
   background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
   border: 1px solid var(--accent-orange);
@@ -905,7 +905,7 @@
   transform: translateY(0);
 }
 
-/* Efecto de barrido naranja (opcional, como en los otros botones) */
+/* Orange sweep effect (optional, like other buttons) */
 .create-action-btn::before {
   content: "";
   position: absolute;
@@ -928,7 +928,7 @@
   opacity: 1;
 }
 
-/* Estado de carga (si quieres añadirlo después) */
+/* Loading state (add later if needed) */
 .create-action-btn.loading {
   position: relative;
   overflow: hidden;
@@ -959,7 +959,7 @@
   }
 }
 
-/* Ajustar el contenedor de acciones del header para incluir el nuevo botón */
+/* Adjust header actions container to include new button */
 .table-header-actions {
   display: flex;
   gap: 15px;

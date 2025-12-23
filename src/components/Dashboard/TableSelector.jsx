@@ -16,10 +16,10 @@ function TableSelector({ tables, onSelect, activeTable, isPanelOpen = false }) {
   };
 
   useEffect(() => {
-    // Chequear inmediatamente
+    // Check immediately
     updateArrowVisibility();
     
-    // Chequear después de que la transición CSS termine (0.3s = 300ms)
+    // Check after CSS transition ends (0.3s = 300ms)
     const timer = setTimeout(updateArrowVisibility, 350);
     
     const c = scrollContainerRef.current;

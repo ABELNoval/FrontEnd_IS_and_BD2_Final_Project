@@ -4,7 +4,7 @@
   display: inline-block;
 }
 
-/* Los estilos de .filter-toggle, .filter-badge se movieron a Button.css como variantes */
+/* .filter-toggle, .filter-badge styles moved to Button.css as variants */
 
 .filter-dropdown {
   position: fixed !important;
@@ -51,7 +51,7 @@
   text-shadow: 0 0 8px rgba(255, 123, 37, 0.2);
 }
 
-/* Los estilos de .close-filter se movieron a Button.css como btn-close */
+/* .close-filter styles moved to Button.css as btn-close */
 
 .filter-content {
   padding: 25px;
@@ -71,8 +71,8 @@
   font-weight: 500;
 }
 
-/* Los estilos de .filter-input-container, .filter-input, .search-icon 
-   se movieron a Input.css como variante input-filter */
+/* .filter-input-container, .filter-input, .search-icon styles 
+   moved to Input.css as variant input-filter */
 
 .fk-filter-block {
   background: var(--bg-dark-2);
@@ -82,7 +82,7 @@
   margin-top: 10px;
 }
 
-/* Los estilos de .fk-expand-btn se movieron a Button.css como btn-fk-expand */
+/* .fk-expand-btn styles moved to Button.css as btn-fk-expand */
 
 .fk-subpanel {
   margin-top: 20px;
@@ -119,8 +119,8 @@
   border-radius: 0 0 14px 14px;
 }
 
-/* Los estilos de .filter-clear y .filter-apply se movieron a Button.css 
-   como btn-filter-clear y btn-filter-apply */
+/* .filter-clear and .filter-apply styles moved to Button.css 
+   as btn-filter-clear and btn-filter-apply */
 
 .active-filters {
   display: flex;
@@ -142,10 +142,10 @@
   font-weight: 500;
 }
 
-/* Los estilos de .active-filter-tag button se movieron a Button.css como btn-remove-filter */
+/* .active-filter-tag button styles moved to Button.css as btn-remove-filter */
 
 
-/* Scrollbar para filter-content */
+/* Scrollbar for filter-content */
 .filter-content::-webkit-scrollbar {
   width: 6px;
 }

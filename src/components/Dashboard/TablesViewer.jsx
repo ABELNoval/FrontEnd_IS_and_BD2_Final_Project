@@ -35,11 +35,11 @@ function TableViewer({
     }
   };
 
-  // Función para hacer scroll horizontal
+  // Function for horizontal scrolling
   const scrollTable = (direction) => {
     const el = tableScrollRef.current;
     if (el) {
-      const scrollAmount = 200; // pixels por click
+      const scrollAmount = 200; // pixels per click
       el.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -48,10 +48,10 @@ function TableViewer({
   };
 
   useEffect(() => {
-    // Chequear inmediatamente
+    // Check immediately
     checkScrollability();
     
-    // Chequear después de que la transición CSS termine (0.3s = 300ms)
+    // Check after CSS transition ends (0.3s = 300ms)
     const timer = setTimeout(checkScrollability, 350);
     
     const el = tableScrollRef.current;
@@ -90,17 +90,17 @@ function TableViewer({
     if (openMenuRow === id) {
       setOpenMenuRow(null);
     } else {
-      // Calcular posición exacta para que el menú aparezca justo debajo del botón
+      // Calculate exact position so menu appears just below button
       setMenuPosition({
         top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX - 140 + rect.width // Ajustar para alinear a la derecha
+        left: rect.left + window.scrollX - 140 + rect.width // Adjust for right alignment
       });
       setOpenMenuRow(id);
     }
   };
 
   if (!table) {
-    return <div className="table-empty">Selecciona una tabla para verla</div>;
+    return <div className="table-empty">Select a table to view</div>;
   }
 
   const visibleColumns = table?.columns?.filter(col => col !== "Id") || [];
@@ -153,14 +153,14 @@ function TableViewer({
               onClear={() => onFilter({})}
             />
             
-            {/* Botón Create */}
+            {/* Create Button */}
             <Button text = "Create" onClick = {onCreateClick} variant = "btn-base"/>
           </div>
         </div>
 
-        {/* TABLE CON NAVEGACIÓN HORIZONTAL */}
+        {/* TABLE WITH HORIZONTAL NAVIGATION */}
         <div className="table-scroll-wrapper">
-          {/* Flecha izquierda */}
+          {/* Left arrow */}}
           {canScrollLeft && (
             <Button
               variant="btn-table-scroll btn-table-scroll-left"
@@ -201,7 +201,7 @@ function TableViewer({
                   {/* visualId */}
                   <td>{row.visualId}</td>
 
-                  {/* Columnas normales */}
+                  {/* Normal columns */}
                   {visibleColumns.map((col) => {
                     if (col === "visualId") return null;
                     const cell = row[col];
@@ -258,7 +258,7 @@ function TableViewer({
         </div>
       </div>
 
-      {/* PANEL DEL MENÚ DE ACCIONES - POSICIONADO ABSOLUTAMENTE */}
+      {/* ACTIONS MENU PANEL - ABSOLUTELY POSITIONED */}
       {openMenuRow && (
         <Panel
           open={true}

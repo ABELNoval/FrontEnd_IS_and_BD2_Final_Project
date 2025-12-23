@@ -6,5 +6,5 @@ const api = axios.create({
   baseURL: API_BASE,
 });
 
-// SIN interceptores de autenticación - peticiones directas
+// No authentication interceptors - direct requests
 export default api;

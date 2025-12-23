@@ -1,6 +1,6 @@
 /* src/styles/components/Panel.css */
 
-/* ===== CLASE BASE PARA TODOS LOS PANELES ===== */
+/* ===== BASE CLASS FOR ALL PANELS ===== */
 .panel-base {
   position: fixed;
   background: rgba(20, 20, 20, 0.98);
@@ -20,7 +20,7 @@
   }
 }
 
-/* ===== PANEL LATERAL DERECHO (el actual) ===== */
+/* ===== RIGHT SIDE PANEL (current) ===== */
 .panel-right {
   top: 70px;
   right: 0;
@@ -39,12 +39,12 @@
   }
 }
 
-/* ===== PANEL INFERIOR HORIZONTAL (NUEVO) ===== */
+/* ===== HORIZONTAL BOTTOM PANEL (NEW) ===== */
 .panel-bottom {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 400px; /* Altura fija, ajustable */
+  height: 400px; /* Fixed height, adjustable */
   border-top: 1px solid rgba(255, 140, 0, 0.8);
   animation: slide-up 0.25s ease;
 }
@@ -58,7 +58,7 @@
   }
 }
 
-/* ===== PANEL COMPLETO (modal) ===== */
+/* ===== FULL PANEL (modal) ===== */
 .panel-modal {
   top: 50%;
   left: 50%;
@@ -81,7 +81,7 @@
   }
 }
 
-/* ===== MODIFICADORES DE TAMAÑO ===== */
+/* ===== SIZE MODIFIERS ===== */
 .panel-full-height {
   height: 100vh !important;
   top: 0 !important;
@@ -93,7 +93,7 @@
   right: 0 !important;
 }
 
-/* ===== PANEL DE MENÚ DROPDOWN ===== */
+/* ===== DROPDOWN MENU PANEL ===== */
 .panel-menu {
   position: absolute;
   top: 100%;
@@ -111,15 +111,15 @@
   animation: panel-fade-in 0.15s ease;
 }
 
-/* ===== PANEL DROPDOWN (tamaño automático basado en contenido) ===== */
+/* ===== DROPDOWN PANEL (auto-size based on content) ===== */
 .panel-dropdown {
-  /* Resetear posicionamiento del panel-base */
+  /* Reset panel-base positioning */
   position: fixed;
   top: auto;
   right: auto;
   bottom: auto;
   left: auto;
-  /* Tamaño automático basado en contenido */
+  /* Auto-size based on content */
   width: auto;
   height: auto;
   max-height: 80vh;
@@ -139,7 +139,7 @@
   }
 }
 
-/* ===== BOTÓN DE CERRAR PARA PANELES ===== */
+/* ===== CLOSE BUTTON FOR PANELS ===== */
 .panel-close-btn {
   position: absolute;
   top: 10px;
@@ -163,14 +163,14 @@
   background: rgba(255, 140, 0, 0.1);
 }
 
-/* ===== CONTENIDO DEL PANEL ===== */
+/* ===== PANEL CONTENT ===== */
 .panel-content {
   padding: 20px;
   height: 100%;
   overflow-y: auto;
 }
 
-/* Scrollbar personalizada para paneles */
+/* Custom scrollbar for panels */
 .panel-content::-webkit-scrollbar {
   width: 8px;
 }

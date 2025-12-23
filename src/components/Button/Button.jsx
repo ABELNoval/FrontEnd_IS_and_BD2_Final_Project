@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Settings } from "lucide-react"; // ícono de engranaje
+import { Settings } from "lucide-react"; // gear icon
 import "../../styles/components/Button.css";
 
 /**
- * Button Component - Componente de botón reutilizable
+ * Button Component - Reusable button component
  * 
- * @param {string} text - Texto del botón (opcional si se usa children)
- * @param {function} onClick - Función a ejecutar al hacer clic
- * @param {string} variant - Clase CSS para el estilo (ej: "btn-base", "btn-icon", "btn-filter", etc.)
- * @param {boolean} loading - Si true, muestra animación de carga (por defecto true para btn-base)
- * @param {boolean} disabled - Si true, desactiva el botón
- * @param {string} type - Tipo de botón ("button", "submit", "reset")
- * @param {React.ReactNode} children - Contenido del botón (alternativa a text)
- * @param {string} className - Clases CSS adicionales
+ * @param {string} text - Button text (optional if using children)
+ * @param {function} onClick - Function to execute on click
+ * @param {string} variant - CSS class for styling (e.g.: "btn-base", "btn-icon", "btn-filter", etc.)
+ * @param {boolean} loading - If true, shows loading animation (default true for btn-base)
+ * @param {boolean} disabled - If true, disables the button
+ * @param {string} type - Button type ("button", "submit", "reset")
+ * @param {React.ReactNode} children - Button content (alternative to text)
+ * @param {string} className - Additional CSS classes
  */
 function Button({ 
   text, 
@@ -26,7 +26,7 @@ function Button({
 }) {
   const [internalLoading, setInternalLoading] = useState(false);
   
-  // Solo usar animación de carga para variantes base
+  // Only use loading animation for base variants
   const useLoadingAnimation = variant.includes("btn-base") && !variant.includes("btn-icon") && !variant.includes("btn-simple");
   const isLoading = useLoadingAnimation && internalLoading;
 
@@ -35,13 +35,13 @@ function Button({
     
     if (useLoadingAnimation) {
       setInternalLoading(true);
-      // Espera la animación (1.2s) antes de ejecutar la acción real
+      // Wait for animation (1.2s) before executing the real action
       setTimeout(() => {
         onClick?.(e);
         setInternalLoading(false);
       }, 1200);
     } else {
-      // Ejecución inmediata sin animación
+      // Immediate execution without animation
       onClick?.(e);
     }
   };

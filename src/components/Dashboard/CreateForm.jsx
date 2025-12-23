@@ -16,12 +16,12 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
   const lastEditedId = useRef(null);
 
   useEffect(() => {
-    // Inicializar el formData tanto para create como para edit
+    // Initialize formData for both create and edit
     if (editingItem && editingItem.Id !== lastEditedId.current) {
       const initial = {};
       columns.forEach(col => {
         const val = editingItem[col];
-        // si viene como objeto foreign en rows: mantener solo el value
+        // if value comes as foreign object in rows: keep only the value
         if (val && typeof val === "object" && val.isForeign) {
           initial[col] = val.value;
         } else {
@@ -42,7 +42,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
     const ref = tables.find(t => t.name === refTableName);
     if (!ref) return [];
 
-    // Buscar columna de label preferida (name, title, o la primera que no sea id)
+    // Find preferred label column (name, title, or first non-id column)
     const labelCol =
       ref.columns.find(c => c !== "Id" && (c.toLowerCase().includes("name") || c.toLowerCase().includes("title")))
       || ref.columns.find(c => c !== "Id")
@@ -105,7 +105,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
           continue;
         }
 
-        // enteros específicos
+        // specific integer fields
         if (
           ["experience", "score"].includes(col) &&
           !Number.isInteger(num)
@@ -116,7 +116,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
     }
 
     // ========================
-    // DEPENDENCIAS ENTRE CAMPOS
+    // FIELD DEPENDENCIES
     // ========================
 
     // Equipments
@@ -169,7 +169,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
     }
 
     // ========================
-    // RESULTADO
+    // RESULT
     // ========================
     if (Object.keys(errors).length > 0) {
       console.log("Validation errors:", errors);

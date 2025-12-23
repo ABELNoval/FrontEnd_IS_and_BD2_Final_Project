@@ -8,14 +8,14 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({});
   const [activeFilters, setActiveFilters] = useState({});
-  const [expandedFK, setExpandedFK] = useState(null); // <-- nuevo
+  const [expandedFK, setExpandedFK] = useState(null); // <-- new
 
 
   const visibleColumns =
     table?.columns?.filter((col) => col !== "Id" && col !== "visualId") || [];
 
   // -------------------------------
-  // Detectar si una columna es FK
+  // Detect if a column is FK
   // -------------------------------
   const isForeignKey = (col) =>
     col.toLowerCase().endsWith("id") && col !== "Id";
@@ -24,7 +24,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
   const getReferencedTable = (fk) => {
   const base = fk.replace(/Id$/i, "").toLowerCase();
 
-  // Buscar tabla cuyo nombre (sin plural ni mayúsculas) coincida
+  // Find table whose name (without plural or uppercase) matches
   const match = tables.find((t) =>
       t.name.toLowerCase().replace(/s$/, "") === base
     );
@@ -42,7 +42,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
   };
 
   // -------------------------------
-  // Manejo de cambios
+  // Handling changes
   // -------------------------------
   const handleFilterChange = (column, value) => {
     const updated = { ...filters };
@@ -82,7 +82,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
 
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
 
-  // Detectar tipo de campo basado en el nombre
+  // Detect field type based on name
   const getColumnType = (column) => {
     const col = column.toLowerCase();
 
@@ -104,7 +104,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
   const renderTypedInput = (column, value, onChange) => {
     const type = getColumnType(column);
 
-    // Para fechas
+    // For dates
     if (type === "date") {
       return (
         <Input
@@ -122,7 +122,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
       );
     }
 
-    // Para números
+    // For numbers
     if (type === "number") {
       return (
         <Input
@@ -140,7 +140,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
       );
     }
 
-    // Caso normal (string)
+    // Normal case (string)
     return (
       <Input
         type="text"
@@ -187,7 +187,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
                   <label>{column}:</label>
 
                   {/* -----------------------
-                      Caso normal: Input simple
+                      Normal case: Simple Input
                   ------------------------ */}
                   {!fk && (
                     <div className="filter-input-container">
@@ -200,7 +200,7 @@ function FilterPanel({ table, tables, onFilter, onClear }) {
                   )}
 
                   {/* -----------------------
-                      Caso FK: botón expandible
+                      FK case: expandable button
                   ------------------------ */}
                   {fk && (
                     <div className="fk-filter-block">

@@ -11,7 +11,7 @@ import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
 
 // =====================================
-// 1) TODOS LOS SERVICIOS DE TODAS LAS TABLAS
+// 1) ALL TABLE SERVICES
 // =====================================
 const TABLE_SERVICES = {
   Departments: dashboardService.Department,
@@ -71,7 +71,7 @@ const enumsValues = {
 };
 
 // =====================================
-// TRANSFORMAR FORMATO DE TABLAS
+// TRANSFORM TABLE FORMAT
 // =====================================
 const transformToTableFormat = (data, tableName) => {
   const defaultColumns = DEFAULT_COLUMNS[tableName] || [];
@@ -94,7 +94,7 @@ const transformToTableFormat = (data, tableName) => {
         visualId: index + 1,
         ...item
       };
-      // Detección dinámica de foreign keys
+      // Dynamic foreign key detection
       Object.keys(item).forEach((key) => {
         if (key.endsWith("Id")) {
           var refTable = key.replace("Id", "");
@@ -134,12 +134,12 @@ function Dashboard() {
   const navigate = useNavigate();
 
   // =====================================
-  // Tipo de reporte seleccionado
+  // Selected report type
   // =====================================
   const [selectedReport, setSelectedReport] = useState("default");
 
   // =====================================
-  // Filtros específicos para reportes
+  // Specific filters for reports
   // =====================================
   const [reportFilter, setReportFilter] = useState({
     equipmentId: "",    
@@ -147,7 +147,7 @@ function Dashboard() {
   });
 
   // =====================================
-  // CARGAR TODAS LAS TABLAS
+  // LOAD ALL TABLES
   // =====================================
   useEffect(() => {
     loadAllTables();
@@ -176,7 +176,7 @@ function Dashboard() {
   };
 
   // ====================================================
-  // RECARGAR TODAS LAS TABLAS
+  // RELOAD TABLE
   // ===================================================
   const reloadTable = async (tableName) => {
     try {
@@ -191,7 +191,7 @@ function Dashboard() {
 
       setTables(updatedTables);
 
-      // ⚡ devolver al Dashboard la tabla actualizada
+      // Return updated table to Dashboard
       return updatedTables.find(t => t.name === tableName);
 
     } catch (e) {
@@ -223,7 +223,7 @@ function Dashboard() {
   };
 
   // =====================================
-  // Construir filtro para backend cuando es FK (p. ej. departmentId.name)
+  // Build filter for backend when it's a FK (e.g. departmentId.name)
   // =====================================
   const buildBackendFilter = async (key, value) => {
     const [fk, subProp] = key.split(".");
@@ -292,7 +292,7 @@ function Dashboard() {
   };
 
   // ================================
-  // SELECCIÓN DE FILA
+  // ROW SELECTION
   // ================================
   const toggleRowSelection = (id) => {
     setSelectedRows(prev => {
@@ -303,18 +303,18 @@ function Dashboard() {
   };
 
   // =====================================
-  // 🆕 FUNCIÓN AUXILIAR: Generar nombres de archivo
+  // HELPER FUNCTION: Generate file names
   // =====================================
   const generateFileName = (reportType, format) => {
     const reportNames = {
-      default: "reporte-general",
-      equipmentDecommissionLastYear: "equipos-dados-de-baja",
-      equipmentMaintenanceHistory: `historial-mantenimiento-${reportFilter.equipmentId || "equipo"}`,
-      equipmentTransfers: "equipos-trasladados",
-      technicianPerformanceCorrelation: "correlacion-rendimiento-tecnicos",
-      frequentMaintenanceEquipment: "equipos-mantenimiento-frecuente",
-      technicianPerformanceBonus: "rendimiento-tecnicos-bonificaciones",
-      equipmentToDepartment: `equipos-departamento-${reportFilter.departmentId || "departamento"}`
+      default: "general-report",
+      equipmentDecommissionLastYear: "decommissioned-equipment",
+      equipmentMaintenanceHistory: `maintenance-history-${reportFilter.equipmentId || "equipment"}`,
+      equipmentTransfers: "transferred-equipment",
+      technicianPerformanceCorrelation: "technician-performance-correlation",
+      frequentMaintenanceEquipment: "frequent-maintenance-equipment",
+      technicianPerformanceBonus: "technician-bonus-performance",
+      equipmentToDepartment: `equipment-department-${reportFilter.departmentId || "department"}`
     };
     
     const extensions = {
@@ -323,7 +323,7 @@ function Dashboard() {
       word: "docx"
     };
     
-    const baseName = reportNames[reportType] || "reporte";
+    const baseName = reportNames[reportType] || "report";
     const extension = extensions[format] || "pdf";
     const today = new Date().toISOString().split('T')[0];
     
@@ -331,30 +331,30 @@ function Dashboard() {
   };
 
   // ================================
-  // 🔄 FUNCIÓN COMPLETAMENTE REESCRITA: EXPORTAR REPORTE
+  // EXPORT REPORT FUNCTION
   // ================================
   const handleExportReport = async () => {
     try {
       let response;
       
       if (selectedReport === "equipmentMaintenanceHistory" && !reportFilter.equipmentId.trim()) {
-        alert("⚠️ Por favor ingresa el ID del equipo para el historial de mantenimiento");
+        alert("⚠️ Please enter the equipment ID for maintenance history");
         return;
       }
       
       if (selectedReport === "equipmentToDepartment" && !reportFilter.departmentId.trim()) {
-        alert("⚠️ Por favor ingresa el ID del departamento");
+        alert("⚠️ Please enter the department ID");
         return;
       }
 
       switch (selectedReport) {
         case "equipmentDecommissionLastYear":
-          console.log("📋 Exportando reporte 1: Equipos dados de baja (último año)");
+          console.log("📋 Exporting report 1: Decommissioned equipment (last year)");
           response = await reportService.exportEquipmentDecommissionLastYear(exportFormat);
           break;
           
         case "equipmentMaintenanceHistory":
-          console.log(`🔧 Exportando reporte 2: Historial del equipo ${reportFilter.equipmentId}`);
+          console.log(`🔧 Exporting report 2: Equipment history ${reportFilter.equipmentId}`);
           response = await reportService.exportEquipmentMaintenanceHistory(
             reportFilter.equipmentId, 
             exportFormat
@@ -362,27 +362,27 @@ function Dashboard() {
           break;
           
         case "equipmentTransfers":
-          console.log("🚚 Exportando reporte 3: Equipos trasladados entre secciones");
+          console.log("🚚 Exporting report 3: Equipment transferred between sections");
           response = await reportService.exportEquipmentTransfersBetweenSections(exportFormat);
           break;
           
         case "technicianPerformanceCorrelation":
-          console.log("📈 Exportando reporte 4: Correlación rendimiento técnicos");
+          console.log("📈 Exporting report 4: Technician performance correlation");
           response = await reportService.exportTechnicianCorrelationWorst(exportFormat);
           break;
           
         case "frequentMaintenanceEquipment":
-          console.log("⚠️ Exportando reporte 5: Equipos con 3+ mantenimientos");
+          console.log("⚠️ Exporting report 5: Equipment with 3+ maintenances");
           response = await reportService.exportFrequentMaintenanceEquipment(exportFormat);
           break;
           
         case "technicianPerformanceBonus":
-          console.log("💰 Exportando reporte 6: Rendimiento técnicos para bonificaciones");
+          console.log("💰 Exporting report 6: Technician performance for bonuses");
           response = await reportService.exportTechnicianPreformanceBonus(exportFormat);
           break;
           
         case "equipmentToDepartment":
-          console.log(`📦 Exportando reporte 7: Equipos al departamento ${reportFilter.departmentId}`);
+          console.log(`📦 Exporting report 7: Equipment to department ${reportFilter.departmentId}`);
           response = await reportService.exportEquipmentSentToDepartment(
             reportFilter.departmentId, 
             exportFormat
@@ -390,19 +390,19 @@ function Dashboard() {
           break;
           
         default:
-          console.log("Exportando reporte general de la tabla actual");
+          console.log("Exporting general report of current table");
           response = await reportService.export(exportFormat);
           break;
       }
 
       const fileName = generateFileName(selectedReport, exportFormat);
       downloadBlob(response, fileName);
-      alert(`Reporte generado: ${fileName}`);
+      alert(`Report generated: ${fileName}`);
       setReportOpen(false);
       
     } catch (e) {
-      console.error("❌ Error exportando reporte:", e);
-      alert("❌ Error al generar el reporte. Verifica que el backend esté funcionando.");
+      console.error("❌ Error exporting report:", e);
+      alert("❌ Error generating report. Please verify the backend is running.");
     }
   };
 
@@ -522,7 +522,7 @@ function Dashboard() {
   };
 
   // ============================
-  // PAGINACIÓN
+  // PAGINATION
   // ============================
   const rowsToDisplay = filteredRows || selectedTable?.rows || [];
   const totalPages = Math.max(1, Math.ceil(rowsToDisplay.length / pageSize));
@@ -579,7 +579,7 @@ function Dashboard() {
                   closeOnEsc={true}
                 >
                   <div className="report-field">
-                    <label>Tipo de Reporte</label>
+                    <label>Report Type</label>
                     <select
                       value={selectedReport}
                       onChange={(e) => {
@@ -587,47 +587,47 @@ function Dashboard() {
                         setReportFilter({ equipmentId: "", departmentId: "" });
                       }}
                     >
-                      <option value="default">Reporte General</option>
-                      <option value="equipmentDecommissionLastYear">1. Equipos dados de baja</option>
-                      <option value="equipmentMaintenanceHistory">2. Historial por equipo</option>
-                      <option value="equipmentTransfers">3. Equipos trasladados</option>
-                      <option value="technicianPerformanceCorrelation">4. Rendimiento técnicos</option>
-                      <option value="frequentMaintenanceEquipment">5. Mantenimientos frecuentes</option>
-                      <option value="technicianPerformanceBonus">6. Bonificaciones técnicos</option>
-                      <option value="equipmentToDepartment">7. Equipos por departamento</option>
+                      <option value="default">General Report</option>
+                      <option value="equipmentDecommissionLastYear">1. Decommissioned Equipment</option>
+                      <option value="equipmentMaintenanceHistory">2. Equipment History</option>
+                      <option value="equipmentTransfers">3. Transferred Equipment</option>
+                      <option value="technicianPerformanceCorrelation">4. Technician Performance</option>
+                      <option value="frequentMaintenanceEquipment">5. Frequent Maintenance</option>
+                      <option value="technicianPerformanceBonus">6. Technician Bonuses</option>
+                      <option value="equipmentToDepartment">7. Equipment by Department</option>
                     </select>
                   </div>
 
                   {selectedReport === "equipmentMaintenanceHistory" && (
                     <div className="report-field">
-                      <label>ID Equipo</label>
+                      <label>Equipment ID</label>
                       <Input
                         value={reportFilter.equipmentId}
                         onChange={(val) =>
                           setReportFilter({ ...reportFilter, equipmentId: val })
                         }
                         variant="input-report"
-                        placeholder="Ingrese ID del equipo"
+                        placeholder="Enter equipment ID"
                       />
                     </div>
                   )}
 
                   {selectedReport === "equipmentToDepartment" && (
                     <div className="report-field">
-                      <label>ID Departamento</label>
+                      <label>Department ID</label>
                       <Input
                         value={reportFilter.departmentId}
                         onChange={(val) =>
                           setReportFilter({ ...reportFilter, departmentId: val })
                         }
                         variant="input-report"
-                        placeholder="Ingrese ID del departamento"
+                        placeholder="Enter department ID"
                       />
                     </div>
                   )}
 
                   <div className="report-field">
-                    <label>Formato</label>
+                    <label>Format</label>
                     <select
                       value={exportFormat}
                       onChange={(e) => setExportFormat(e.target.value)}
@@ -641,7 +641,7 @@ function Dashboard() {
                   <Button
                     variant="btn-report-export"
                     onClick={handleExportReport}
-                    text="Exportar Reporte"
+                    text="Export Report"
                   />
                 </Panel>
               </div>
@@ -652,7 +652,7 @@ function Dashboard() {
           </div>
 
           {/* ===================================== */}
-          {/* SECCIÓN DE TABLAS Y SELECTOR */}
+          {/* TABLES SECTION AND SELECTOR */}
           {/* ===================================== */}
           <div className="dashboard-container">
             <TableSelector
@@ -683,13 +683,13 @@ function Dashboard() {
                 isPanelOpen={showCreateForm}
               />
             ) : (
-              <p className="table-empty">Selecciona una tabla para verla</p>
+              <p className="table-empty">Select a table to view</p>
             )}
           </div>
         </div>
 
         {/* ===================================== */}
-        {/* CREATE FORM COMO PANEL MODAL */}
+        {/* CREATE FORM AS MODAL PANEL */}
         {/* ===================================== */}
         <Panel
           open={showCreateForm}

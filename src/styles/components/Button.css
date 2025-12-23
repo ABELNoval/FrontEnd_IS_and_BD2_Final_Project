@@ -1,5 +1,5 @@
 /* ============================== */
-/* 🎯 CLASE BASE PARA TODOS LOS BOTONES */
+/* 🎯 BASE CLASS FOR ALL BUTTONS */
 /* ============================== */
 
 .btn-base {
@@ -17,17 +17,17 @@
   box-shadow: 0 4px 12px var(--accent-orange);
   text-align: center;
   
-  /* Asegurar que los textos no se salgan */
+  /* Ensure text doesn't overflow */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 /* ============================== */
-/* 🔥 TODAS LAS ANIMACIONES ORIGINALES */
+/* 🔥 ALL ORIGINAL ANIMATIONS */
 /* ============================== */
 
-/* ——— Fase 1: Absorción azul ——— */
+/* ——— Phase 1: Blue absorption ——— */
 .btn-base.loading {
   background: radial-gradient(circle at center, var(--accent-orange-light), var(--accent-orange));
   box-shadow: 0 0 25px var(--accent-orange),
@@ -50,7 +50,7 @@
   }
 }
 
-/* ——— Fase 2: Engranaje aparece y gira ——— */
+/* ——— Phase 2: Gear appears and spins ——— */
 .gear-icon {
   color: white;
   animation: spin-gear 1s ease-in-out forwards;
@@ -69,7 +69,7 @@
   }
 }
 
-/* ——— Texto original ——— */
+/* ——— Original text ——— */
 .btn-text {
   position: relative;
   z-index: 2;
@@ -80,7 +80,7 @@
   opacity: 0;
 }
 
-/* ——— Pequeña pulsación al hacer clic ——— */
+/* ——— Small pulse on click ——— */
 .btn-base:active {
   transform: scale(0.97);
 }
@@ -108,7 +108,7 @@
   opacity: 1;
 }
 
-/* ——— Después del barrido, el botón queda iluminado ——— */
+/* ——— After sweep, button remains illuminated ——— */
 .btn-base:hover {
   box-shadow:
     0 0 15px var(--accent-orange-light),
@@ -119,15 +119,15 @@
 }
 
 /* ============================== */
-/* 🎨 VARIANTES DE BOTONES (colores diferentes) */
+/* 🎨 BUTTON VARIANTS (different colors) */
 /* ============================== */
 
-/* Botón azul principal (el default ya es azul) */
+/* Main blue button (default is already blue) */
 .btn-blue {
   /* Hereda todo de btn-base */
 }
 
-/* Botón verde (create, save, success) */
+/* Green button (create, save, success) */
 .btn-green {
   background: linear-gradient(90deg, #28a745, #20c997);
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
@@ -138,7 +138,7 @@
   box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35);
 }
 
-/* Botón gris (cancel, secondary) */
+/* Gray button (cancel, secondary) */
 .btn-gray {
   background: linear-gradient(90deg, #6c757d, #5a6268);
   box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
@@ -150,17 +150,17 @@
 }
 
 /* ============================== */
-/* 📏 VARIANTES DE TAMAÑO */
+/* 📏 SIZE VARIANTS */
 /* ============================== */
 
-/* Botón de tabla (para TableSelector) */
+/* Table button (for TableSelector) */
 .btn-table {
   flex: 1 1 calc(11% - 16px);
   min-width: 120px;
   max-width: 160px;
 }
 
-/* Botón compacto (para forms) */
+/* Compact button (for forms) */
 .btn-compact {
   padding: 10px 20px;
   width: auto;
@@ -169,7 +169,7 @@
   font-size: 0.9rem;
 }
 
-/* Botón pequeño (para acciones en tabla) */
+/* Small button (for table actions) */
 .btn-small {
   padding: 8px 16px;
   font-size: 0.85rem;
@@ -177,16 +177,16 @@
 }
 
 /* ============================== */
-/* 🎭 ESTADOS ESPECIALES */
+/* 🎭 SPECIAL STATES */
 /* ============================== */
 
-/* Botón activo/seleccionado (para TableSelector) */
+/* Active/selected button (for TableSelector) */
 .btn-base.active {
   background: linear-gradient(90deg, #28a745, #20c997);
   box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
 }
 
-/* Botón deshabilitado */
+/* Disabled button */
 .btn-base:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -217,10 +217,10 @@
 }
 
 /* ============================== */
-/* 🔘 BOTONES SIMPLES (sin animación de carga) */
+/* 🔘 SIMPLE BUTTONS (no loading animation) */
 /* ============================== */
 
-/* Botón simple - base para botones sin animación */
+/* Simple button - base for buttons without animation */
 .btn-simple {
   background: transparent;
   border: none;
@@ -237,7 +237,7 @@
 }
 
 /* ============================== */
-/* 🔧 BOTÓN DE FILTRO (Filter Toggle) */
+/* 🔧 FILTER BUTTON (Filter Toggle) */
 /* ============================== */
 
 .btn-filter-toggle {
@@ -281,7 +281,7 @@
 }
 
 /* ============================== */
-/* ❌ BOTÓN DE CERRAR */
+/* ❌ CLOSE BUTTON */
 /* ============================== */
 
 .btn-close {
@@ -303,7 +303,7 @@
 }
 
 /* ============================== */
-/* 🔽 BOTÓN EXPANDIR FK */
+/* 🔽 FK EXPAND BUTTON */
 /* ============================== */
 
 .btn-fk-expand {
@@ -326,7 +326,7 @@
 }
 
 /* ============================== */
-/* 🧹 BOTÓN LIMPIAR FILTROS */
+/* 🧹 CLEAR FILTERS BUTTON */
 /* ============================== */
 
 .btn-filter-clear {
@@ -352,7 +352,7 @@
 }
 
 /* ============================== */
-/* ✅ BOTÓN APLICAR FILTROS */
+/* ✅ APPLY FILTERS BUTTON */
 /* ============================== */
 
 .btn-filter-apply {
@@ -379,7 +379,7 @@
 }
 
 /* ============================== */
-/* ➡️ BOTÓN DE NAVEGACIÓN (Flechas) */
+/* ➡️ NAVIGATION BUTTON (Arrows) */
 /* ============================== */
 
 .btn-nav-arrow {
@@ -415,7 +415,7 @@
 }
 
 /* ============================== */
-/* ⋮ BOTÓN DOTS (Tres puntos) */
+/* ⋮ DOTS BUTTON (Three dots) */
 /* ============================== */
 
 .btn-dots {
@@ -442,7 +442,7 @@
 }
 
 /* ============================== */
-/* ⏮⏭ BOTÓN DE PAGINACIÓN */
+/* ⏮⏭ PAGINATION BUTTON */
 /* ============================== */
 
 .btn-pagination {
@@ -467,7 +467,7 @@
 }
 
 /* ============================== */
-/* 📊 BOTÓN REPORT TOGGLE */
+/* 📊 REPORT TOGGLE BUTTON */
 /* ============================== */
 
 .btn-report-toggle {
@@ -492,7 +492,7 @@
 }
 
 /* ============================== */
-/* 📤 BOTÓN EXPORTAR REPORTE */
+/* 📤 EXPORT REPORT BUTTON */
 /* ============================== */
 
 .btn-report-export {
@@ -513,7 +513,7 @@
 }
 
 /* ============================== */
-/* 🚪 BOTÓN LOGOUT */
+/* 🚪 LOGOUT BUTTON */
 /* ============================== */
 
 .btn-logout {
@@ -532,7 +532,7 @@
 }
 
 /* ============================== */
-/* 🏷️ BOTÓN REMOVE FILTER TAG */
+/* 🏷️ REMOVE FILTER TAG BUTTON */
 /* ============================== */
 
 .btn-remove-filter {
@@ -554,7 +554,7 @@
 }
 
 /* ============================== */
-/* ◀▶ BOTONES SCROLL TABLA */
+/* ◀▶ TABLE SCROLL BUTTONS */
 /* ============================== */
 
 .btn-table-scroll {

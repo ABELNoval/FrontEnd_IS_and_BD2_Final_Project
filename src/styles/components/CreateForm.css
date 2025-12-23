@@ -1,8 +1,8 @@
 /* src/styles/components/CreateForm.css */
 
-/* ===== PANEL LATERAL DERECHO PARA CREATE/UPDATE ===== */
+/* ===== RIGHT SIDE PANEL FOR CREATE/UPDATE ===== */
 .create-form-panel {
-  top: 64px !important; /* Debajo del header */
+  top: 64px !important; /* Below header */
   right: 0 !important;
   width: 380px !important;
   height: calc(100vh - 64px) !important;
@@ -19,16 +19,16 @@
 
 .create-form-container {
   padding: 30px;
-  padding-bottom: 0; /* Sin padding inferior, lo maneja form-actions */
+  padding-bottom: 0; /* No bottom padding, handled by form-actions */
   background: var(--bg-dark-3);
   color: var(--text-main);
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Evitar scroll en el contenedor */
+  overflow: hidden; /* Prevent scroll in container */
 }
 
-/* Header con título y botón X */
+/* Header with title and X button */
 .create-form-header {
   display: flex;
   justify-content: space-between;
@@ -54,7 +54,7 @@
   flex: 1;
   overflow-y: auto;
   padding-right: 10px;
-  min-height: 0; /* Necesario para que flex: 1 con overflow funcione */
+  min-height: 0; /* Required for flex: 1 with overflow to work */
 }
 
 .form-field {
@@ -105,14 +105,14 @@
   cursor: not-allowed;
 }
 
-/* Estilo especial para selects */
-/* En CreateForm.css - actualiza la clase .form-select */
+/* Special style for selects */
+/* In CreateForm.css - update .form-select class */
 .form-select {
   width: 100%;
   padding: 12px 42px 12px 14px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #000000; /* Cambiado a negro */
+  background: #000000; /* Changed to black */
   color: white;
   font-size: 15px;
   outline: none;
@@ -120,12 +120,12 @@
   appearance: none;
   cursor: pointer;
   
-  /* Flecha personalizada */
+  /* Custom arrow */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300aaff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
-  background-color: #000000 !important; /* Forzar fondo negro */
+  background-color: #000000 !important; /* Force black background */
 }
 
 .form-select:focus {
@@ -140,9 +140,9 @@
   padding: 10px;
 }
 
-/* Para selects dentro de formularios de filtro */
+/* For selects inside filter forms */
 .filter-input {
-  /* ... otros estilos ... */
+  /* ... other styles ... */
   background: #000000 !important;
 }
 
@@ -156,10 +156,10 @@
   gap: 15px;
   padding: 20px 30px;
   border-top: 1px solid var(--border-orange-soft);
-  margin-top: auto; /* Empujar hacia abajo */
-  background: var(--bg-dark-3); /* Fondo sólido */
-  flex-shrink: 0; /* No reducir tamaño */
-  margin-left: -30px; /* Compensar padding del contenedor */
+  margin-top: auto; /* Push to bottom */
+  background: var(--bg-dark-3); /* Solid background */
+  flex-shrink: 0; /* Don't shrink */
+  margin-left: -30px; /* Compensate container padding */
   margin-right: -30px;
 }
 
@@ -176,7 +176,7 @@
   letter-spacing: 0.5px;
 }
 
-/* Botón Cancelar */
+/* Cancel button */
 .form-actions .btn-base:first-child {
   background: linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2));
   color: var(--text-secondary);
@@ -189,7 +189,7 @@
   border-color: var(--border-orange);
 }
 
-/* Botón Guardar/Actualizar */
+/* Save/Update button */
 .form-actions .btn-base:last-child {
   background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
   color: #000;
@@ -204,7 +204,7 @@
   transform: translateY(-2px);
 }
 
-/* Scrollbar personalizado */
+/* Custom scrollbar */
 .create-form::-webkit-scrollbar {
   width: 6px;
 }

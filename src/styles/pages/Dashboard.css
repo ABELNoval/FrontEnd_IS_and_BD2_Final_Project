@@ -8,7 +8,7 @@
   box-sizing: border-box !important;
   text-align: center !important;
   display: block !important;
-  overflow: hidden !important; /* Sin scroll en el body del dashboard */
+  overflow: hidden !important; /* No scroll in dashboard body */
 }
 
 
@@ -27,7 +27,7 @@
   backdrop-filter: none;
 }
 
-/* Logo pequeño */
+/* Small logo */
 .dashboard-logo {
   display: flex;
   align-items: baseline;
@@ -66,11 +66,11 @@
 .table-scroll {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 400px; /* Ajusta según necesites */
+  max-height: 400px; /* Adjust as needed */
   border-radius: 8px;
 }
 
-/* Estilos de scrollbar para la tabla */
+/* Scrollbar styles for the table */
 .table-scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -95,14 +95,14 @@
   width: 100%;
   min-height: 100vh;
   height: 100vh; /* Altura exacta de viewport */
-  max-height: 100vh; /* Evitar que crezca más */
-  overflow: hidden; /* Sin scroll en el contenedor principal */
+  max-height: 100vh; /* Prevent from growing more */
+  overflow: hidden; /* No scroll in main container */
   background-color: #141414;
   background-image: url('../../assets/fondo-oficial-nuevo.png');
   background-size: cover;
   background-position: bottom left;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* Fondo fijo al hacer scroll interno */
+  background-attachment: fixed; /* Fixed background on internal scroll */
 } 
 
 /* ===== REPORT DROPDOWN ===== */
@@ -111,8 +111,8 @@
   position: relative;
 }
 
-/* Los estilos de .report-btn, .report-toggle-btn se movieron a Button.css 
-   como btn-report-toggle */
+/* .report-btn, .report-toggle-btn styles moved to Button.css 
+   as btn-report-toggle */
 
 .report-dropdown {
   position: absolute !important;
@@ -131,7 +131,7 @@
   top: calc(100% + 10px) !important;
   left: 50% !important;
   bottom: auto !important;
-  /* Animación integrada */
+  /* Integrated animation */
   opacity: 0;
   transform: translateX(-50%) translateY(-8px) scale(0.95);
   animation: report-pop 0.25s ease forwards;
@@ -177,11 +177,11 @@
   border-radius: 6px;
 }
 
-/* Los estilos de .report-field input se movieron a Input.css como input-report */
-/* Los estilos de .report-export-btn se movieron a Button.css como btn-report-export */
+/* .report-field input styles moved to Input.css as input-report */
+/* .report-export-btn styles moved to Button.css as btn-report-export */
 
 
-/* src/styles/pages/Dashboard.css - Añade esto al final */
+/* Dashboard body styles */
 .body-dashboard {
   background: #121212;
   height: 100vh;
@@ -193,21 +193,21 @@
 .dashboard-container {
   transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 20px;
-  height: calc(100vh - 64px); /* Restar altura del header */
-  overflow-y: auto; /* Scroll solo en el contenedor de tablas */
+  height: calc(100vh - 64px); /* Subtract header height */
+  overflow-y: auto; /* Scroll only in table container */
 }
 
-/* Cuando el formulario está abierto, la tabla se contrae */
+/* When form is open, table contracts */
 .create-form-modal[open] ~ .dashboard-container {
   margin-right: 400px;
 }
 
-/* Ajusta la tabla cuando el panel está abierto */
+/* Adjust table when panel is open */
 .create-form-modal[open] ~ .dashboard-container .table-container {
   width: calc(100% - 400px);
 }
 
-/* Estilos para la tabla con tema oscuro */
+/* Styles for table with dark theme */
 .table-container {
   background: #1e1e1e;
   border-radius: 8px;
@@ -390,18 +390,18 @@
 }
 
 
-/* src/styles/pages/Dashboard.css - AÑADE AL FINAL: */
+/* Dashboard.css - Bottom creation panel styles */
 
-/* ===== PANEL DE CREACIÓN INFERIOR ===== */
+/* ===== BOTTOM CREATION PANEL ===== */
 .create-form-panel {
   /* El panel ya tiene position: fixed por el componente Panel */
-  height: 500px; /* Altura del panel */
+  height: 500px; /* Panel height */
   background: rgba(28, 28, 28, 0.95);
   border-top: 2px solid rgba(255, 140, 0, 0.8);
   box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
 }
 
-/* El contenido del formulario dentro del panel */
+/* Form content inside the panel */
 .create-form-panel .create-form-container {
   margin: 0;
   padding: 20px;
@@ -412,7 +412,7 @@
   overflow-y: auto;
 }
 
-/* Ajustar el formulario para que use más columnas en el panel horizontal */
+/* Adjust form to use more columns in horizontal panel */
 .create-form-panel .create-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -420,7 +420,7 @@
   margin-bottom: 20px;
 }
 
-/* Botones del formulario en el panel inferior */
+/* Form buttons in bottom panel */
 .create-form-panel .form-actions {
   display: flex;
   justify-content: center; /* Centrados horizontalmente */
@@ -430,7 +430,7 @@
   margin-top: 20px;
 }
 
-/* Header del panel de creación */
+/* Creation panel header */
 .create-form-panel h3 {
   text-align: center;
   margin-bottom: 24px;
@@ -440,7 +440,7 @@
   padding-bottom: 10px;
 }
 
-/* ===== BOTÓN DE CREAR NUEVO (en el header de la tabla) ===== */
+/* ===== CREATE NEW BUTTON (in table header) ===== */
 .create-table-btn {
   background: linear-gradient(90deg, #28a745, #20c997);
   border: none;
@@ -462,7 +462,7 @@
   box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35);
 }
 
-/* ===== BOTONES DE ACCIÓN DE TABLA (editar/eliminar) ===== */
+/* ===== TABLE ACTION BUTTONS (edit/delete) ===== */
 .table-actions-footer {
   display: flex;
   justify-content: center;
@@ -474,7 +474,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Botón especial para selección múltiple */
+/* Special button for bulk selection */
 .bulk-action-btn {
   background: linear-gradient(90deg, #ffc107, #ff9800);
   border: none;
@@ -492,19 +492,19 @@
   box-shadow: 0 6px 16px rgba(255, 152, 0, 0.35);
 }
 
-/* ===== AJUSTES PARA CUANDO EL PANEL ESTÁ ABIERTO ===== */
-/* Para evitar que el contenido de la tabla quede detrás del panel */
+/* ===== ADJUSTMENTS WHEN PANEL IS OPEN ===== */
+/* Prevent table content from going behind the panel */
 .dashboard-bg {
-  padding-bottom: 500px; /* Espacio para el panel inferior cuando esté abierto */
+  padding-bottom: 500px; /* Space for bottom panel when open */
   transition: padding-bottom 0.3s ease;
 }
 
-/* Cuando el panel está abierto, añadimos más espacio */
+/* When panel is open, add more space */
 .dashboard-bg.with-bottom-panel {
   padding-bottom: 500px;
 }
 
-/* ===== BOTÓN DE CERRAR EN PANEL INFERIOR ===== */
+/* ===== CLOSE BUTTON IN BOTTOM PANEL ===== */
 .panel-close-btn {
   position: absolute;
   top: 15px;
@@ -529,7 +529,7 @@
   transform: rotate(90deg);
 }
 
-/* ===== ESTILOS PARA SELECTORES EN PANEL INFERIOR ===== */
+/* ===== SELECTOR STYLES FOR BOTTOM PANEL ===== */
 .create-form-panel select,
 .create-form-panel input {
   background: rgba(0, 0, 0, 0.7) !important;
@@ -542,14 +542,14 @@
   color: white !important;
 }
 
-/* ===== RESPONSIVE PARA PANEL INFERIOR ===== */
+/* ===== RESPONSIVE FOR BOTTOM PANEL ===== */
 @media (max-width: 768px) {
   .create-form-panel {
-    height: 80vh; /* En móviles ocupa más altura */
+    height: 80vh; /* On mobile takes more height */
   }
   
   .create-form-panel .create-form {
-    grid-template-columns: 1fr; /* Una columna en móviles */
+    grid-template-columns: 1fr; /* Single column on mobile */
   }
   
   .create-form-panel .form-actions {

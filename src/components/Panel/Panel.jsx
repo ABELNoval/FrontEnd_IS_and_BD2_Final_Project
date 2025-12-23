@@ -1,4 +1,4 @@
-// Panel.jsx - VERSIÓN MEJORADA Y FLEXIBLE
+// Panel.jsx - IMPROVED AND FLEXIBLE VERSION
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import "../../styles/components/Panel.css";
@@ -48,7 +48,7 @@ function Panel({
 
   if (!open) return null;
 
-  // 👇 Clases CSS según la posición
+  // 👇 CSS classes based on position
   const positionClass = `panel-${position}`;
   const sizeClass = `${fullHeight ? 'panel-full-height' : ''} ${fullWidth ? 'panel-full-width' : ''}`.trim();
 
@@ -63,7 +63,7 @@ function Panel({
     </div>
   );
 
-  // Si portal=true, renderizar fuera del árbol normal
+  // If portal=true, render outside the normal tree
   if (portal) {
     return createPortal(panelContent, document.body);
   }
