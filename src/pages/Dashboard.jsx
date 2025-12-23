@@ -696,19 +696,28 @@ function Dashboard() {
                 onForeignClick={handleForeignClick}
                 onToggleRow={toggleRowSelection}
                 onCreateClick={
-                  roleConfig.canCreate && !TABLE_METADATA[selectedTable.name]?.viewOnly
+                  roleConfig.canCreate && 
+                  !TABLE_METADATA[selectedTable.name]?.viewOnly &&
+                  !roleConfig.readOnlyTables?.includes(selectedTable.name)
                     ? toggleCreateForm 
                     : null
                 }
                 onEdit={
-                  roleConfig.canEdit && !TABLE_METADATA[selectedTable.name]?.viewOnly 
+                  roleConfig.canEdit && 
+                  !TABLE_METADATA[selectedTable.name]?.viewOnly &&
+                  !roleConfig.readOnlyTables?.includes(selectedTable.name)
                     ? (item) => {
                         setEditingItem(item);
                         setShowCreateForm(true);
                       } 
                     : null
                 }
-                onDelete={roleConfig.canDelete ? handleDelete : null}
+                onDelete={
+                  roleConfig.canDelete && 
+                  !roleConfig.readOnlyTables?.includes(selectedTable.name)
+                    ? handleDelete 
+                    : null
+                }
                 onFilter={handleFilter}
                 currentPage={currentPage}
                 totalPages={totalPages}

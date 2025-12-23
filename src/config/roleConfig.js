@@ -28,7 +28,6 @@ export const ROLE_CONFIG = {
   },
   
   Director: {
-    // TEMPORARY: Access to everything including user tables for testing
     tables: [
       "Departments",
       "EquipmentTypes",
@@ -38,13 +37,14 @@ export const ROLE_CONFIG = {
       "Maintenances",
       "Transfers",
       "EquipmentDecommissions",
-      // TEMPORARY - user tables for creating admin
+      // Can view but not edit these:
       "Directors",
       "Employees",
       "Technicals",
-      "Responsibles",
-      "Users"
+      "Responsibles"
     ],
+    // Tables that Director can only view (no create/edit/delete)
+    readOnlyTables: ["Directors", "Employees", "Technicals", "Responsibles"],
     canCreate: true,
     canEdit: true,
     canDelete: true,
