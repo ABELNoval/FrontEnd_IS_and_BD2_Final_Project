@@ -3,19 +3,20 @@ import { useNavigate } from "react-router-dom";
 import Button from '../components/Button/Button.jsx'
 import Input from '../components/Input/Input.jsx'
 import {isEmpty, isValidEmail, isValidPassword} from '../utils/validators.js'
+import authService from '../services/authService.js'
 import '../styles/pages/Login.css'
 
 function Login() {
   const [userOrEmail, setUserOrEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState({
     userOrEmail: "",
     password: "",
   })
   const navigate = useNavigate();
-  const users = JSON.parse(localStorage.getItem("users")) || [];
 
-  function handleLogin()
+  async function handleLogin()
   {
     const newErrors = {
       userOrEmail: "",
@@ -45,19 +46,24 @@ function Login() {
       return;
     }
 
-    const foundUser = users.find(
-      (u) => 
-        (u.email === userOrEmail || u.username === userOrEmail) && 
-        u.password === password
-    )
+    setIsLoading(true);
 
-    if (foundUser) {
+    try {
+      const authData = await authService.login(userOrEmail, password);
+      authService.saveAuth(authData);
       navigate("/dashboard");
-    } else {
-      newErrors.userOrEmail = "Your account or your password are incorrect";
+    } catch (error) {
+      if (error.response?.status === 401) {
+        newErrors.userOrEmail = "Your account or your password are incorrect";
+      } else if (error.response?.data?.message) {
+        newErrors.userOrEmail = error.response.data.message;
+      } else {
+        newErrors.userOrEmail = "Connection error. Please try again.";
+      }
+      setErrors(newErrors);
+    } finally {
+      setIsLoading(false);
     }
-
-    setErrors(newErrors);
   }
 
    return (
@@ -87,7 +93,12 @@ function Login() {
                 onChange={setPassword}
                 error={errors.password}
                 />
-              <Button text="Login" onClick={handleLogin} variant="btn-base" />
+              <Button 
+                text={isLoading ? "Loading..." : "Login"} 
+                onClick={handleLogin} 
+                variant="btn-base" 
+                disabled={isLoading}
+              />
             </div>
           </div>
         </div>

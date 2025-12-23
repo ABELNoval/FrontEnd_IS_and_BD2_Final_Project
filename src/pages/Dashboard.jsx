@@ -8,6 +8,7 @@ import Button from "../components/Button/Button.jsx";
 import Input from "../components/Input/Input.jsx";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
+import authService from "../services/authService.js";
 import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
 
@@ -546,6 +547,7 @@ function Dashboard() {
       : null;
   
   function logOut() {
+    authService.logout();
     navigate("/");
   }
 
@@ -648,7 +650,7 @@ function Dashboard() {
                 </Panel>
               </div>
 
-              <div className="user-avatar">A</div>
+              <div className="user-avatar">{authService.getUserInitial()}</div>
               <Button variant="btn-logout" onClick={logOut} text="Logout" />
             </div>
           </div>
