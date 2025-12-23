@@ -659,6 +659,7 @@ function Dashboard() {
               tables={tables}
               onSelect={handleSelectTable}
               activeTable={selectedTable?.name}
+              isPanelOpen={showCreateForm}
             />
 
             {selectedTable ? (
@@ -679,6 +680,7 @@ function Dashboard() {
                 pageSize={pageSize}
                 onPageChange={setCurrentPage}
                 onPageSizeChange={setPageSize}
+                isPanelOpen={showCreateForm}
               />
             ) : (
               <p className="table-empty">Selecciona una tabla para verla</p>
@@ -696,9 +698,9 @@ function Dashboard() {
             setEditingItem(null);
           }}
           className="create-form-panel"
-          position="bottom"
+          position="right"
           portal={true}
-          closeOnOutside={true}
+          closeOnOutside={false}
           closeOnEsc={true}
         >
           <div className="panel-content">

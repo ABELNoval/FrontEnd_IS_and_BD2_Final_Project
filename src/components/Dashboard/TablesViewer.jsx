@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Button from "../Button/Button";
 import FilterPanel from "./FilterPanel";
 import Panel from "../Panel/Panel";
@@ -17,10 +17,56 @@ function TableViewer({
   totalPages,
   pageSize,
   onPageChange,
-  onPageSizeChange
+  onPageSizeChange,
+  isPanelOpen = false
 }) {
   const [openMenuRow, setOpenMenuRow] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const tableScrollRef = useRef(null);
+
+  // Verificar si se puede hacer scroll horizontal
+  const checkScrollability = () => {
+    const el = tableScrollRef.current;
+    if (el) {
+      setCanScrollLeft(el.scrollLeft > 0);
+      setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
+    }
+  };
+
+  // Función para hacer scroll horizontal
+  const scrollTable = (direction) => {
+    const el = tableScrollRef.current;
+    if (el) {
+      const scrollAmount = 200; // pixels por click
+      el.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  useEffect(() => {
+    // Chequear inmediatamente
+    checkScrollability();
+    
+    // Chequear después de que la transición CSS termine (0.3s = 300ms)
+    const timer = setTimeout(checkScrollability, 350);
+    
+    const el = tableScrollRef.current;
+    if (el) {
+      el.addEventListener('scroll', checkScrollability);
+      window.addEventListener('resize', checkScrollability);
+    }
+    return () => {
+      clearTimeout(timer);
+      if (el) {
+        el.removeEventListener('scroll', checkScrollability);
+      }
+      window.removeEventListener('resize', checkScrollability);
+    };
+  }, [table, isPanelOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -95,7 +141,7 @@ function TableViewer({
 
   return (
     <>
-      <div className="table-container">
+      <div className={`table-container ${isPanelOpen ? 'panel-open' : ''}`}>
         {/* HEADER */}
         <div className="table-header">
           <h2 className="table-title">{table.name}</h2>
@@ -112,9 +158,20 @@ function TableViewer({
           </div>
         </div>
 
-        {/* TABLE */}
-        <div className="table-scroll">
-          <table className="table-viewer">
+        {/* TABLE CON NAVEGACIÓN HORIZONTAL */}
+        <div className="table-scroll-wrapper">
+          {/* Flecha izquierda */}
+          {canScrollLeft && (
+            <Button
+              variant="btn-table-scroll btn-table-scroll-left"
+              onClick={() => scrollTable('left')}
+            >
+              ◀
+            </Button>
+          )}
+
+          <div className="table-scroll" ref={tableScrollRef}>
+            <table className="table-viewer">
             <thead>
               <tr>
                 <th className="checkbox-header"></th>
@@ -167,6 +224,17 @@ function TableViewer({
 
           {displayRows?.length === 0 && (
             <div className="no-results">No matching records found</div>
+          )}
+        </div>
+
+          {/* Flecha derecha */}
+          {canScrollRight && (
+            <Button
+              variant="btn-table-scroll btn-table-scroll-right"
+              onClick={() => scrollTable('right')}
+            >
+              ▶
+            </Button>
           )}
         </div>
 

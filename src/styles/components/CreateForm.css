@@ -1,24 +1,20 @@
 /* src/styles/components/CreateForm.css */
-.create-form-modal {
-  position: fixed !important;
-  top: 0 !important;
+
+/* ===== PANEL LATERAL DERECHO PARA CREATE/UPDATE ===== */
+.create-form-panel {
+  top: 64px !important; /* Debajo del header */
   right: 0 !important;
-  width: 400px !important;
-  height: 100vh !important;
-  background: var(--bg-dark-3) !important;
-  color: var(--text-main) !important;
+  width: 380px !important;
+  height: calc(100vh - 64px) !important;
   border-left: 1px solid var(--border-orange) !important;
   box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5) !important;
-  z-index: 10001 !important;
-  overflow: hidden !important; /* Sin scroll en el modal, solo en el contenido */
-  transform: translateX(100%) !important;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  overflow: hidden !important;
 }
 
-.create-form-modal[open] {
-  transform: translateX(0) !important;
+.create-form-panel .panel-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .create-form-container {
@@ -32,14 +28,26 @@
   overflow: hidden; /* Evitar scroll en el contenedor */
 }
 
-.create-form-container h3 {
-  color: var(--accent-orange);
+/* Header con título y botón X */
+.create-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 25px;
-  font-size: 1.8rem;
-  font-weight: 600;
   padding-bottom: 15px;
   border-bottom: 1px solid var(--border-orange-soft);
+}
+
+.create-form-header h3 {
+  color: var(--accent-orange);
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
   text-shadow: 0 0 8px rgba(255, 123, 37, 0.2);
+}
+
+.create-form-header .btn-close {
+  flex-shrink: 0;
 }
 
 .create-form {

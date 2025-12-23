@@ -4,6 +4,35 @@
 /* SEGMENTED TABLE SELECTOR */
 /* ============================= */
 
+/* Contenedor principal del selector de tablas */
+.table-selector-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  transition: margin-right 0.3s ease, width 0.3s ease;
+}
+
+/* Cuando el panel lateral está abierto */
+.table-selector-container.panel-open {
+  margin-right: 390px;
+  width: calc(100% - 390px);
+}
+
+/* Scroll container del selector */
+.table-selector-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.table-selector-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
 .table-segmented-bar {
   display: flex;
   background: rgba(30, 30, 30, 0.9);
@@ -44,16 +73,18 @@
   position: absolute;
   inset: 0;
 
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 128, 9, 0.95) 0%,
-    rgba(255, 106, 0, 0.75) 45%,
-    rgba(255, 124, 17, 0.35) 65%,
-    transparent 80%
+  /* Gradiente que cubre todo el ancho */
+  background: linear-gradient(
+    90deg,
+    rgba(255, 106, 0, 0.85) 0%,
+    rgba(255, 128, 9, 0.95) 20%,
+    rgba(255, 128, 9, 0.95) 80%,
+    rgba(255, 106, 0, 0.85) 100%
   );
+  border-radius: 8px;
 
   opacity: 0;
-  transform: scale(0.6);
+  transform: scaleX(0);
   transition: opacity 0.35s ease, transform 0.35s ease;
 
   z-index: 1;
@@ -66,6 +97,7 @@
   z-index: 3;
   color: inherit;
   transition: color 0.3s ease;
+  white-space: nowrap; /* Evitar que el texto se rompa */
 }
 
 /* Estado activo */
@@ -75,7 +107,7 @@
 
 .table-segment.active::before {
   opacity: 1;
-  transform: scale(1);
+  transform: scaleX(1);
 }
 
 .table-segment.active .table-segment-text {
@@ -91,6 +123,19 @@
   margin: 0;
   background: transparent;
   padding: 0;
+  transition: margin-right 0.3s ease, width 0.3s ease;
+}
+
+/* Cuando el panel lateral está abierto, la tabla se contrae */
+.table-container.panel-open {
+  margin-right: 390px; /* Ancho del panel + algo de espacio */
+  width: calc(100% - 390px);
+}
+
+/* Wrapper para navegación horizontal de tabla */
+.table-scroll-wrapper {
+  position: relative;
+  width: 100%;
 }
 
 .table-scroll {
@@ -100,6 +145,13 @@
   border-radius: 12px;
   border: 1px solid rgba(255, 165, 0, 0.25);
   background: rgba(18, 18, 18, 0.95);
+  /* Ocultar scrollbar pero mantener funcionalidad */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.table-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari - ocultar scrollbar horizontal */
 }
 
 /* Tabla base */

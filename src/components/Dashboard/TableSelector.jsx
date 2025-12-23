@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../Button/Button";
 import "../../styles/components/Table.css";
 
-function TableSelector({ tables, onSelect, activeTable }) {
+function TableSelector({ tables, onSelect, activeTable, isPanelOpen = false }) {
   const scrollContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -12,17 +12,33 @@ function TableSelector({ tables, onSelect, activeTable }) {
     const c = scrollContainerRef.current;
     if (!c) return;
     setShowLeftArrow(c.scrollLeft > 0);
-    setShowRightArrow(c.scrollLeft < c.scrollWidth - c.clientWidth);
+    setShowRightArrow(c.scrollLeft < c.scrollWidth - c.clientWidth - 1);
   };
 
   useEffect(() => {
+    // Chequear inmediatamente
     updateArrowVisibility();
+    
+    // Chequear después de que la transición CSS termine (0.3s = 300ms)
+    const timer = setTimeout(updateArrowVisibility, 350);
+    
+    const c = scrollContainerRef.current;
+    if (c) {
+      c.addEventListener("scroll", updateArrowVisibility);
+    }
     window.addEventListener("resize", updateArrowVisibility);
-    return () => window.removeEventListener("resize", updateArrowVisibility);
-  }, [tables]);
+    
+    return () => {
+      clearTimeout(timer);
+      if (c) {
+        c.removeEventListener("scroll", updateArrowVisibility);
+      }
+      window.removeEventListener("resize", updateArrowVisibility);
+    };
+  }, [tables, isPanelOpen]);
 
   return (
-    <div className="table-selector-container">
+    <div className={`table-selector-container ${isPanelOpen ? 'panel-open' : ''}`}>
       {showLeftArrow && (
         <Button
           variant="btn-nav-arrow left"

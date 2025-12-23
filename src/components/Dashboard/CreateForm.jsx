@@ -1,5 +1,6 @@
 // src/components/Dashboard/CreateForm.jsx
 import React, { useState, useEffect, useRef } from "react";
+import { X } from "lucide-react";
 import Button from "../Button/Button";
 import { TABLE_METADATA } from "../../data/tables";
 import "../../styles/components/CreateForm.css";
@@ -217,7 +218,15 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
 
   return (
     <div className="create-form-container">
-      <h3>{editingItem ? `Edit ${table.name.slice(0, -1)}` : `Create new ${table.name.slice(0, -1)}`}</h3>
+      <div className="create-form-header">
+        <h3>{editingItem ? `Edit ${table.name.slice(0, -1)}` : `Create new ${table.name.slice(0, -1)}`}</h3>
+        <Button
+          variant="btn-close"
+          onClick={onClose}
+        >
+          <X size={20} />
+        </Button>
+      </div>
       <div className="create-form">
         {columns.map(col => {
           const metaCol = columnsMeta[col] || { type: "string" };
