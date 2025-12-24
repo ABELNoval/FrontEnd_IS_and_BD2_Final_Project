@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TableSelector from "../components/Dashboard/TableSelector.jsx";
 import TableViewer from "../components/Dashboard/TablesViewer.jsx";
 import CreateForm from "../components/Dashboard/CreateForm.jsx";
+import ErrorPanel from "../components/Dashboard/ErrorPanel.jsx";
 import Panel from "../components/Panel/Panel.jsx";
 import Button from "../components/Button/Button.jsx";
 import Input from "../components/Input/Input.jsx";
@@ -141,6 +142,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [exportFormat, setExportFormat] = useState("pdf");
   const [reportOpen, setReportOpen] = useState(false);
+  const [globalErrors, setGlobalErrors] = useState([]);
   const navigate = useNavigate();
 
   // =====================================
@@ -437,49 +439,105 @@ function Dashboard() {
     setEditingItem(null);
   };
 
-  const handleCreateItem = async (data) => { 
-    const srv = TABLE_SERVICES[selectedTable.name]; 
-    const apiData = { ...data }; 
-    Object.keys(apiData).forEach(k => { 
-      const value = enumsValues[k]; 
-      if (value) {
-        apiData[k] = value[apiData[k]]; 
-      }
+  // Replace GUIDs in error messages with human-readable names
+  const humanizeErrorMessage = (msg) => {
+    if (!msg || typeof msg !== 'string') return msg;
     
-      if (apiData[k]?.isForeign) 
-        apiData[k] = apiData[k].value; 
-    }); 
+    // GUID regex pattern
+    const guidPattern = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/g;
+    
+    return msg.replace(guidPattern, (guid) => {
+      // Search for the GUID in all loaded tables
+      for (const table of tables) {
+        const row = table.rows?.find(r => r.Id === guid);
+        if (row) {
+          // Find a name column
+          const nameCol = table.columns.find(c => 
+            c !== "Id" && (c.toLowerCase().includes("name") || c.toLowerCase().includes("title"))
+          ) || table.columns.find(c => c !== "Id");
+          
+          const name = row[nameCol] ?? "Item";
+          return `#${row.visualId} - ${name}`;
+        }
+      }
+      // If not found, return shortened GUID
+      return guid.substring(0, 8) + "...";
+    });
+  };
 
-    await srv.create(apiData); 
-    const updated = await reloadTable(selectedTable.name); 
-    setSelectedTable(updated); 
-    setShowCreateForm(false); 
+  const handleServiceError = (error) => {
+    if (error.response?.data?.errors) {
+      // Validation errors: { field: ["error1", "error2"] }
+      const fieldErrors = {};
+      Object.entries(error.response.data.errors).forEach(([key, msgs]) => {
+        // Convert camelCase (backend) to PascalCase (frontend form)
+        const fieldName = key.charAt(0).toUpperCase() + key.slice(1);
+        fieldErrors[fieldName] = humanizeErrorMessage(msgs[0]);
+      });
+      throw fieldErrors; // Throw to be caught by CreateForm
+    } else {
+      // Global error
+      let msg = error.response?.data?.detail || error.response?.data?.title || error.message || "An unexpected error occurred";
+      msg = humanizeErrorMessage(msg);
+      setGlobalErrors(prev => [...prev, msg]);
+    }
+  };
+
+  const handleCreateItem = async (data) => { 
+    try {
+      const srv = TABLE_SERVICES[selectedTable.name]; 
+      const apiData = { ...data }; 
+      Object.keys(apiData).forEach(k => { 
+        const value = enumsValues[k]; 
+        if (value) {
+          apiData[k] = value[apiData[k]]; 
+        }
+      
+        if (apiData[k]?.isForeign) 
+          apiData[k] = apiData[k].value; 
+      }); 
+
+      await srv.create(apiData); 
+      const updated = await reloadTable(selectedTable.name); 
+      setSelectedTable(updated); 
+      setShowCreateForm(false); 
+    } catch (error) {
+      handleServiceError(error);
+    }
   };
 
   const handleUpdateItem = async (data) => {
-    const srv = TABLE_SERVICES[selectedTable.name];
+    try {
+      const srv = TABLE_SERVICES[selectedTable.name];
 
-    const apiData = { ...data };
-    Object.keys(apiData).forEach(k => {
-      if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
-    });
+      const apiData = { ...data };
+      Object.keys(apiData).forEach(k => {
+        if (apiData[k]?.isForeign) apiData[k] = apiData[k].value;
+      });
 
-    await srv.update(editingItem.Id, apiData);
+      await srv.update(editingItem.Id, apiData);
 
-    const updated = await reloadTable(selectedTable.name);
-    setSelectedTable(updated);
+      const updated = await reloadTable(selectedTable.name);
+      setSelectedTable(updated);
 
-    setShowCreateForm(false);
-    setEditingItem(null);
+      setShowCreateForm(false);
+      setEditingItem(null);
+    } catch (error) {
+      handleServiceError(error);
+    }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar?")) return;
-    const srv = TABLE_SERVICES[selectedTable.name];
-    await srv.delete(id);
+    try {
+      const srv = TABLE_SERVICES[selectedTable.name];
+      await srv.delete(id);
 
-    const updated = await reloadTable(selectedTable.name);
-    setSelectedTable(updated);
+      const updated = await reloadTable(selectedTable.name);
+      setSelectedTable(updated);
+    } catch (error) {
+      handleServiceError(error);
+    }
   };
 
   // ============================
@@ -760,6 +818,11 @@ function Dashboard() {
             />
           </div>
         </Panel>
+
+        <ErrorPanel 
+          errors={globalErrors} 
+          onClose={() => setGlobalErrors([])} 
+        />
       </div> 
     </div>
   );

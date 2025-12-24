@@ -122,10 +122,9 @@ function TableViewer({
     }
 
     if (typeof cell === "string" && /^\d{4}-\d{2}-\d{2}/.test(cell)) {
-      const d = new Date(cell);
-      if (!isNaN(d.getTime())) {
-        return d.toLocaleDateString();
-      }
+      // Manually format as DD/MM/YYYY to be consistent across all browsers/locales
+      const [year, month, day] = cell.substring(0, 10).split('-');
+      return `${day}/${month}/${year}`;
     }
 
     if (typeof cell === "boolean") {

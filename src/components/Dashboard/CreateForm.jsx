@@ -55,6 +55,15 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
     }
   }, [editingItem, table.name]); // re-init si cambia la tabla
 
+  // Format column name for display (e.g., "DepartmentId" -> "Department", "AcquisitionDate" -> "Acquisition Date")
+  const formatLabel = (col) => {
+    // Remove "Id" suffix for FK fields
+    let label = col.endsWith("Id") ? col.slice(0, -2) : col;
+    // Add spaces before capital letters (camelCase to Title Case)
+    label = label.replace(/([A-Z])/g, ' $1').trim();
+    return label;
+  };
+
   const getOptionsForFk = (refTableName) => {
     const ref = tables.find(t => t.name === refTableName);
     if (!ref) return [];
@@ -67,7 +76,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
 
     return ref.rows.map(r => ({
       value: r.Id,   
-      label: `${r.visualId} - ${r[labelCol] ?? "Item"}`
+      label: `#${r.visualId} - ${r[labelCol] ?? "Item"}`
     }));
   };
 
@@ -140,47 +149,47 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
     if (table.name === "Equipments") {
       if (
         formData.LocationTypeId === "Department" &&
-        !formData.departmentId
+        !formData.DepartmentId
       ) {
-        errors.departmentId = "This field is required when Location Type is Department";
+        errors.DepartmentId = "You must select a Department when Location Type is 'Department'";
       }
 
-      if (formData.LocationTypeId !== "Department" && formData.departmentId) {
-        errors.departmentId = "This field must be empty when Location Type is not Department";
+      if (formData.LocationTypeId !== "Department" && formData.DepartmentId) {
+        errors.DepartmentId = "Department must be empty when equipment is not in a Department";
       }
 
       if ((formData.StateId === "Operative" || formData.StateId === "UnderMaintenance")) {
         if(formData.LocationTypeId !== "Department"){
-          errors.LocationTypeId = "Location Type must be Department for Operative or Under Maintenance equipments";
+          errors.LocationTypeId = "Operative or Under Maintenance equipment must be located in a Department";
         }
-        if(!formData.departmentId){
-          errors.departmentId = "This field is required for Operative or Under Maintenance equipments";
+        if(!formData.DepartmentId){
+          errors.DepartmentId = "You must select a Department for Operative or Under Maintenance equipment";
         }
       }
       else if (formData.StateId === "Decommissioned" && formData.LocationTypeId !== "Warehouse") {
-        errors.LocationTypeId = "Location Type must be Warehouse for Decommissioned equipments";
+        errors.LocationTypeId = "Decommissioned equipment must be located in Warehouse";
       }
       else if (formData.StateId === "Disposed" && formData.LocationTypeId !== "Disposal") {
-        errors.LocationTypeId = "Location Type must be Disposal for Disposed equipments";
+        errors.LocationTypeId = "Disposed equipment must be in Disposal location";
       }
     }
 
     // EquipmentDecommissions
     if (table.name === "EquipmentDecommissions") {
       if (formData.DestinyTypeId === "Department") {
-        if (!formData.departmentId) {
-          errors.departmentId = "DepartmentId is requiered for Department destiny";
+        if (!formData.DepartmentId) {
+          errors.DepartmentId = "You must select a Department for this destiny type";
         }
-        if (!formData.recipientId) {
-          errors.recipientId = "RecipientId is required for Department destiny";
+        if (!formData.RecipientId) {
+          errors.RecipientId = "You must select a Recipient for Department destiny";
         }
       }
       else {
-        if (formData.departmentId) {
-          errors.departmentId = "DepartmentId must be empty for non-Department destiny";
+        if (formData.DepartmentId) {
+          errors.DepartmentId = "Department must be empty for Warehouse or Disposal destiny";
         }
-        if (formData.recipientId) {
-          errors.recipientId = "RecipientId must be empty for non-Department destiny";
+        if (formData.RecipientId) {
+          errors.RecipientId = "Recipient must be empty for Warehouse or Disposal destiny";
         }
       }
     }
@@ -230,10 +239,20 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
     return payload;
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!validate()) return;
     const payload = preparePayload();
-    onSave(payload);
+    
+    try {
+      await onSave(payload);
+    } catch (err) {
+      // If the parent component throws validation errors (object with field names)
+      if (err && typeof err === 'object' && !Array.isArray(err)) {
+        setErrors(prev => ({ ...prev, ...err }));
+      } else {
+        console.error("Error saving:", err);
+      }
+    }
   };
 
   return (
@@ -250,10 +269,12 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
       <div className="create-form">
         {columns.map(col => {
           const metaCol = columnsMeta[col] || { type: "string" };
+          const label = formatLabel(col);
+          
           if (metaCol.readonly) {
             return (
               <div key={col} className="form-field">
-                <label>{col}:</label>
+                <label>{label}:</label>
                 <input 
                   type="text" 
                   value={formData[col] ?? ""} 
@@ -269,15 +290,20 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
             const options = getOptionsForFk(refName);
             return (
               <div key={col} className="form-field">
-                <label>{col}:</label>
+                <label>{label}:</label>
                 <select
                   value={formData[col] ?? ""}
                   onChange={e => handleChange(col, e.target.value)}
                   className="form-select"
                 >
-                  <option value="">{`Select ${refName}`}</option>
+                  <option value="">{`Select ${label}`}</option>
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
+                {errors[col] && (
+                  <div className="form-error">
+                    {errors[col]}
+                  </div>
+                )}
               </div>
             );
           }
@@ -285,13 +311,13 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
           if (metaCol.type === "enum") {
             return (
               <div key={col} className="form-field">
-                <label>{col}:</label>
+                <label>{label}:</label>
                 <select
                   value={formData[col] ?? ""}
                   onChange={e => handleChange(col, e.target.value)}
                   className="form-select"
                 >
-                  <option value="">{`Select ${col}`}</option>
+                  <option value="">{`Select ${label}`}</option>
                   {metaCol.values.map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
                 {errors[col] && (
@@ -308,7 +334,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
             const dateVal = formData[col] ? new Date(formData[col]).toISOString().slice(0,10) : "";
             return (
               <div key={col} className="form-field">
-                <label>{col}:</label>
+                <label>{label}:</label>
                 <input
                   type="date"
                   value={dateVal}
@@ -327,11 +353,11 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
           // default text/number
           return (
             <div key={col} className="form-field">
-              <label>{col}:</label>
+              <label>{label}:</label>
               <input
                 type={metaCol.type === "number" ? "number" : "text"}
                 value={formData[col] ?? ""}
-                placeholder={`Enter ${col}`}
+                placeholder={`Enter ${label}`}
                 onChange={e => handleChange(col, e.target.value)}
                 className="form-input"
               />
