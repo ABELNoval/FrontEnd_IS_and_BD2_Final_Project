@@ -10,7 +10,7 @@ import Input from "../components/Input/Input.jsx";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle.jsx";
 import { reportService, dashboardService } from "../services/dashboardService.js";
 import authService from "../services/authService.js";
-import { getRoleConfig } from "../config/roleConfig.js";
+import { getRoleConfig, getHiddenColumns } from "../config/roleConfig.js";
 import { TABLE_METADATA } from "../data/tables.js";
 import { downloadBlob } from "../utils/download.js";
 import "../styles/pages/Dashboard.css";
@@ -783,6 +783,7 @@ function Dashboard() {
                 onPageChange={setCurrentPage}
                 onPageSizeChange={setPageSize}
                 isPanelOpen={showCreateForm}
+                hiddenColumns={getHiddenColumns(userRole, selectedTable?.name)}
               />
             ) : (
               <p className="table-empty">Select a table to view</p>

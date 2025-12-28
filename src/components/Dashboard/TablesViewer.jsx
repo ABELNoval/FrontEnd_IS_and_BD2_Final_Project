@@ -18,7 +18,8 @@ function TableViewer({
   pageSize,
   onPageChange,
   onPageSizeChange,
-  isPanelOpen = false
+  isPanelOpen = false,
+  hiddenColumns = []
 }) {
   const [openMenuRow, setOpenMenuRow] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -103,7 +104,9 @@ function TableViewer({
     return <div className="table-empty">Select a table to view</div>;
   }
 
-  const visibleColumns = table?.columns?.filter(col => col !== "Id") || [];
+  const visibleColumns = table?.columns?.filter(col => 
+    col !== "Id" && !hiddenColumns.includes(col) && !hiddenColumns.includes(col.toLowerCase())
+  ) || [];
   const displayRows = table.filteredRows || table.rows;
 
   const formatCell = (cell) => {
