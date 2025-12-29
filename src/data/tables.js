@@ -102,7 +102,8 @@ export const TABLE_METADATA = {
       SourceDepartmentId: { type: "fk", ref: "Departments", required: true },
       TargetDepartmentId: { type: "fk", ref: "Departments", required: true },
       TransferDate: { type: "date", required: false, hidden: true }, // Auto-set to today
-      ResponsibleId: {type: "fk", ref: "Responsibles", required: true}
+      ResponsibleId: { type: "fk", ref: "Responsibles", required: true },
+      RecipientId: { type: "fk", ref: "Technicals", required: true } // Technical receiving the equipment
     }
   },
 

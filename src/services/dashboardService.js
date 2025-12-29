@@ -119,7 +119,14 @@ export const dashboardService = {
     }
   },
   Section: buildService("Section"),
-  Equipment: buildService("Equipment"),
+  Equipment: {
+    ...buildService("Equipment"),
+    // Get all equipment without role filtering (for report selectors)
+    getAll: async () => {
+      const res = await api.get("/Equipment/all");
+      return res.data;
+    }
+  },
   EquipmentType: buildService("EquipmentType"),
   Responsible: buildService("Responsible"),
 

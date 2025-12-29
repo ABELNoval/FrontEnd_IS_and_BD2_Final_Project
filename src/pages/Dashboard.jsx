@@ -148,6 +148,7 @@ function Dashboard() {
   const [reportOpen, setReportOpen] = useState(false);
   const [globalErrors, setGlobalErrors] = useState([]);
   const [allDepartments, setAllDepartments] = useState([]); // All departments for FK dropdowns
+  const [allEquipments, setAllEquipments] = useState([]); // All equipments for report selectors
   const navigate = useNavigate();
 
   // =====================================
@@ -200,6 +201,14 @@ function Dashboard() {
         setAllDepartments(allDepts);
       } catch (err) {
         console.error("Error loading all departments:", err);
+      }
+
+      // Load all equipments for report selectors (unfiltered)
+      try {
+        const allEquips = await dashboardService.Equipment.getAll();
+        setAllEquipments(allEquips);
+      } catch (err) {
+        console.error("Error loading all equipments:", err);
       }
 
       // una vez cargadas → resolvemos visualId de FK
@@ -375,13 +384,13 @@ function Dashboard() {
     try {
       let response;
       
-      if (selectedReport === "equipmentMaintenanceHistory" && !reportFilter.equipmentId.trim()) {
-        alert("⚠️ Please enter the equipment ID for maintenance history");
+      if (selectedReport === "equipmentMaintenanceHistory" && !reportFilter.equipmentId) {
+        alert("⚠️ Please select an equipment for maintenance history");
         return;
       }
       
-      if (selectedReport === "equipmentToDepartment" && !reportFilter.departmentId.trim()) {
-        alert("⚠️ Please enter the department ID");
+      if (selectedReport === "equipmentToDepartment" && !reportFilter.departmentId) {
+        alert("⚠️ Please select a department");
         return;
       }
 
@@ -503,6 +512,7 @@ function Dashboard() {
       Object.keys(apiData).forEach(k => { 
         const value = enumsValues[k]; 
         if (value) {
+          console.log(`Converting ${k}: "${apiData[k]}" -> ${value[apiData[k]]}`);
           apiData[k] = value[apiData[k]]; 
         }
       
@@ -510,6 +520,7 @@ function Dashboard() {
           apiData[k] = apiData[k].value; 
       }); 
 
+      console.log("Final apiData to send:", JSON.stringify(apiData, null, 2));
       await srv.create(apiData); 
       const updated = await reloadTable(selectedTable.name); 
       setSelectedTable(updated); 
@@ -762,29 +773,41 @@ function Dashboard() {
 
                   {selectedReport === "equipmentMaintenanceHistory" && (
                     <div className="report-field">
-                      <label>Equipment ID</label>
-                      <Input
+                      <label>Equipment</label>
+                      <select
                         value={reportFilter.equipmentId}
-                        onChange={(val) =>
-                          setReportFilter({ ...reportFilter, equipmentId: val })
+                        onChange={(e) =>
+                          setReportFilter({ ...reportFilter, equipmentId: e.target.value })
                         }
-                        variant="input-report"
-                        placeholder="Enter equipment ID"
-                      />
+                        className="report-select"
+                      >
+                        <option value="">Select Equipment</option>
+                        {allEquipments.map((eq, idx) => (
+                          <option key={eq.Id || eq.id} value={eq.Id || eq.id}>
+                            #{idx + 1} - {eq.Name || eq.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   )}
 
                   {selectedReport === "equipmentToDepartment" && (
                     <div className="report-field">
-                      <label>Department ID</label>
-                      <Input
+                      <label>Department</label>
+                      <select
                         value={reportFilter.departmentId}
-                        onChange={(val) =>
-                          setReportFilter({ ...reportFilter, departmentId: val })
+                        onChange={(e) =>
+                          setReportFilter({ ...reportFilter, departmentId: e.target.value })
                         }
-                        variant="input-report"
-                        placeholder="Enter department ID"
-                      />
+                        className="report-select"
+                      >
+                        <option value="">Select Department</option>
+                        {allDepartments.map((dept, idx) => (
+                          <option key={dept.Id || dept.id} value={dept.Id || dept.id}>
+                            #{idx + 1} - {dept.Name || dept.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   )}
 

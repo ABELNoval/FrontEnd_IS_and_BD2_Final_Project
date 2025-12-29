@@ -284,7 +284,7 @@ function TableViewer({
                 const isDecommission = table.name === "EquipmentDecommissions";
                 const statusId = row.StatusId?.value || row.StatusId;
                 const requesterId = row.RequesterId?.value || row.RequesterId;
-                const targetDeptId = row.TargetDepartmentId?.value || row.TargetDepartmentId;
+                //const targetDeptId = row.TargetDepartmentId?.value || row.TargetDepartmentId;
                 const isPending = statusId === 1;
                 const isOwner = requesterId === currentUserId;
                 

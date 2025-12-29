@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import Button from "../Button/Button";
 import { TABLE_METADATA } from "../../data/tables";
-import { dashboardService } from "../../services/dashboardService";
+//import { dashboardService } from "../../services/dashboardService";
 import "../../styles/components/CreateForm.css";
 // import { validateRequired } from "../../utils/validators";
 
@@ -220,6 +220,8 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
 
   const preparePayload = () => {
     const payload = {};
+    const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
+    
     columns.forEach(col => {
       const metaCol = columnsMeta[col];
       if (!metaCol) {
@@ -229,8 +231,14 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
       if (metaCol.readonly) return; // never send readonly
       const val = formData[col];
       if (metaCol.type === "fk") {
-        // FK expect just the id (string GUID)
-        payload[col] = val || null;
+        // FK: if required, send the value; if optional and empty, send empty GUID
+        if (val) {
+          payload[col] = val;
+        } else if (metaCol.required) {
+          payload[col] = null; // Will fail validation in backend
+        } else {
+          payload[col] = EMPTY_GUID; // Optional FK with no value
+        }
       } else if (metaCol.type === "date") {
         // ensure date string (yyyy-mm-dd) or full iso depending on backend
         payload[col] = val ? new Date(val).toISOString() : null;
@@ -238,7 +246,9 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
         payload[col] = val === "" ? null : Number(val);
       } else if (metaCol.type === "enum" && metaCol.enumMap) {
         // Convert enum string value to numeric ID using enumMap
-        payload[col] = metaCol.enumMap[val] ?? val;
+        const mappedVal = metaCol.enumMap[val];
+        payload[col] = mappedVal !== undefined ? mappedVal : (val || null);
+        console.log(`Enum ${col}: "${val}" -> ${payload[col]}`);
       } else {
         payload[col] = val;
       }
@@ -251,6 +261,8 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
   const onSubmit = async () => {
     if (!validate()) return;
     const payload = preparePayload();
+    
+    console.log("Sending payload:", JSON.stringify(payload, null, 2));
     
     try {
       await onSave(payload);
