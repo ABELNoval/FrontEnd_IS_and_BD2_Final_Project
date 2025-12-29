@@ -61,6 +61,7 @@ export const ROLE_CONFIG = {
       "EquipmentTypes",
       "Equipments",
       "Employees",
+      "TransferRequests",
       "Transfers"
     ],
     canCreate: true,

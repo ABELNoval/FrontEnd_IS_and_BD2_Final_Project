@@ -110,7 +110,14 @@ function buildService(controllerName) {
 // ========================= DASHBOARD SERVICE =========================
 
 export const dashboardService = {
-  Department: buildService("Department"),
+  Department: {
+    ...buildService("Department"),
+    // Get all departments without role filtering (for dropdowns in TransferRequests)
+    getAll: async () => {
+      const res = await api.get("/Department/all");
+      return res.data;
+    }
+  },
   Section: buildService("Section"),
   Equipment: buildService("Equipment"),
   EquipmentType: buildService("EquipmentType"),
@@ -124,6 +131,23 @@ export const dashboardService = {
   Transfer: buildService("Transfer"),
   Maintenance: buildService("Maintenance"),
   EquipmentDecommission: buildService("EquipmentDecommission"),
+  
+  // TransferRequest service with special actions
+  TransferRequest: {
+    ...buildService("TransferRequest"),
+    accept: async (id) => {
+      const res = await api.post(`/TransferRequest/${id}/accept`);
+      return res.data;
+    },
+    deny: async (id) => {
+      const res = await api.post(`/TransferRequest/${id}/deny`);
+      return res.data;
+    },
+    cancel: async (id) => {
+      const res = await api.post(`/TransferRequest/${id}/cancel`);
+      return res.data;
+    }
+  },
   
   // User service with special update for role
   User: {

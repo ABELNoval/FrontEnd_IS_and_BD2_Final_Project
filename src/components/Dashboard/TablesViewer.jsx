@@ -19,7 +19,12 @@ function TableViewer({
   onPageChange,
   onPageSizeChange,
   isPanelOpen = false,
-  hiddenColumns = []
+  hiddenColumns = [],
+  // TransferRequest specific props
+  onAcceptRequest,
+  onDenyRequest,
+  onCancelRequest,
+  currentUserId
 }) {
   const [openMenuRow, setOpenMenuRow] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -183,12 +188,33 @@ function TableViewer({
                 {visibleColumns.map((col) => (
                   col !== "visualId" && <th key={col}>{col}</th>
                 ))}
-                {(onEdit || onDelete) && <th className="actions-header">Actions</th>}
+                {/* TransferRequests actions column */}
+                {table.name === "TransferRequests" && <th className="actions-header">Actions</th>}
+                {/* Regular actions column */}
+                {table.name !== "TransferRequests" && (onEdit || onDelete) && <th className="actions-header">Actions</th>}
               </tr>
             </thead>
 
             <tbody>
-              {displayRows?.map((row) => (
+              {displayRows?.map((row) => {
+                // Determine TransferRequest action state
+                const isTransferRequest = table.name === "TransferRequests";
+                const statusId = row.StatusId?.value || row.StatusId;
+                const requesterId = row.RequesterId?.value || row.RequesterId;
+                const targetDeptId = row.TargetDepartmentId?.value || row.TargetDepartmentId;
+                const isPending = statusId === 1;
+                const isOwner = requesterId === currentUserId;
+                
+                // Status labels and colors
+                const getStatusDisplay = () => {
+                  if (statusId === 2) return { label: "Accepted", className: "status-accepted" };
+                  if (statusId === 3) return { label: "Denied", className: "status-denied" };
+                  if (statusId === 4) return { label: "Cancelled", className: "status-cancelled" };
+                  return null;
+                };
+                const statusDisplay = getStatusDisplay();
+
+                return (
                 <tr
                   key={row.Id}
                   className={table.selectedRows?.has(row.Id) ? "selected" : ""}
@@ -212,8 +238,43 @@ function TableViewer({
                     return <td key={col}>{formatCell(cell)}</td>;
                   })}
 
-                  {/* Actions - only show if user has edit or delete permission */}
-                  {(onEdit || onDelete) && (
+                  {/* TransferRequests specific actions */}
+                  {isTransferRequest && (
+                    <td className="actions-cell transfer-request-actions">
+                      {isPending ? (
+                        isOwner ? (
+                          <Button
+                            variant="btn-cancel"
+                            onClick={() => onCancelRequest && onCancelRequest(row.Id)}
+                          >
+                            Cancel
+                          </Button>
+                        ) : (
+                          <div className="action-buttons-group">
+                            <Button
+                              variant="btn-accept"
+                              onClick={() => onAcceptRequest && onAcceptRequest(row.Id)}
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              variant="btn-deny"
+                              onClick={() => onDenyRequest && onDenyRequest(row.Id)}
+                            >
+                              Deny
+                            </Button>
+                          </div>
+                        )
+                      ) : (
+                        <span className={`status-badge ${statusDisplay?.className || ''}`}>
+                          {statusDisplay?.label || ''}
+                        </span>
+                      )}
+                    </td>
+                  )}
+
+                  {/* Regular Actions - only show if user has edit or delete permission */}
+                  {!isTransferRequest && (onEdit || onDelete) && (
                   <td className="actions-cell">
                     <Button
                       variant="btn-dots"
@@ -224,7 +285,8 @@ function TableViewer({
                   </td>
                   )}
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
 

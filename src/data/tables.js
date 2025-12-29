@@ -74,7 +74,7 @@ export const TABLE_METADATA = {
     columns: {
       Id: { type: "uuid", readonly: true },
       Name: { type: "string", required: true },
-      AcquisitionDate: { type: "date", required: true },
+      AcquisitionDate: { type: "date", required: false, hidden: true }, // Auto-set to today
       EquipmentTypeId: { type: "fk", ref: "EquipmentTypes", required: true },
       DepartmentId: { type: "fk", ref: "Departments", required: false },
       StateId: {
@@ -97,9 +97,28 @@ export const TABLE_METADATA = {
       EquipmentId: { type: "fk", ref: "Equipments", required: true },
       SourceDepartmentId: { type: "fk", ref: "Departments", required: true },
       TargetDepartmentId: { type: "fk", ref: "Departments", required: true },
-      TransferDate: { type: "date", required: true },
+      TransferDate: { type: "date", required: false, hidden: true }, // Auto-set to today
       ResponsibleId: {type: "fk", ref: "Responsibles", required: true}
     }
+  },
+
+  TransferRequests: {
+    apiPath: "/TransferRequest",
+    columns: {
+      Id: { type: "uuid", readonly: true },
+      EquipmentId: { type: "fk", ref: "Equipments", required: true },
+      TargetDepartmentId: { type: "fk", ref: "Departments", required: true },
+      RequestedTransferDate: { type: "date", required: true }, // User picks desired date
+      StatusId: {
+        type: "enum",
+        values: ["Pending", "Accepted", "Denied", "Cancelled"],
+        required: true,
+        readonly: true
+      }
+    },
+    // Special table with action buttons instead of edit/delete
+    hasActions: true,
+    actionTable: true
   },
 
   Maintenances: {
@@ -108,7 +127,7 @@ export const TABLE_METADATA = {
       Id: { type: "uuid", readonly: true },
       EquipmentId: { type: "fk", ref: "Equipments", required: true },
       TechnicalId: { type: "fk", ref: "Technicals", required: true },
-      MaintenanceDate: {type: "date", required: true},
+      MaintenanceDate: { type: "date", required: false, hidden: true }, // Auto-set to today
       MaintenanceTypeId :{
         type: "enum",
         values: ["Preventive", "Corrective", "Predective", "Emergency"],
@@ -124,7 +143,7 @@ export const TABLE_METADATA = {
       Id: { type: "uuid", readonly: true },
       EquipmentId: { type: "fk", ref: "Equipments", required: true },
       Reason: { type: "string", required: true },
-      DecommissionDate: { type: "date", required: true },
+      DecommissionDate: { type: "date", required: false, hidden: true }, // Auto-set to today
       TechnicalId: {type: "fk", ref: "Technicals", required: true},
       DepartmentId: {type: "fk", ref: "Departments", required: false},
       DestinyTypeId: {
@@ -144,7 +163,7 @@ export const TABLE_METADATA = {
       DirectorId: { type: "fk", ref: "Directors", required: true },
       Score: { type: "number", required: true },
       Comment: { type: "string", required: false },
-      AssessmentDate: { type: "date", required: true }
+      AssessmentDate: { type: "date", required: false, hidden: true } // Auto-set to today
     }
   },
 

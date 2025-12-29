@@ -3,11 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import Button from "../Button/Button";
 import { TABLE_METADATA } from "../../data/tables";
+import { dashboardService } from "../../services/dashboardService";
 import "../../styles/components/CreateForm.css";
 // import { validateRequired } from "../../utils/validators";
 
 
-function CreateForm({ table, tables, onClose, onSave, editingItem }) {
+function CreateForm({ table, tables, allDepartments, onClose, onSave, editingItem }) {
   const meta = TABLE_METADATA[table.name] || { columns: {} };
   const [errors, setErrors] = useState({});
   const columnsMeta = meta.columns || {};
@@ -64,7 +65,15 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
     return label;
   };
 
-  const getOptionsForFk = (refTableName) => {
+  const getOptionsForFk = (refTableName, columnName) => {
+    // For TransferRequests TargetDepartmentId, use all departments (not filtered by section)
+    if (table.name === "TransferRequests" && columnName === "TargetDepartmentId" && allDepartments.length > 0) {
+      return allDepartments.map((dept, index) => ({
+        value: dept.Id || dept.id,
+        label: `#${index + 1} - ${dept.Name || dept.name || "Department"}`
+      }));
+    }
+
     const ref = tables.find(t => t.name === refTableName);
     if (!ref) return [];
 
@@ -287,7 +296,7 @@ function CreateForm({ table, tables, onClose, onSave, editingItem }) {
 
           if (metaCol.type === "fk") {
             const refName = metaCol.ref;
-            const options = getOptionsForFk(refName);
+            const options = getOptionsForFk(refName, col);
             return (
               <div key={col} className="form-field">
                 <label>{label}:</label>

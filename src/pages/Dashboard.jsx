@@ -32,6 +32,7 @@ const TABLE_SERVICES = {
   Assessments: dashboardService.Assessment,
   Maintenances: dashboardService.Maintenance,
   Transfers: dashboardService.Transfer,
+  TransferRequests: dashboardService.TransferRequest,
   EquipmentDecommissions: dashboardService.EquipmentDecommission,
   
   // Users table (all users with role management)
@@ -53,6 +54,7 @@ const DEFAULT_COLUMNS = {
   Assessments: ["Id", "TechnicalId", "DirectorId", "Score", "Comment", "AssessmentDate"],
   Maintenances: ["Id", "EquipmentId", "TechnicalId", "MaintenanceDate", "MaintenanceTypeId", "Cost"],
   Transfers: ["Id", "EquipmentId", "SourceDepartmentId", "TargetDepartmentId", "ResponsibleId", "TransferDate"],
+  TransferRequests: ["Id", "EquipmentId", "TargetDepartmentId", "RequesterId", "RequestedTransferDate", "StatusId", "CreatedAt"],
   EquipmentDecommissions: ["Id", "EquipmentId", "TechnicalId", "DepartmentId", "RecipientId", "DestinyTypeId", "DecommissionDate", "Reason"],
   Users: ["Id", "Name", "Email", "RoleId", "Role"]
 };
@@ -69,6 +71,7 @@ const allTableNames = [
   "Assessments",
   "Maintenances",
   "Transfers",
+  "TransferRequests",
   "EquipmentDecommissions",
   "Users"
 ];
@@ -77,6 +80,7 @@ const enumsValues = {
   "StateId" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
   "MaintenanceTypeId": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
   "DestinyTypeId" :{"Department":1, "Disposal":2, "Warehouse":3},
+  "StatusId": {"Pending": 1, "Accepted": 2, "Denied": 3, "Cancelled": 4},
   "LocationTypeId" : {"Department":1, "Disposal":2, "Warehouse":3},
   "RoleId": {"Administrator": 1, "Director": 2, "Technical": 3, "Employee": 4, "Responsible": 5, "Receptor": 6}
 };
@@ -143,6 +147,7 @@ function Dashboard() {
   const [exportFormat, setExportFormat] = useState("pdf");
   const [reportOpen, setReportOpen] = useState(false);
   const [globalErrors, setGlobalErrors] = useState([]);
+  const [allDepartments, setAllDepartments] = useState([]); // All departments for FK dropdowns
   const navigate = useNavigate();
 
   // =====================================
@@ -188,6 +193,14 @@ function Dashboard() {
         const result = await TABLE_SERVICES[table].get().catch(() => []);
         return transformToTableFormat(result, table);
       }));
+
+      // Load all departments for FK dropdowns (unfiltered)
+      try {
+        const allDepts = await dashboardService.Department.getAll();
+        setAllDepartments(allDepts);
+      } catch (err) {
+        console.error("Error loading all departments:", err);
+      }
 
       // una vez cargadas → resolvemos visualId de FK
       const resolved = resolveForeignKeysVisualIds(data);
@@ -541,6 +554,41 @@ function Dashboard() {
   };
 
   // ============================
+  // TRANSFER REQUEST ACTIONS
+  // ============================
+  const handleAcceptRequest = async (id) => {
+    try {
+      await dashboardService.TransferRequest.accept(id);
+      const updated = await reloadTable("TransferRequests");
+      setSelectedTable(updated);
+      // Also reload Transfers table since a new one was created
+      await reloadTable("Transfers");
+    } catch (error) {
+      handleServiceError(error);
+    }
+  };
+
+  const handleDenyRequest = async (id) => {
+    try {
+      await dashboardService.TransferRequest.deny(id);
+      const updated = await reloadTable("TransferRequests");
+      setSelectedTable(updated);
+    } catch (error) {
+      handleServiceError(error);
+    }
+  };
+
+  const handleCancelRequest = async (id) => {
+    try {
+      await dashboardService.TransferRequest.cancel(id);
+      const updated = await reloadTable("TransferRequests");
+      setSelectedTable(updated);
+    } catch (error) {
+      handleServiceError(error);
+    }
+  };
+
+  // ============================
   // 🔥 FILTRO (NUEVO: filtra en backend)
   // ============================
   const handleFilter = async (filters) => {
@@ -784,6 +832,10 @@ function Dashboard() {
                 onPageSizeChange={setPageSize}
                 isPanelOpen={showCreateForm}
                 hiddenColumns={getHiddenColumns(userRole, selectedTable?.name)}
+                onAcceptRequest={handleAcceptRequest}
+                onDenyRequest={handleDenyRequest}
+                onCancelRequest={handleCancelRequest}
+                currentUserId={user?.id || user?.Id}
               />
             ) : (
               <p className="table-empty">Select a table to view</p>
@@ -810,6 +862,7 @@ function Dashboard() {
             <CreateForm
               table={selectedTable}
               tables={tables}
+              allDepartments={allDepartments}
               editingItem={editingItem}
               onClose={() => {
                 setShowCreateForm(false);
