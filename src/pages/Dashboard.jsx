@@ -589,6 +589,36 @@ function Dashboard() {
   };
 
   // ============================
+  // MAINTENANCE ACTIONS
+  // ============================
+  const handleCompleteMaintenance = async (id) => {
+    try {
+      await dashboardService.Maintenance.complete(id);
+      const updated = await reloadTable("Maintenances");
+      setSelectedTable(updated);
+      // Also reload Equipments table since equipment state changed to Operative
+      await reloadTable("Equipments");
+    } catch (error) {
+      handleServiceError(error);
+    }
+  };
+
+  // ============================
+  // EQUIPMENT DECOMMISSION ACTIONS
+  // ============================
+  const handleReleaseToWarehouse = async (decommissionId, targetDepartmentId, recipientId) => {
+    try {
+      await dashboardService.EquipmentDecommission.release(decommissionId, targetDepartmentId, recipientId);
+      const updated = await reloadTable("EquipmentDecommissions");
+      setSelectedTable(updated);
+      // Also reload Equipments table since equipment state and location changed
+      await reloadTable("Equipments");
+    } catch (error) {
+      handleServiceError(error);
+    }
+  };
+
+  // ============================
   // 🔥 FILTRO (NUEVO: filtra en backend)
   // ============================
   const handleFilter = async (filters) => {
@@ -835,7 +865,11 @@ function Dashboard() {
                 onAcceptRequest={handleAcceptRequest}
                 onDenyRequest={handleDenyRequest}
                 onCancelRequest={handleCancelRequest}
+                onCompleteMaintenance={handleCompleteMaintenance}
+                onReleaseDecommission={handleReleaseToWarehouse}
                 currentUserId={user?.id || user?.Id}
+                allDepartments={allDepartments}
+                allEmployees={tables.find(t => t.name === "Employees")?.rows || []}
               />
             ) : (
               <p className="table-empty">Select a table to view</p>

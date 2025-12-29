@@ -129,8 +129,27 @@ export const dashboardService = {
 
   Assessment: buildService("Assessment"),
   Transfer: buildService("Transfer"),
-  Maintenance: buildService("Maintenance"),
-  EquipmentDecommission: buildService("EquipmentDecommission"),
+  
+  // Maintenance service with special complete action
+  Maintenance: {
+    ...buildService("Maintenance"),
+    complete: async (id) => {
+      const res = await api.post(`/Maintenance/${id}/complete`);
+      return res.data;
+    }
+  },
+  
+  // EquipmentDecommission service with special release action
+  EquipmentDecommission: {
+    ...buildService("EquipmentDecommission"),
+    release: async (id, targetDepartmentId, recipientId) => {
+      const res = await api.post(`/EquipmentDecommission/${id}/release`, {
+        targetDepartmentId,
+        recipientId
+      });
+      return res.data;
+    }
+  },
   
   // TransferRequest service with special actions
   TransferRequest: {

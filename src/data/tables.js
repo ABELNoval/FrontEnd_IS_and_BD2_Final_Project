@@ -77,15 +77,19 @@ export const TABLE_METADATA = {
       AcquisitionDate: { type: "date", required: false, hidden: true }, // Auto-set to today
       EquipmentTypeId: { type: "fk", ref: "EquipmentTypes", required: true },
       DepartmentId: { type: "fk", ref: "Departments", required: false },
+      TechnicalId: { type: "fk", ref: "Technicals", required: true }, // Technical for initial maintenance
       StateId: {
         type: "enum",
         values: ["Operative", "UnderMaintenance", "Decommissioned", "Disposed"],
-        required: true
+        required: false,
+        hidden: true, // Auto-set to UnderMaintenance
+        readonly: true
       },
       LocationTypeId: {
         type: "enum",
         values: ["Department", "Disposal", "Warehouse"],
-        required: true
+        required: false,
+        hidden: true // Auto-set based on DepartmentId
       }
     }
   },
@@ -128,13 +132,24 @@ export const TABLE_METADATA = {
       EquipmentId: { type: "fk", ref: "Equipments", required: true },
       TechnicalId: { type: "fk", ref: "Technicals", required: true },
       MaintenanceDate: { type: "date", required: false, hidden: true }, // Auto-set to today
+      EndDate: { type: "date", readonly: true, required: false },
+      StatusId: {
+        type: "enum",
+        values: ["InProgress", "Completed"],
+        required: false,
+        readonly: true,
+        hidden: true // Auto-set to InProgress
+      },
       MaintenanceTypeId :{
         type: "enum",
-        values: ["Preventive", "Corrective", "Predective", "Emergency"],
+        values: ["Preventive", "Corrective", "Predictive", "Emergency"],
         required: true
       },
       Cost: { type: "number", required: true },
-    }
+    },
+    // Special table with action buttons
+    hasActions: true,
+    actionTable: true
   },
 
   EquipmentDecommissions: {
@@ -152,7 +167,9 @@ export const TABLE_METADATA = {
         required: true
       },
       RecipientId: {type: "fk", ref: "Employees", required: false}  
-    }
+    },
+    hasActions: true,  // Enable actions column
+    actionTable: true  // Mark as an action table
   },
 
   Assessments: {
