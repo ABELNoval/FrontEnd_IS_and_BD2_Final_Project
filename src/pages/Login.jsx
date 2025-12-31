@@ -51,10 +51,19 @@ function Login() {
 
     try {
       const authData = await authService.login(userOrEmail, password);
+
+      // Defensive: ensure response contains token and user
+      const token = authData?.token || authData?.Token;
+      const user = authData?.user || authData?.User;
+      if (!token || !user) {
+        newErrors.userOrEmail = "Authentication failed. Please check your credentials.";
+        setErrors(newErrors);
+        setIsLoading(false);
+        return;
+      }
+
       authService.saveAuth(authData);
-      
       // Get user role and redirect to appropriate dashboard
-      const user = authData.user || authData.User;
       const role = user?.role || user?.Role;
       const redirectPath = getRoleRedirectPath(role);
       navigate(redirectPath);

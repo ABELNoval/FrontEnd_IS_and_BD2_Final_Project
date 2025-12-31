@@ -270,8 +270,8 @@ function TableViewer({
                 {table.name === "TransferRequests" && <th className="actions-header">Actions</th>}
                 {/* Maintenances actions column */}
                 {table.name === "Maintenances" && <th className="actions-header">Actions</th>}
-                {/* Regular actions column */}
-                {table.name !== "TransferRequests" && table.name !== "Maintenances" && table.name !== "EquipmentDecommissions" && (onEdit || onDelete) && <th className="actions-header">Actions</th>}
+                {/* Regular actions column (show when edit/delete available). Keep special action columns as well. */}
+                {(onEdit || onDelete) && <th className="actions-header">Actions</th>}
                 {table.name === "EquipmentDecommissions" && <th className="actions-header">Actions</th>}
               </tr>
             </thead>
@@ -412,8 +412,8 @@ function TableViewer({
                     </td>
                   )}
 
-                  {/* Regular Actions - only show if user has edit or delete permission */}
-                  {!isTransferRequest && !isMaintenance && !isDecommission && (onEdit || onDelete) && (
+                  {/* Regular Actions - show if edit/delete handlers provided, even for special tables (admin needs CRUD) */}
+                  {(onEdit || onDelete) && (
                   <td className="actions-cell">
                     <Button
                       variant="btn-dots"

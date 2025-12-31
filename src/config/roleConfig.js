@@ -17,6 +17,7 @@ export const ROLE_CONFIG = {
       "Assessments",
       "Maintenances",
       "Transfers",
+      "TransferRequests",
       "EquipmentDecommissions",
       "Users"
     ],

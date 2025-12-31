@@ -163,10 +163,6 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
         errors.DepartmentId = "You must select a Department when Location Type is 'Department'";
       }
 
-      if (formData.LocationTypeId !== "Department" && formData.DepartmentId) {
-        errors.DepartmentId = "Department must be empty when equipment is not in a Department";
-      }
-
       if ((formData.StateId === "Operative" || formData.StateId === "UnderMaintenance")) {
         if(formData.LocationTypeId !== "Department"){
           errors.LocationTypeId = "Operative or Under Maintenance equipment must be located in a Department";
