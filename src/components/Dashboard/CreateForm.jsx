@@ -172,7 +172,7 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
         }
       }
       else if (formData.StateId === "Decommissioned" && formData.LocationTypeId !== "Warehouse") {
-        errors.LocationTypeId = "Decommissioned equipment must be located in Warehouse";
+        errors.LocationTypeId = "Decommissioned equipment must be in Warehouse location";
       }
       else if (formData.StateId === "Disposed" && formData.LocationTypeId !== "Disposal") {
         errors.LocationTypeId = "Disposed equipment must be in Disposal location";

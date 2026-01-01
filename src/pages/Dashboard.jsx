@@ -77,17 +77,17 @@ const allTableNames = [
 ];
 
 const enumsValues = {
-  "StateId" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned" : 3, "Disposed" : 4},
+  "StateId" : {"Operative": 1, "UnderMaintenance": 2, "Decommissioned": 3, "Disposed" : 4},
   "MaintenanceTypeId": {"Preventive":1, "Corrective":2, "Predective":3, "Emergency":4},
   "DestinyTypeId" :{"Department":1, "Disposal":2, "Warehouse":3},
   "StatusId": {"Pending": 1, "Accepted": 2, "Denied": 3, "Cancelled": 4},
-  "LocationTypeId" : {"Department":1, "Disposal":2, "Warehouse":3},
+  "LocationTypeId" : {"Department":1, "Warehouse":2, "Disposal":3},
   "RoleId": {"Administrator": 1, "Director": 2, "Technical": 3, "Employee": 4, "Responsible": 5, "Receptor": 6}
 };
 
 // =====================================
 // TRANSFORM TABLE FORMAT
-// =====================================
+// =====================================  
 const transformToTableFormat = (data, tableName) => {
   const defaultColumns = DEFAULT_COLUMNS[tableName] || [];
 

@@ -151,8 +151,8 @@ function TableViewer({
   // LocationType mapping  
   const locationTypeMap = {
     1: { label: "Department", className: "location-department" },
-    2: { label: "Disposal", className: "location-disposal" },
-    3: { label: "Warehouse", className: "location-warehouse" }
+    2: { label: "Warehouse", className: "location-warehouse" },
+    3: { label: "Disposal", className: "location-disposal" }
   };
 
   // DestinyType mapping (for EquipmentDecommissions)
