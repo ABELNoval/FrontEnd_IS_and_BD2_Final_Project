@@ -1,0 +1,165 @@
+/* src/styles/components/FilterPanel.css */
+.filter-panel {
+  position: relative;
+  display: inline-block;
+}
+
+/* .filter-toggle, .filter-badge styles moved to Button.css as variants */
+
+.filter-dropdown {
+  position: fixed !important;
+  top: 100px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: var(--bg-dark-3) !important;
+  border: 1px solid var(--border-orange) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--shadow-orange) !important;
+  width: 90% !important;
+  max-width: 700px !important;
+  z-index: 10002 !important;
+  padding: 0 !important;
+  animation: filterSlideIn 0.3s ease-out !important;
+}
+
+@keyframes filterSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.filter-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid var(--border-orange-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg-dark-2), var(--bg-dark-3));
+  border-radius: 14px 14px 0 0;
+}
+
+.filter-header h4 {
+  color: var(--accent-orange);
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-shadow: 0 0 8px var(--shadow-orange-soft);
+}
+
+/* .close-filter styles moved to Button.css as btn-close */
+
+.filter-content {
+  padding: 25px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.filter-field {
+  margin-bottom: 20px;
+}
+
+.filter-field label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* .filter-input-container, .filter-input, .search-icon styles 
+   moved to Input.css as variant input-filter */
+
+.fk-filter-block {
+  background: var(--bg-dark-2);
+  border: 1px solid var(--border-orange-soft);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+/* .fk-expand-btn styles moved to Button.css as btn-fk-expand */
+
+.fk-subpanel {
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--bg-dark-1);
+  border-radius: 8px;
+  border: 1px solid var(--border-dark);
+}
+
+.fk-subpanel h5 {
+  color: var(--accent-orange);
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.filter-sub-field {
+  margin-bottom: 15px;
+}
+
+.filter-sub-field label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.filter-actions {
+  padding: 20px 25px;
+  border-top: 1px solid var(--border-orange-soft);
+  display: flex;
+  gap: 15px;
+  background: linear-gradient(135deg, var(--bg-dark-2), var(--bg-dark-3));
+  border-radius: 0 0 14px 14px;
+}
+
+/* .filter-clear and .filter-apply styles moved to Button.css 
+   as btn-filter-clear and btn-filter-apply */
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.active-filter-tag {
+  background: var(--border-orange-soft);
+  border: 1px solid var(--accent-orange);
+  color: var(--accent-orange-light);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* .active-filter-tag button styles moved to Button.css as btn-remove-filter */
+
+
+/* Scrollbar for filter-content */
+.filter-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-content::-webkit-scrollbar-track {
+  background: var(--bg-dark-2);
+  border-radius: 3px;
+}
+
+.filter-content::-webkit-scrollbar-thumb {
+  background: var(--border-orange-soft);
+  border-radius: 3px;
+}
+
+.filter-content::-webkit-scrollbar-thumb:hover {
+  background: var(--border-orange);
+}

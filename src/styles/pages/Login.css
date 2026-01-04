@@ -1,0 +1,205 @@
+/* ============================
+        LOGIN PAGE
+   ============================ */
+
+/* ----- MAIN LOGO ----- */
+.main-title {
+  text-align: center;
+  font-size: 11.5rem;
+  font-weight: 600;
+  margin: 20px 0 0 0;
+  padding: 0;
+
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+
+.brand-part.ges,
+.brand-part.tec {
+  color: var(--text-main);
+  font-family: "Segoe UI", Roboto, sans-serif;
+  font-weight: 600;
+  font-size: 9.5rem;
+}
+
+/* ----- H and K Letters (illuminated) ----- */
+.brand-part.highlight {
+  color: var(--accent-orange);
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11.8rem;
+
+  text-shadow: 0 0 12px var(--accent-orange-light);
+  transform: rotate(-3deg);
+  animation: hkGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes hkGlow {
+  0% { text-shadow: 0 0 10px var(--accent-orange); }
+  100% { text-shadow: 0 0 18px var(--accent-orange-light); }
+}
+
+/* ============================
+        AUTH CONTAINER
+   ============================ */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 32px;
+}
+
+/* ----- Main login box ----- */
+.auth-box {
+  background-color: var(--bg-dark-2);
+  border-radius: 14px;
+  width: 360px;
+  max-width: 90vw;
+  padding: 40px;
+  text-align: center;
+
+  border: 1px solid var(--border-orange-soft);
+  box-shadow: var(--shadow-orange-soft);
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-box:hover {
+  border-color: var(--border-orange);
+  box-shadow: var(--shadow-orange);
+}
+
+.auth-shell {
+  position: relative;
+  display: inline-block;
+}
+
+/* REAL EXTERNAL AURA */
+.auth-shell::before {
+  content: "";
+  position: absolute;
+
+  /* extends beyond the box */
+  inset: -70px -90px;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      var(--shadow-orange),
+      var(--shadow-orange-soft),
+      rgba(255, 123, 37, 0.08),
+      transparent 70%
+    );
+
+  filter: blur(35px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+
+
+/* ----- Internal title ----- */
+.auth-title {
+  margin-bottom: 40px;
+  color: var(--accent-orange-light);
+  font-size: 1.4rem;
+  font-weight: 600;
+  position: relative;
+  text-align: center;
+}
+
+.auth-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  width: 70%;
+  height: 2px;
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border-orange),
+    var(--accent-orange),
+    var(--border-orange),
+    transparent
+  );
+
+  box-shadow: 0 0 8px var(--shadow-orange);
+}
+
+/* ============================
+        RESPONSIVENESS
+   ============================ */
+@media (max-height: 700px) {
+  .main-title {
+    font-size: 4rem;
+    margin-top: 10px;
+  }
+
+  .brand-part.ges,
+  .brand-part.tec {
+    font-size: 3.2rem;
+  }
+
+  .brand-part.highlight {
+    font-size: 3.6rem;
+  }
+}
+.auth-box input {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+
+.login-bg {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-dark-2);
+  background-image: url('../../assets/fondo-oficial-nuevo.png');
+  background-size: cover;
+  background-position: bottom left;
+  background-repeat: no-repeat; 
+} 
+
+.login-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ==== General login container ==== */
+.login-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* LOWER EVERYTHING */
+  padding-top: 0px; /* Adjust to your liking */
+}
+
+/* ==== Title adjustment above the box ==== */
+.login-wrapper .main-title {
+  margin-bottom: 90px; /* Space between title and box */
+  text-align: center;
+}
+
+.login-root {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}

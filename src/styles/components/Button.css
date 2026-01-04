@@ -1,0 +1,593 @@
+/* ============================== */
+/* 🎯 BASE CLASS FOR ALL BUTTONS */
+/* ============================== */
+
+.btn-base {
+  position: relative;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(90deg, var(--accent-orange-light), var(--accent-orange));
+  transition: all 0.4s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--accent-orange);
+  text-align: center;
+  
+  /* Ensure text doesn't overflow */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================== */
+/* 🔥 ALL ORIGINAL ANIMATIONS */
+/* ============================== */
+
+/* ——— Phase 1: Blue absorption ——— */
+.btn-base.loading {
+  background: radial-gradient(circle at center, var(--accent-orange-light), var(--accent-orange));
+  box-shadow: 0 0 25px var(--accent-orange),
+              0 0 60px var(--accent-orange-light);
+  animation: absorb 1.2s ease forwards;
+}
+
+@keyframes absorb {
+  0% {
+    background: linear-gradient(90deg,var(--accent-orange-light), var(--accent-orange));
+    box-shadow: 0 0 10px var(--accent-orange);
+  }
+  50% {
+    background: radial-gradient(circle at center, var(--accent-orange-light), var(--accent-orange));
+    box-shadow: 0 0 30px var(--accent-orange);
+  }
+  100% {
+    background: radial-gradient(circle at center, var(--accent-orange-light), var(--accent-orange));
+    box-shadow: 0 0 20px var(--accent-orange);
+  }
+}
+
+/* ——— Phase 2: Gear appears and spins ——— */
+.gear-icon {
+  color: white;
+  animation: spin-gear 1s ease-in-out forwards;
+}
+
+@keyframes spin-gear {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* ——— Original text ——— */
+.btn-text {
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.btn-base.loading .btn-text {
+  opacity: 0;
+}
+
+/* ——— Small pulse on click ——— */
+.btn-base:active {
+  transform: scale(0.97);
+}
+
+/* === Hover Neon Sweep === */
+.btn-base::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    var(--accent-orange),
+    transparent
+  );
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.btn-base:hover::before {
+  left: 150%;
+  opacity: 1;
+}
+
+/* ——— After sweep, button remains illuminated ——— */
+.btn-base:hover {
+  box-shadow:
+    0 0 15px var(--accent-orange-light),
+    0 0 30px var(--accent-orange);
+  background: linear-gradient(90deg, var(--accent-orange-light), var(--accent-orange));
+  transition: all 0.7s ease-in-out;
+  transform: translateY(-2px);
+}
+
+/* ============================== */
+/* 🎨 BUTTON VARIANTS (different colors) */
+/* ============================== */
+
+/* Main blue button (default is already blue) */
+.btn-blue {
+  /* Hereda todo de btn-base */
+}
+
+/* Green button (create, save, success) */
+.btn-green {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
+}
+
+.btn-green:hover {
+  background: linear-gradient(90deg, #218838, #1e7e34);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35);
+}
+
+/* Gray button (cancel, secondary) */
+.btn-gray {
+  background: linear-gradient(90deg, #6c757d, #5a6268);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
+}
+
+.btn-gray:hover {
+  background: linear-gradient(90deg, #5a6268, #4e555b);
+  box-shadow: 0 6px 16px rgba(108, 117, 125, 0.35);
+}
+
+/* ============================== */
+/* 📏 SIZE VARIANTS */
+/* ============================== */
+
+/* Table button (for TableSelector) */
+.btn-table {
+  flex: 1 1 calc(11% - 16px);
+  min-width: 120px;
+  max-width: 160px;
+}
+
+/* Compact button (for forms) */
+.btn-compact {
+  padding: 10px 20px;
+  width: auto;
+  min-width: 120px;
+  max-width: 150px;
+  font-size: 0.9rem;
+}
+
+/* Small button (for table actions) */
+.btn-small {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  width: auto;
+}
+
+/* ============================== */
+/* 🎭 SPECIAL STATES */
+/* ============================== */
+
+/* Active/selected button (for TableSelector) */
+.btn-base.active {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+}
+
+/* Disabled button */
+.btn-base:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-base:disabled:hover {
+  transform: none !important;
+  box-shadow: 0 4px 12px var(--accent-orange);
+}
+
+/* ============================== */
+/* 📱 RESPONSIVE */
+/* ============================== */
+
+@media (max-width: 768px) {
+  .btn-table {
+    min-width: 100px;
+    max-width: 140px;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  
+  .btn-compact {
+    min-width: 100px;
+    padding: 8px 16px;
+  }
+}
+
+/* ============================== */
+/* 🔘 SIMPLE BUTTONS (no loading animation) */
+/* ============================== */
+
+/* Simple button - base for buttons without animation */
+.btn-simple {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-simple:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================== */
+/* 🔧 FILTER BUTTON (Filter Toggle) */
+/* ============================== */
+
+.btn-filter-toggle {
+  background: rgba(255, 123, 37, 0.1);
+  border: 1px solid var(--border-orange);
+  color: var(--accent-orange);
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-filter-toggle:hover {
+  background: rgba(255, 123, 37, 0.2);
+  box-shadow: var(--shadow-orange-soft);
+  transform: translateY(-2px);
+}
+
+.btn-filter-toggle.has-filters {
+  background: rgba(255, 123, 37, 0.25);
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 15px rgba(255, 123, 37, 0.2);
+}
+
+.filter-badge {
+  background: var(--accent-orange);
+  color: #000;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+/* ============================== */
+/* ❌ CLOSE BUTTON */
+/* ============================== */
+
+.btn-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover {
+  background: rgba(255, 123, 37, 0.1);
+  color: var(--accent-orange);
+}
+
+/* ============================== */
+/* 🔽 FK EXPAND BUTTON */
+/* ============================== */
+
+.btn-fk-expand {
+  background: rgba(255, 123, 37, 0.1);
+  border: 1px solid var(--border-orange);
+  color: var(--accent-orange);
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.btn-fk-expand:hover {
+  background: rgba(255, 123, 37, 0.2);
+}
+
+/* ============================== */
+/* 🧹 CLEAR FILTERS BUTTON */
+/* ============================== */
+
+.btn-filter-clear {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2));
+  color: var(--text-secondary);
+  border: 1px solid var(--border-dark);
+}
+
+.btn-filter-clear:hover {
+  background: linear-gradient(135deg, var(--bg-dark-2), var(--bg-dark-3));
+  color: var(--text-main);
+  border-color: var(--border-orange);
+}
+
+/* ============================== */
+/* ✅ APPLY FILTERS BUTTON */
+/* ============================== */
+
+.btn-filter-apply {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+  color: #000;
+  border: 1px solid var(--accent-orange);
+  box-shadow: var(--shadow-orange-soft);
+}
+
+.btn-filter-apply:hover {
+  background: linear-gradient(135deg, var(--accent-orange-light), var(--accent-orange));
+  box-shadow: var(--shadow-orange);
+  transform: translateY(-2px);
+}
+
+/* ============================== */
+/* ➡️ NAVIGATION BUTTON (Arrows) */
+/* ============================== */
+
+.btn-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20, 20, 20, 0.9);
+  border: 1px solid rgba(255, 165, 0, 0.35);
+  color: var(--accent-orange);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s ease;
+}
+
+.btn-nav-arrow:hover {
+  background: var(--accent-orange);
+  color: #111;
+  box-shadow: 0 0 12px rgba(255, 165, 0, 0.5);
+}
+
+.btn-nav-arrow.left {
+  left: 0;
+}
+
+.btn-nav-arrow.right {
+  right: 0;
+}
+
+/* ============================== */
+/* ⋮ DOTS BUTTON (Three dots) */
+/* ============================== */
+
+.btn-dots {
+  background: rgba(255, 123, 37, 0.1);
+  border: 1px solid var(--border-orange-soft);
+  border-radius: 6px;
+  color: var(--accent-orange);
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px 10px;
+  transition: all 0.25s;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-dots:hover {
+  background: rgba(255, 123, 37, 0.2);
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 10px rgba(255, 123, 37, 0.3);
+  transform: scale(1.1);
+}
+
+/* ============================== */
+/* ⏮⏭ PAGINATION BUTTON */
+/* ============================== */
+
+.btn-pagination {
+  background: transparent;
+  border: none;
+  color: var(--accent-orange);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  transition: 0.25s;
+}
+
+.btn-pagination:hover:not(:disabled) {
+  transform: scale(1.15);
+  text-shadow: 0 0 8px rgba(255, 165, 0, 0.6);
+}
+
+.btn-pagination:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ============================== */
+/* 📊 REPORT TOGGLE BUTTON */
+/* ============================== */
+
+.btn-report-toggle {
+  background: transparent;
+  border: none;
+  color: var(--accent-orange);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.25s;
+}
+
+.btn-report-toggle:hover {
+  text-shadow: 0 0 10px rgba(255, 140, 0, 0.818);
+}
+
+.btn-report-toggle:focus {
+  outline: none;
+}
+
+/* ============================== */
+/* 📤 EXPORT REPORT BUTTON */
+/* ============================== */
+
+.btn-report-export {
+  margin-top: 8px;
+  background: var(--accent-orange);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.25s;
+}
+
+.btn-report-export:hover {
+  box-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+}
+
+/* ============================== */
+/* 🚪 LOGOUT BUTTON */
+/* ============================== */
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--accent-orange);
+  color: var(--accent-orange);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.btn-logout:hover {
+  background: var(--accent-orange);
+  color: black;
+}
+
+/* ============================== */
+/* 🏷️ REMOVE FILTER TAG BUTTON */
+/* ============================== */
+
+.btn-remove-filter {
+  background: none;
+  border: none;
+  color: var(--accent-orange);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.btn-remove-filter:hover {
+  background: var(--accent-orange);
+  color: #000;
+}
+
+/* ============================== */
+/* ◀▶ TABLE SCROLL BUTTONS */
+/* ============================== */
+
+.btn-table-scroll {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid var(--border-orange);
+  color: var(--accent-orange);
+  width: 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s ease;
+  font-size: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-table-scroll:hover {
+  background: var(--accent-orange);
+  color: #000;
+  box-shadow: var(--shadow-orange);
+}
+
+.btn-table-scroll-left {
+  left: 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.btn-table-scroll-right {
+  right: 0;
+  border-radius: 8px 0 0 8px;
+}

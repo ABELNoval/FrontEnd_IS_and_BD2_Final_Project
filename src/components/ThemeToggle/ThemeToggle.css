@@ -1,0 +1,19 @@
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-orange-soft);
+  color: var(--accent-orange);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--border-orange-soft);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-orange-soft);
+}

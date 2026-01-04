@@ -1,0 +1,172 @@
+/* ============================
+      VARIABLES CSS (Tema oscuro)
+   ============================ */
+:root {
+  /* Colores principales */
+  --accent-orange: #ff7b25;
+  --accent-orange-light: #ff9d5c;
+  --accent-orange-dark: #e6691a;
+  
+  /* Fondo */
+  --bg-dark-1: #0a0a0a;
+  --bg-dark-2: #141414;
+  --bg-dark-3: #1a1a1a;
+  
+  /* Texto */
+  --text-main: #ffffff;
+  --text-secondary: #cccccc;
+  --text-muted: #888888;
+  
+  /* Bordes */
+  --border-orange: rgba(255, 123, 37, 0.5);
+  --border-orange-soft: rgba(255, 123, 37, 0.25);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  
+  /* Sombras */
+  --shadow-orange: 0 0 20px rgba(255, 123, 37, 0.3);
+  --shadow-orange-soft: 0 0 15px rgba(255, 123, 37, 0.15);
+  --shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.4);
+  
+  /* Estados */
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --info: #17a2b8;
+}
+
+[data-theme='light'] {
+  /* Colores principales - Blue tones for better contrast on light mode */
+  --accent-orange: #0066cc;       /* Primary Blue */
+  --accent-orange-light: #3399ff; /* Lighter Blue */
+  --accent-orange-dark: #004c99;  /* Darker Blue */
+  
+  /* Fondo - Inverted */
+  --bg-dark-1: #ffffff; 
+  --bg-dark-2: #f4f6f8; /* Slight blueish gray tint */
+  --bg-dark-3: #e1e4e8; 
+  
+  /* Texto - Inverted */
+  --text-main: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  
+  /* Bordes */
+  --border-orange: rgba(0, 102, 204, 0.5);
+  --border-orange-soft: rgba(0, 102, 204, 0.2);
+  --border-dark: rgba(0, 0, 0, 0.12); 
+  
+  /* Sombras */
+  --shadow-orange: 0 0 20px rgba(0, 102, 204, 0.15);
+  --shadow-orange-soft: 0 0 15px rgba(0, 102, 204, 0.1);
+  --shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================
+          RESET / BASE
+   ============================ */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============================
+           TYPOGRAPHY
+   ============================ */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ============================
+        GLOBAL TRANSITIONS
+   ============================ */
+* {
+  transition: background-color 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+/* ============================
+        GLOBAL LINKS
+   ============================ */
+a {
+  color: var(--accent-orange-light);
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: var(--accent-orange-light);
+  transition: width 0.3s ease;
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+a:hover {
+  color: var(--accent-orange);
+}
+
+
+.circuit-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: #0d1117;
+}
+
+/* 🔥 LUZ viajando por los cables */
+.moving-light {
+  animation: move1 5s infinite linear;
+}
+.moving-light2 {
+  animation: move2 6s infinite linear;
+}
+
+@keyframes move1 {
+  0%   { transform: translateX(0px); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateX(300px); opacity: 0; }
+}
+
+@keyframes move2 {
+  0%   { transform: translateX(0px); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateX(400px); opacity: 0; }
+}
+
+/* 🔥 Glow suave */
+.moving-light,
+.moving-light2 {
+  filter: drop-shadow(0 0 6px #ff7b25);
+}

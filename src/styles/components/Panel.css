@@ -1,0 +1,190 @@
+/* src/styles/components/Panel.css */
+
+/* ===== BASE CLASS FOR ALL PANELS ===== */
+.panel-base {
+  position: fixed;
+  background: var(--bg-dark-2);
+  border: 1px solid var(--accent-orange);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  box-shadow: var(--shadow-orange);
+  animation: panel-fade-in 0.3s ease;
+}
+
+@keyframes panel-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== RIGHT SIDE PANEL (current) ===== */
+.panel-right {
+  top: 70px;
+  right: 0;
+  width: 400px;
+  height: calc(100vh - 70px);
+  border-left: 1px solid var(--accent-orange);
+  animation: slide-in-right 0.25s ease;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ===== HORIZONTAL BOTTOM PANEL (NEW) ===== */
+.panel-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 400px; /* Fixed height, adjustable */
+  border-top: 1px solid var(--accent-orange);
+  animation: slide-up 0.25s ease;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ===== FULL PANEL (modal) ===== */
+.panel-modal {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  border-radius: 10px;
+  animation: scale-in 0.2s ease;
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ===== SIZE MODIFIERS ===== */
+.panel-full-height {
+  height: 100vh !important;
+  top: 0 !important;
+}
+
+.panel-full-width {
+  width: 100vw !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* ===== DROPDOWN MENU PANEL ===== */
+.panel-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 140px;
+  background: rgba(20, 20, 20, 1);
+  border: 1px solid rgba(255, 140, 0, 1);
+  border-radius: 10px;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+  z-index: 1000;
+  animation: panel-fade-in 0.15s ease;
+}
+
+/* ===== DROPDOWN PANEL (auto-size based on content) ===== */
+.panel-dropdown {
+  /* Reset panel-base positioning */
+  position: fixed;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  /* Auto-size based on content */
+  width: auto;
+  height: auto;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  animation: dropdown-fade-in 0.2s ease;
+}
+
+@keyframes dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== CLOSE BUTTON FOR PANELS ===== */
+.panel-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 140, 0, 0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.panel-close-btn:hover {
+  color: rgba(255, 140, 0, 1);
+  background: rgba(255, 140, 0, 0.1);
+}
+
+/* ===== PANEL CONTENT ===== */
+.panel-content {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for panels */
+.panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 140, 0, 0.5);
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 140, 0, 0.7);
+}

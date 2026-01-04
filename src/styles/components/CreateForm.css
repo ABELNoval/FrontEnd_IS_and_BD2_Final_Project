@@ -1,0 +1,252 @@
+/* src/styles/components/CreateForm.css */
+
+/* ===== RIGHT SIDE PANEL FOR CREATE/UPDATE ===== */
+.create-form-panel {
+  top: 64px !important; /* Below header */
+  right: 0 !important;
+  width: 380px !important;
+  height: calc(100vh - 64px) !important;
+  border-left: 1px solid var(--border-orange) !important;
+  box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5) !important;
+  overflow: hidden !important;
+}
+
+.create-form-panel .panel-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-form-container {
+  padding: 30px;
+  padding-bottom: 0; /* No bottom padding, handled by form-actions */
+  background: var(--bg-dark-3);
+  color: var(--text-main);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent scroll in container */
+}
+
+/* Header with title and X button */
+.create-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-orange-soft);
+}
+
+.create-form-header h3 {
+  color: var(--accent-orange);
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255, 123, 37, 0.2);
+}
+
+.create-form-header .btn-close {
+  flex-shrink: 0;
+}
+
+.create-form {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  min-height: 0; /* Required for flex: 1 with overflow to work */
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-dark-2);
+  border: 1px solid var(--border-dark);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--accent-orange);
+  background: rgba(255, 123, 37, 0.05);
+  box-shadow: 0 0 0 3px rgba(255, 123, 37, 0.1);
+}
+
+.form-input:hover,
+.form-select:hover {
+  border-color: var(--border-orange);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:disabled {
+  background: var(--bg-dark-1);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Readonly fields styling */
+.form-input-readonly {
+  background: var(--bg-dark-1) !important;
+  color: var(--text-secondary) !important;
+  border-style: dashed !important;
+  opacity: 0.7;
+}
+
+.form-input-readonly:hover {
+  border-color: var(--border-dark) !important;
+}
+
+/* Special style for selects */
+/* In CreateForm.css - update .form-select class */
+.form-select {
+  width: 100%;
+  padding: 12px 42px 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-dark);
+  background: var(--bg-dark-1);
+  color: var(--text-main);
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+  appearance: none;
+  cursor: pointer;
+  
+  /* Custom arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300aaff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  background-color: var(--bg-dark-1) !important;
+}
+
+.form-select:focus {
+  border-color: var(--accent-orange);
+  background: var(--bg-dark-2) !important;
+  box-shadow: 0 0 6px var(--accent-orange-light);
+}
+
+.form-select option {
+  background: var(--bg-dark-1);
+  color: var(--text-main);
+  padding: 10px;
+}
+
+/* For selects inside filter forms */
+.filter-input {
+  /* ... other styles ... */
+  background: var(--bg-dark-1) !important;
+}
+
+.filter-input option {
+  background: var(--bg-dark-1);
+  color: var(--text-main);
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  padding: 20px 30px;
+  border-top: 1px solid var(--border-orange-soft);
+  margin-top: auto; /* Push to bottom */
+  background: var(--bg-dark-3); /* Solid background */
+  flex-shrink: 0; /* Don't shrink */
+  margin-left: -30px; /* Compensate container padding */
+  margin-right: -30px;
+}
+
+.form-actions .btn-base {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Cancel button */
+.form-actions .btn-base:first-child {
+  background: linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2));
+  color: var(--text-secondary);
+  border: 1px solid var(--border-dark);
+}
+
+.form-actions .btn-base:first-child:hover {
+  background: linear-gradient(135deg, var(--bg-dark-2), var(--bg-dark-3));
+  color: var(--text-main);
+  border-color: var(--border-orange);
+}
+
+/* Save/Update button */
+.form-actions .btn-base:last-child {
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+  color: #000;
+  font-weight: 700;
+  border: 1px solid var(--accent-orange);
+  box-shadow: var(--shadow-orange-soft);
+}
+
+.form-actions .btn-base:last-child:hover {
+  background: linear-gradient(135deg, var(--accent-orange-light), var(--accent-orange));
+  box-shadow: var(--shadow-orange);
+  transform: translateY(-2px);
+}
+
+/* Custom scrollbar */
+.create-form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.create-form::-webkit-scrollbar-track {
+  background: var(--bg-dark-2);
+  border-radius: 3px;
+}
+
+.create-form::-webkit-scrollbar-thumb {
+  background: rgba(255, 123, 37, 0.3);
+  border-radius: 3px;
+}
+
+.create-form::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 123, 37, 0.5);
+}
+
+/* Error message below input */
+.form-error {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.form-error::before {
+  content: "⚠";
+  font-size: 14px;
+}

@@ -1,0 +1,96 @@
+name: Auto Move Issues to In Progress
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/**
+      - issue-**
+
+jobs:
+  move-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Extraer número de Issue del commit
+        id: extract
+        run: |
+          echo "MESSAGE=${{ github.event.head_commit.message }}" >> $GITHUB_ENV
+          ISSUE=$(echo "${{ github.event.head_commit.message }}" | grep -o '#[0-9]\+' | head -1 | tr -d '#')
+          if [ -n "$ISSUE" ]; then
+            echo "ISSUE=$ISSUE" >> $GITHUB_ENV
+          fi
+
+      - name: Mover Issue a In Progress
+        if: env.ISSUE != ''
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            const issue_number = process.env.ISSUE;
+
+            // IDs de tu Project V2
+            const projectId   = "PVT_kwHOCf1UGM4BD2Sf";
+            const fieldId     = "PVTSSF_lAHOCf1UGM4BD2Sfzg1pXUQ";
+            const inProgressId= "47fc9ee4"; // "In progress"
+
+            console.log(`Detectado Issue #${issue_number}, buscando en el Project...`);
+
+            // 1. Buscar itemId en el Project
+            const query = `
+              query($owner: String!, $repo: String!, $issue: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  issue(number: $issue) {
+                    projectItems(first: 10) {
+                      nodes {
+                        id
+                        project {
+                          id
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+            const vars = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue: parseInt(issue_number)
+            };
+            const res = await github.graphql(query, vars);
+
+            if (res.repository.issue.projectItems.nodes.length === 0) {
+              console.log("⚠️ El Issue no está en ningún Project, no se mueve.");
+              return;
+            }
+
+            const itemId = res.repository.issue.projectItems.nodes[0].id;
+            console.log(`Item encontrado en Project con ID: ${itemId}`);
+
+            // 2. Mutación para mover a In Progress
+            const mutation = `
+              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $valueId: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId,
+                  itemId: $itemId,
+                  fieldId: $fieldId,
+                  value: { singleSelectOptionId: $valueId }
+                }) {
+                  projectV2Item { id }
+                }
+              }
+            `;
+            await github.graphql(mutation, {
+              projectId: projectId,
+              itemId: itemId,
+              fieldId: fieldId,
+              valueId: inProgressId
+            });
+
+            console.log(`✅ Issue #${issue_number} movido a In Progress con éxito`);
