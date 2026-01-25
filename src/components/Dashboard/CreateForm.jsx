@@ -1,5 +1,6 @@
 // src/components/Dashboard/CreateForm.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import Button from "../Button/Button";
 import { TABLE_METADATA } from "../../data/tables";
@@ -16,6 +17,45 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
   const columns = Object.keys(columnsMeta).filter(c => c !== "Id" && !columnsMeta[c]?.hidden);
   const [formData, setFormData] = useState({});
   const lastEditedId = useRef(null);
+
+  // Tooltip state for prohibition hints
+  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, text: "" });
+
+  const showTooltip = useCallback((e, text) => {
+    setTooltip({ visible: true, x: e.clientX + 12, y: e.clientY + 12, text });
+  }, []);
+
+  const moveTooltip = useCallback((e) => {
+    setTooltip(t => ({ ...t, x: e.clientX + 12, y: e.clientY + 12 }));
+  }, []);
+
+  const hideTooltip = useCallback(() => {
+    setTooltip(t => ({ ...t, visible: false }));
+  }, []);
+
+  // Determines if a field should be disabled based on other field values
+  const getFieldProhibition = (col) => {
+    // EquipmentDecommissions: Destiny controls Department and Recipient
+    if (table.name === "EquipmentDecommissions") {
+      const destiny = formData.DestinyTypeId;
+      if (destiny && destiny !== "Department") {
+        if (col === "DepartmentId") {
+          return {
+            disabled: true,
+            reason: `🚫 Cannot select Department when destiny is "${destiny}". Only available for "Department" destiny.`
+          };
+        }
+        if (col === "RecipientId") {
+          return {
+            disabled: true,
+            reason: `🚫 Cannot select Recipient when destiny is "${destiny}". Only available for "Department" destiny.`
+          };
+        }
+      }
+    }
+
+    return { disabled: false, reason: "" };
+  };
 
   // Create reverse enum map (numeric ID -> string name)
   const getReverseEnumMap = (enumMap) => {
@@ -91,7 +131,30 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
 
 
   const handleChange = (col, value) => {
-    setFormData(prev => ({ ...prev, [col]: value }));
+    let updates = { [col]: value };
+
+    // Auto-clear dependent fields when master field changes
+    if (table.name === "EquipmentDecommissions" && col === "DestinyTypeId") {
+      if (value && value !== "Department") {
+        // Clear Department and Recipient when destiny is not Department
+        updates.DepartmentId = "";
+        updates.RecipientId = "";
+      }
+    }
+
+    if (table.name === "Equipments" && col === "StateId") {
+      if (value === "Decommissioned") {
+        updates.LocationTypeId = "Warehouse";
+        updates.DepartmentId = "";
+      } else if (value === "Disposed") {
+        updates.LocationTypeId = "Disposal";
+        updates.DepartmentId = "";
+      } else if (value === "Operative" || value === "UnderMaintenance") {
+        updates.LocationTypeId = "Department";
+      }
+    }
+
+    setFormData(prev => ({ ...prev, ...updates }));
     setErrors(prev => ({ ...prev, [col]: null }));
   };
 
@@ -179,7 +242,7 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
       }
     }
 
-    // EquipmentDecommissions
+    // EquipmentDecommissions - only validate required fields for Department destiny
     if (table.name === "EquipmentDecommissions") {
       if (formData.DestinyTypeId === "Department") {
         if (!formData.DepartmentId) {
@@ -189,14 +252,7 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
           errors.RecipientId = "You must select a Recipient for Department destiny";
         }
       }
-      else {
-        if (formData.DepartmentId) {
-          errors.DepartmentId = "Department must be empty for Warehouse or Disposal destiny";
-        }
-        if (formData.RecipientId) {
-          errors.RecipientId = "Recipient must be empty for Warehouse or Disposal destiny";
-        }
-      }
+      // No need to validate empty fields for other destinies - they are auto-cleared and disabled
     }
 
     // ========================
@@ -305,13 +361,21 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
           if (metaCol.type === "fk") {
             const refName = metaCol.ref;
             const options = getOptionsForFk(refName, col);
+            const { disabled, reason } = getFieldProhibition(col);
             return (
-              <div key={col} className="form-field">
+              <div 
+                key={col} 
+                className={`form-field ${disabled ? 'form-field-disabled' : ''}`}
+                onMouseEnter={disabled ? (e => showTooltip(e, reason)) : undefined}
+                onMouseMove={disabled ? moveTooltip : undefined}
+                onMouseLeave={disabled ? hideTooltip : undefined}
+              >
                 <label>{label}:</label>
                 <select
                   value={formData[col] ?? ""}
                   onChange={e => handleChange(col, e.target.value)}
                   className="form-select"
+                  disabled={disabled}
                 >
                   <option value="">{`Select ${label}`}</option>
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -326,13 +390,21 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
           }
 
           if (metaCol.type === "enum") {
+            const { disabled, reason } = getFieldProhibition(col);
             return (
-              <div key={col} className="form-field">
+              <div 
+                key={col} 
+                className={`form-field ${disabled ? 'form-field-disabled' : ''}`}
+                onMouseEnter={disabled ? (e => showTooltip(e, reason)) : undefined}
+                onMouseMove={disabled ? moveTooltip : undefined}
+                onMouseLeave={disabled ? hideTooltip : undefined}
+              >
                 <label>{label}:</label>
                 <select
                   value={formData[col] ?? ""}
                   onChange={e => handleChange(col, e.target.value)}
                   className="form-select"
+                  disabled={disabled}
                 >
                   <option value="">{`Select ${label}`}</option>
                   {metaCol.values.map(v => <option key={v} value={v}>{v}</option>)}
@@ -400,6 +472,32 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
           text={editingItem ? 'Update' : 'Save'}
         />
       </div>
+
+      {/* Floating tooltip for prohibited fields - rendered via Portal */}
+      {tooltip.visible && createPortal(
+        <div 
+          className="prohibition-tooltip"
+          style={{
+            position: 'fixed',
+            left: tooltip.x,
+            top: tooltip.y,
+            zIndex: 99999,
+            background: '#dc3545',
+            color: '#fff',
+            padding: '8px 12px',
+            borderRadius: '6px',
+            fontSize: '13px',
+            maxWidth: '280px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            pointerEvents: 'none',
+            fontWeight: 500,
+            lineHeight: 1.4
+          }}
+        >
+          {tooltip.text}
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
