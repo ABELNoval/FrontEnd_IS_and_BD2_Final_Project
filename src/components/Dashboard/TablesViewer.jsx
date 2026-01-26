@@ -126,7 +126,7 @@ function TableViewer({
     col !== "Id" &&
     !hiddenColumns.includes(col) &&
     !hiddenColumns.includes(col.toLowerCase()) &&
-    !(table.name === "Equipments" && userRole === "Responsible" && (col === "isTransferred" || col === "IsTransferred"))
+    !(table.name === "Equipments" && (col === "isTransferred" || col === "IsTransferred"))
   ) || [];
   const displayRows = table.filteredRows || table.rows;
 
