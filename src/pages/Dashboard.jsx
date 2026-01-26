@@ -925,6 +925,9 @@ function Dashboard() {
               tables={tables}
               allDepartments={allDepartments}
               editingItem={editingItem}
+              hiddenColumns={getHiddenColumns(userRole, selectedTable?.name)}
+              currentUserId={user?.id || user?.Id}
+              userRole={userRole}
               onClose={() => {
                 setShowCreateForm(false);
                 setEditingItem(null);

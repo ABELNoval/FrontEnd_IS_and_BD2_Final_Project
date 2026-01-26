@@ -9,12 +9,16 @@ import "../../styles/components/CreateForm.css";
 // import { validateRequired } from "../../utils/validators";
 
 
-function CreateForm({ table, tables, allDepartments, onClose, onSave, editingItem }) {
+function CreateForm({ table, tables, allDepartments, onClose, onSave, editingItem, hiddenColumns = [], currentUserId, userRole }) {
   const meta = TABLE_METADATA[table.name] || { columns: {} };
   const [errors, setErrors] = useState({});
   const columnsMeta = meta.columns || {};
-  // hide Id and columns marked as hidden
-  const columns = Object.keys(columnsMeta).filter(c => c !== "Id" && !columnsMeta[c]?.hidden);
+  // hide Id, columns marked as hidden, and role-specific hiddenColumns
+  const columns = Object.keys(columnsMeta).filter(c => 
+    c !== "Id" && 
+    !columnsMeta[c]?.hidden && 
+    !hiddenColumns.includes(c)
+  );
   const [formData, setFormData] = useState({});
   const lastEditedId = useRef(null);
 
@@ -273,6 +277,12 @@ function CreateForm({ table, tables, allDepartments, onClose, onSave, editingIte
   const preparePayload = () => {
     const payload = {};
     const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
+    
+    // Auto-fill hidden columns based on user role
+    // Technical role: auto-fill TechnicalId with current user
+    if (userRole === "Technical" && hiddenColumns.includes("TechnicalId") && currentUserId) {
+      payload.TechnicalId = currentUserId;
+    }
     
     columns.forEach(col => {
       const metaCol = columnsMeta[col];
