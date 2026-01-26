@@ -87,15 +87,19 @@ export const ROLE_CONFIG = {
   
   Technical: {
     tables: [
-      // Catalog tables (includes Equipments - general view)
-      ...CATALOG_TABLES,
-      "Employees",         // For RecipientId in EquipmentDecommissions
-      // Action tables
+      // Catalog tables - NO Responsibles (not needed for Technical)
+      "Sections",
+      "Departments",
+      "EquipmentTypes",
+      "Equipments",
+      "Directors",         // For viewing directors
+      "Employees",         // For RecipientId in EquipmentDecommissions (no filter, excludes Responsibles)
+      // Action tables - filtered by TechnicalId
       "Maintenances",      // Filtered by TechnicalId (their own)
       "Assessments",       // Filtered by TechnicalId (their own)
       "EquipmentDecommissions" // Filtered by TechnicalId (their own)
     ],
-    readOnlyTables: [...CATALOG_TABLES, "Employees"],
+    readOnlyTables: ["Sections", "Departments", "EquipmentTypes", "Equipments", "Directors", "Employees"],
     canCreate: true,
     canEdit: true,
     canDelete: false,
