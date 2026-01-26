@@ -359,7 +359,9 @@ function TableViewer({
                   {/* Ownership cell for Responsible in Equipments */}
                   {table.name === "Equipments" && userRole === "Responsible" && (
                     <td>
-                      {row.isTransferred ? "Owner" : "Transferred"}
+                      <span className={`status-badge ${row.isTransferred ? 'status-operative' : 'status-denied'}`}>
+                        {row.isTransferred ? "Owner" : "Transferred"}
+                      </span>
                     </td>
                   )}
 
