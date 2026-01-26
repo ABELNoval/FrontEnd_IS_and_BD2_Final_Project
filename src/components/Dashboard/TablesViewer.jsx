@@ -162,8 +162,17 @@ function TableViewer({
     3: { label: "Warehouse", className: "destiny-warehouse" }
   };
 
+  // Check if a GUID is empty (all zeros)
+  const isEmptyGuid = (value) => {
+    return value === "00000000-0000-0000-0000-000000000000" || 
+           value === "00000000000000000000000000000000";
+  };
+
   const formatCell = (cell, colName = "", tableName = "") => {
     if (cell === null || cell === undefined) return "";
+    
+    // Check for empty GUID and return empty string
+    if (typeof cell === "string" && isEmptyGuid(cell)) return "";
 
     // Special handling for Equipment StateId
     if (tableName === "Equipments" && colName === "StateId") {
@@ -196,6 +205,9 @@ function TableViewer({
     }
 
     if (typeof cell === "object" && cell.isForeign) {
+      // Check if foreign key value is empty GUID
+      if (isEmptyGuid(cell.value)) return "";
+      
       const label = cell.visual ?? cell.value;
       return (
         <span
