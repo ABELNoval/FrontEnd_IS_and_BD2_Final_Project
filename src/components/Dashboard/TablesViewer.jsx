@@ -5,6 +5,7 @@ import Panel from "../Panel/Panel";
 import "../../styles/components/Table.css";
 
 function TableViewer({
+  userRole,
   table,
   tables,
   onForeignClick,
@@ -122,7 +123,10 @@ function TableViewer({
   }
 
   const visibleColumns = table?.columns?.filter(col => 
-    col !== "Id" && !hiddenColumns.includes(col) && !hiddenColumns.includes(col.toLowerCase())
+    col !== "Id" &&
+    !hiddenColumns.includes(col) &&
+    !hiddenColumns.includes(col.toLowerCase()) &&
+    !(table.name === "Equipments" && userRole === "Responsible" && (col === "isTransferred" || col === "IsTransferred"))
   ) || [];
   const displayRows = table.filteredRows || table.rows;
 
@@ -351,6 +355,13 @@ function TableViewer({
                     const cell = row[col];
                     return <td key={col}>{formatCell(cell, col, table.name)}</td>;
                   })}
+
+                  {/* Ownership cell for Responsible in Equipments */}
+                  {table.name === "Equipments" && userRole === "Responsible" && (
+                    <td>
+                      {row.isTransferred ? "Owner" : "Transferred"}
+                    </td>
+                  )}
 
                   {/* TransferRequests specific actions */}
                   {isTransferRequest && (

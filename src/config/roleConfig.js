@@ -83,9 +83,10 @@ export const ROLE_CONFIG = {
     ],
     readOnlyTables: ["Sections", "Departments", "EquipmentTypes", "Equipments", "Responsibles", "Employees", "Maintenances", "EquipmentDecommissions", "Transfers"],
     canCreate: true,
-    canEdit: true,
+    canEdit: false,
     canDelete: false,
     canExportReports: true,
+    canEditTables: [],
     dashboardTitle: "Responsible Dashboard",
     hiddenColumns: {}
   },

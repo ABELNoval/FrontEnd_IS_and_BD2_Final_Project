@@ -861,6 +861,7 @@ function Dashboard() {
 
             {selectedTable ? (
               <TableViewer
+                userRole={userRole}
                 table={tableWithFilters}
                 tables={tables}
                 onForeignClick={handleForeignClick}
