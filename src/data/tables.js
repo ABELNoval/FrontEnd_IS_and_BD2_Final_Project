@@ -119,7 +119,8 @@ export const TABLE_METADATA = {
         values: ["Pending", "Accepted", "Denied", "Cancelled"],
         required: true,
         readonly: true
-      }
+      },
+      ResolverId: { type: "fk", ref: "Responsibles", readonly: true } // Director who resolved the request
     },
     // Special table with action buttons instead of edit/delete
     hasActions: true,

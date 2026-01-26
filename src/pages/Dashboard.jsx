@@ -113,7 +113,11 @@ const transformToTableFormat = (data, tableName) => {
       Object.keys(item).forEach((key) => {
         if (key.endsWith("Id")) {
           var refTable = key.replace("Id", "");
-          if (key.startsWith("Source") || key.startsWith("Target")) { refTable = "Department";} 
+          // Special mappings for FK names that don't match table names
+          if (key.startsWith("Source") || key.startsWith("Target")) { refTable = "Department"; }
+          if (key === "RecipientId") { refTable = "Employee"; } // RecipientId -> Employees table
+          if (key === "RequesterId") { refTable = "Responsible"; } // RequesterId -> Responsibles table
+          if (key === "ResolverId") { refTable = "Responsible"; } // ResolverId -> Directors table
           const upRefTable = refTable.charAt(0).toLocaleUpperCase() + refTable.slice(1) + "s";
           if (allTableNames.includes(upRefTable)) {
             row[key] = {

@@ -111,10 +111,13 @@ export const ROLE_CONFIG = {
   
   Employee: {
     tables: [
-      // Catalog tables (includes Equipments - general view)
-      ...CATALOG_TABLES
+      // Only what they need to see - filtered by their department
+      "Sections",         // Only their section (filtered by backend via department)
+      "Departments",      // Only their department (filtered by backend)
+      "Equipments",       // Only equipment in their department (filtered by backend)
+      "EquipmentTypes"    // Only types of equipment in their department (filtered by backend)
     ],
-    readOnlyTables: [...CATALOG_TABLES],
+    readOnlyTables: ["Sections", "Departments", "Equipments", "EquipmentTypes"],
     canCreate: false,
     canEdit: false,
     canDelete: false,

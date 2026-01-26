@@ -205,8 +205,8 @@ function TableViewer({
     }
 
     if (typeof cell === "object" && cell.isForeign) {
-      // Check if foreign key value is empty GUID
-      if (isEmptyGuid(cell.value)) return "";
+      // Check if foreign key value is empty GUID or null
+      if (!cell.value || isEmptyGuid(cell.value)) return "";
       
       const label = cell.visual ?? cell.value;
       return (
