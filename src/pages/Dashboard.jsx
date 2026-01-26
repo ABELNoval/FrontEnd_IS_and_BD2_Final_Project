@@ -115,9 +115,16 @@ const transformToTableFormat = (data, tableName) => {
           var refTable = key.replace("Id", "");
           // Special mappings for FK names that don't match table names
           if (key.startsWith("Source") || key.startsWith("Target")) { refTable = "Department"; }
-          if (key === "RecipientId") { refTable = "Employee"; } // RecipientId -> Employees table
           if (key === "RequesterId") { refTable = "Responsible"; } // RequesterId -> Responsibles table
           if (key === "ResolverId") { refTable = "Responsible"; } // ResolverId -> Responsibles table
+          // Distinción para RecipientId
+          if (key === "RecipientId") {
+            if (tableName === "Transfers") {
+              refTable = "Responsible";
+            } else {
+              refTable = "Employee";
+            }
+          }
           const upRefTable = refTable.charAt(0).toLocaleUpperCase() + refTable.slice(1) + "s";
           if (allTableNames.includes(upRefTable)) {
             row[key] = {

@@ -208,6 +208,10 @@ function TableViewer({
       // Check if foreign key value is empty GUID or null
       if (!cell.value || isEmptyGuid(cell.value)) return "";
       
+      // Si es Department y no hay visual, mostrar Department()
+      if ((cell.ref === "Departments" || cell.ref === "Department") && (cell.visual === null || cell.visual === undefined)) {
+        return <span className="foreign">Department()</span>;
+      }
       const label = cell.visual ?? cell.value;
       return (
         <span
