@@ -117,7 +117,7 @@ const transformToTableFormat = (data, tableName) => {
           if (key.startsWith("Source") || key.startsWith("Target")) { refTable = "Department"; }
           if (key === "RecipientId") { refTable = "Employee"; } // RecipientId -> Employees table
           if (key === "RequesterId") { refTable = "Responsible"; } // RequesterId -> Responsibles table
-          if (key === "ResolverId") { refTable = "Responsible"; } // ResolverId -> Directors table
+          if (key === "ResolverId") { refTable = "Responsible"; } // ResolverId -> Responsibles table
           const upRefTable = refTable.charAt(0).toLocaleUpperCase() + refTable.slice(1) + "s";
           if (allTableNames.includes(upRefTable)) {
             row[key] = {

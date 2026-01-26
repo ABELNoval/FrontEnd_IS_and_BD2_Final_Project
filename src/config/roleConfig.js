@@ -68,15 +68,20 @@ export const ROLE_CONFIG = {
   
   Responsible: {
     tables: [
-      // Catalog tables (includes Equipments - general view)
-      ...CATALOG_TABLES,
-      "Employees",         // View only, filtered by SectionId (employees of their section)
+      // Catalog tables - filtered for Responsible
+      "Sections",          // Only their section (filtered by SectionId)
+      "Departments",       // Only departments in their section
+      "EquipmentTypes",    // Only types of equipment they can see (current + past)
+      "Equipments",        // Current equipment + equipment from accepted transfer requests
+      "Responsibles",      // All responsibles (for ResolverId FK reference)
+      "Employees",         // Employees in their section's departments
       // Action tables
-      "Maintenances",      // View only, history of equipment
-      "TransferRequests",  // Filtered by ResponsibleId (their own)
+      "Maintenances",      // Only maintenances of their CURRENT equipment
+      "EquipmentDecommissions", // Only decommissions of their CURRENT equipment
+      "TransferRequests",  // Filtered by RequesterId (their own requests)
       "Transfers"          // View only, filtered by SectionId
     ],
-    readOnlyTables: [...CATALOG_TABLES, "Employees", "Maintenances", "Transfers"],
+    readOnlyTables: ["Sections", "Departments", "EquipmentTypes", "Equipments", "Responsibles", "Employees", "Maintenances", "EquipmentDecommissions", "Transfers"],
     canCreate: true,
     canEdit: true,
     canDelete: false,
