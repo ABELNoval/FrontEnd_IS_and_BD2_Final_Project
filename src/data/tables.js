@@ -160,6 +160,7 @@ export const TABLE_METADATA = {
       EquipmentId: { type: "fk", ref: "Equipments", required: true },
       Reason: { type: "string", required: true },
       DecommissionDate: { type: "date", required: false, hidden: true }, // Auto-set to today
+      CompletionDate: { type: "date", readonly: true }, // Set automatically based on destiny
       TechnicalId: {type: "fk", ref: "Technicals", required: true},
       DepartmentId: {type: "fk", ref: "Departments", required: false},
       DestinyTypeId: {
