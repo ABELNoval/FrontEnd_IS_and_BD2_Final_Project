@@ -15,7 +15,7 @@
 // Catalog tables that everyone can see but only Admin can modify
 const CATALOG_TABLES = [
   "Sections",
-  "Departments", 
+  "Departments",
   "EquipmentTypes",
   "Responsibles",
   "Directors",
@@ -44,7 +44,7 @@ export const ROLE_CONFIG = {
     dashboardTitle: "Administrator Dashboard",
     hiddenColumns: {}
   },
-  
+
   Director: {
     tables: [
       // Catalog tables (includes Equipments now)
@@ -65,7 +65,7 @@ export const ROLE_CONFIG = {
     dashboardTitle: "Director Dashboard",
     hiddenColumns: {}
   },
-  
+
   Responsible: {
     tables: [
       // Catalog tables - filtered for Responsible
@@ -74,6 +74,7 @@ export const ROLE_CONFIG = {
       "EquipmentTypes",    // Only types of equipment they can see (current + past)
       "Equipments",        // Current equipment + equipment from accepted transfer requests
       "Responsibles",      // All responsibles (for ResolverId FK reference)
+      "Technicals",        // All technicals (unfiltered, for FK reference)
       "Employees",         // Employees in their section's departments
       // Action tables
       "Maintenances",      // Only maintenances of their CURRENT equipment
@@ -81,7 +82,7 @@ export const ROLE_CONFIG = {
       "TransferRequests",  // Filtered by RequesterId (their own requests)
       "Transfers"          // View only, filtered by SectionId
     ],
-    readOnlyTables: ["Sections", "Departments", "EquipmentTypes", "Equipments", "Responsibles", "Employees", "Maintenances", "EquipmentDecommissions", "Transfers"],
+    readOnlyTables: ["Sections", "Departments", "EquipmentTypes", "Equipments", "Responsibles", "Technicals", "Employees", "Maintenances", "EquipmentDecommissions", "Transfers"],
     canCreate: true,
     canEdit: false,
     canDelete: false,
@@ -90,7 +91,7 @@ export const ROLE_CONFIG = {
     dashboardTitle: "Responsible Dashboard",
     hiddenColumns: {}
   },
-  
+
   Technical: {
     tables: [
       // Catalog tables - NO Responsibles (not needed for Technical)
@@ -118,7 +119,7 @@ export const ROLE_CONFIG = {
       EquipmentDecommissions: ["TechnicalId"]
     }
   },
-  
+
   Employee: {
     tables: [
       // Only what they need to see - filtered by their department

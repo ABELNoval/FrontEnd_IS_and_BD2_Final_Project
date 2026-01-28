@@ -38,7 +38,7 @@ function TableViewer({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const tableScrollRef = useRef(null);
-  
+
   // Release modal state for EquipmentDecommissions
   const [releaseModalOpen, setReleaseModalOpen] = useState(false);
   const [releaseDecommissionId, setReleaseDecommissionId] = useState(null);
@@ -69,10 +69,10 @@ function TableViewer({
   useEffect(() => {
     // Check immediately
     checkScrollability();
-    
+
     // Check after CSS transition ends (0.3s = 300ms)
     const timer = setTimeout(checkScrollability, 350);
-    
+
     const el = tableScrollRef.current;
     if (el) {
       el.addEventListener('scroll', checkScrollability);
@@ -102,10 +102,10 @@ function TableViewer({
 
   const toggleRowMenu = (id, event) => {
     if (!event) return;
-    
+
     const button = event.currentTarget;
     const rect = button.getBoundingClientRect();
-    
+
     if (openMenuRow === id) {
       setOpenMenuRow(null);
     } else {
@@ -122,7 +122,7 @@ function TableViewer({
     return <div className="table-empty">Select a table to view</div>;
   }
 
-  const visibleColumns = table?.columns?.filter(col => 
+  const visibleColumns = table?.columns?.filter(col =>
     col !== "Id" &&
     !hiddenColumns.includes(col) &&
     !hiddenColumns.includes(col.toLowerCase()) &&
@@ -168,13 +168,13 @@ function TableViewer({
 
   // Check if a GUID is empty (all zeros)
   const isEmptyGuid = (value) => {
-    return value === "00000000-0000-0000-0000-000000000000" || 
-           value === "00000000000000000000000000000000";
+    return value === "00000000-0000-0000-0000-000000000000" ||
+      value === "00000000000000000000000000000000";
   };
 
   const formatCell = (cell, colName = "", tableName = "") => {
     if (cell === null || cell === undefined) return "";
-    
+
     // Check for empty GUID and return empty string
     if (typeof cell === "string" && isEmptyGuid(cell)) return "";
 
@@ -211,10 +211,14 @@ function TableViewer({
     if (typeof cell === "object" && cell.isForeign) {
       // Check if foreign key value is empty GUID or null
       if (!cell.value || isEmptyGuid(cell.value)) return "";
-      
+
       // Si es Department y no hay visual, mostrar Department()
       if ((cell.ref === "Departments" || cell.ref === "Department") && (cell.visual === null || cell.visual === undefined)) {
         return <span className="foreign">Department()</span>;
+      }
+      // Si es Employees y no hay visual, mostrar Employee()
+      if ((cell.ref === "Employees" || cell.ref === "Employee") && (cell.visual === null || cell.visual === undefined)) {
+        return <span className="foreign">Employee()</span>;
       }
       const label = cell.visual ?? cell.value;
       return (
@@ -257,10 +261,10 @@ function TableViewer({
               onFilter={onFilter}
               onClear={() => onFilter({})}
             />
-            
+
             {/* Create Button - only show if user has permission */}
             {onCreateClick && (
-              <Button text = "Create" onClick = {onCreateClick} variant = "btn-base"/>
+              <Button text="Create" onClick={onCreateClick} variant="btn-base" />
             )}
           </div>
         </div>
@@ -279,189 +283,189 @@ function TableViewer({
 
           <div className="table-scroll" ref={tableScrollRef}>
             <table className="table-viewer">
-            <thead>
-              <tr>
-                <th className="checkbox-header"></th>
-                <th>#</th>
-                {visibleColumns.map((col) => (
-                  col !== "visualId" && <th key={col}>{col}</th>
-                ))}
-                {/* TransferRequests actions column */}
-                {table.name === "TransferRequests" && <th className="actions-header">Actions</th>}
-                {/* Maintenances actions column */}
-                {table.name === "Maintenances" && <th className="actions-header">Actions</th>}
-                {/* Regular actions column (show when edit/delete available). Keep special action columns as well. */}
-                {(onEdit || onDelete) && <th className="actions-header">Actions</th>}
-                {table.name === "EquipmentDecommissions" && <th className="actions-header">Actions</th>}
-              </tr>
-            </thead>
+              <thead>
+                <tr>
+                  <th className="checkbox-header"></th>
+                  <th>#</th>
+                  {visibleColumns.map((col) => (
+                    col !== "visualId" && <th key={col}>{col}</th>
+                  ))}
+                  {/* TransferRequests actions column */}
+                  {table.name === "TransferRequests" && <th className="actions-header">Actions</th>}
+                  {/* Maintenances actions column */}
+                  {table.name === "Maintenances" && <th className="actions-header">Actions</th>}
+                  {/* Regular actions column (show when edit/delete available). Keep special action columns as well. */}
+                  {(onEdit || onDelete) && <th className="actions-header">Actions</th>}
+                  {table.name === "EquipmentDecommissions" && <th className="actions-header">Actions</th>}
+                </tr>
+              </thead>
 
-            <tbody>
-              {displayRows?.map((row) => {
-                // Determine TransferRequest action state
-                const isTransferRequest = table.name === "TransferRequests";
-                const isMaintenance = table.name === "Maintenances";
-                const isDecommission = table.name === "EquipmentDecommissions";
-                const statusId = row.StatusId?.value || row.StatusId;
-                const requesterId = row.RequesterId?.value || row.RequesterId;
-                //const targetDeptId = row.TargetDepartmentId?.value || row.TargetDepartmentId;
-                const isPending = statusId === 1;
-                const isOwner = requesterId === currentUserId;
-                
-                // Maintenance status: 1 = InProgress, 2 = Completed
-                const maintenanceStatusId = row.StatusId?.value || row.StatusId;
-                const isMaintenanceInProgress = maintenanceStatusId === 1;
-                
-                // EquipmentDecommission: DestinyTypeId = 3 means Warehouse (can be released)
-                const destinyTypeId = row.DestinyTypeId?.value || row.DestinyTypeId;
-                const isInWarehouse = destinyTypeId === 3;
-                
-                // Status labels and colors
-                const getStatusDisplay = () => {
-                  if (statusId === 2) return { label: "Accepted", className: "status-accepted" };
-                  if (statusId === 3) return { label: "Denied", className: "status-denied" };
-                  if (statusId === 4) return { label: "Cancelled", className: "status-cancelled" };
-                  return null;
-                };
-                const statusDisplay = getStatusDisplay();
-                
-                // Maintenance status display
-                const getMaintenanceStatusDisplay = () => {
-                  if (maintenanceStatusId === 2) return { label: "Completed", className: "status-accepted" };
-                  return null;
-                };
-                const maintenanceStatusDisplay = getMaintenanceStatusDisplay();
+              <tbody>
+                {displayRows?.map((row) => {
+                  // Determine TransferRequest action state
+                  const isTransferRequest = table.name === "TransferRequests";
+                  const isMaintenance = table.name === "Maintenances";
+                  const isDecommission = table.name === "EquipmentDecommissions";
+                  const statusId = row.StatusId?.value || row.StatusId;
+                  const requesterId = row.RequesterId?.value || row.RequesterId;
+                  //const targetDeptId = row.TargetDepartmentId?.value || row.TargetDepartmentId;
+                  const isPending = statusId === 1;
+                  const isOwner = requesterId === currentUserId;
 
-                return (
-                <tr
-                  key={row.Id}
-                  className={table.selectedRows?.has(row.Id) ? "selected" : ""}
-                >
-                  {/* Checkbox */}
-                  <td className="checkbox-cell">
-                    <input
-                      type="checkbox"
-                      checked={table.selectedRows?.has(row.Id) || false}
-                      onChange={() => onToggleRow(row.Id)}
-                    />
-                  </td>
+                  // Maintenance status: 1 = InProgress, 2 = Completed
+                  const maintenanceStatusId = row.StatusId?.value || row.StatusId;
+                  const isMaintenanceInProgress = maintenanceStatusId === 1;
 
-                  {/* visualId */}
-                  <td>{row.visualId}</td>
+                  // EquipmentDecommission: DestinyTypeId = 3 means Warehouse (can be released)
+                  const destinyTypeId = row.DestinyTypeId?.value || row.DestinyTypeId;
+                  const isInWarehouse = destinyTypeId === 3;
 
-                  {/* Normal columns */}
-                  {visibleColumns.map((col) => {
-                    if (col === "visualId") return null;
-                    const cell = row[col];
-                    return <td key={col}>{formatCell(cell, col, table.name)}</td>;
-                  })}
+                  // Status labels and colors
+                  const getStatusDisplay = () => {
+                    if (statusId === 2) return { label: "Accepted", className: "status-accepted" };
+                    if (statusId === 3) return { label: "Denied", className: "status-denied" };
+                    if (statusId === 4) return { label: "Cancelled", className: "status-cancelled" };
+                    return null;
+                  };
+                  const statusDisplay = getStatusDisplay();
 
-                  {/* Ownership cell for Responsible in Equipments */}
-                  {table.name === "Equipments" && userRole === "Responsible" && (
-                    <td>
-                      <span className={`status-badge ${row.isTransferred ? 'status-operative' : 'status-denied'}`}>
-                        {row.isTransferred ? "Owner" : "Transferred"}
-                      </span>
-                    </td>
-                  )}
+                  // Maintenance status display
+                  const getMaintenanceStatusDisplay = () => {
+                    if (maintenanceStatusId === 2) return { label: "Completed", className: "status-accepted" };
+                    return null;
+                  };
+                  const maintenanceStatusDisplay = getMaintenanceStatusDisplay();
 
-                  {/* TransferRequests specific actions */}
-                  {isTransferRequest && (
-                    <td className="actions-cell transfer-request-actions">
-                      {isPending ? (
-                        isOwner ? (
-                          <Button
-                            variant="btn-cancel"
-                            onClick={() => onCancelRequest && onCancelRequest(row.Id)}
-                          >
-                            Cancel
-                          </Button>
-                        ) : (
-                          <div className="action-buttons-group">
+                  return (
+                    <tr
+                      key={row.Id}
+                      className={table.selectedRows?.has(row.Id) ? "selected" : ""}
+                    >
+                      {/* Checkbox */}
+                      <td className="checkbox-cell">
+                        <input
+                          type="checkbox"
+                          checked={table.selectedRows?.has(row.Id) || false}
+                          onChange={() => onToggleRow(row.Id)}
+                        />
+                      </td>
+
+                      {/* visualId */}
+                      <td>{row.visualId}</td>
+
+                      {/* Normal columns */}
+                      {visibleColumns.map((col) => {
+                        if (col === "visualId") return null;
+                        const cell = row[col];
+                        return <td key={col}>{formatCell(cell, col, table.name)}</td>;
+                      })}
+
+                      {/* Ownership cell for Responsible in Equipments */}
+                      {table.name === "Equipments" && userRole === "Responsible" && (
+                        <td>
+                          <span className={`status-badge ${row.isTransferred ? 'status-operative' : 'status-denied'}`}>
+                            {row.isTransferred ? "Owner" : "Transferred"}
+                          </span>
+                        </td>
+                      )}
+
+                      {/* TransferRequests specific actions */}
+                      {isTransferRequest && (
+                        <td className="actions-cell transfer-request-actions">
+                          {isPending ? (
+                            isOwner ? (
+                              <Button
+                                variant="btn-cancel"
+                                onClick={() => onCancelRequest && onCancelRequest(row.Id)}
+                              >
+                                Cancel
+                              </Button>
+                            ) : (
+                              <div className="action-buttons-group">
+                                <Button
+                                  variant="btn-accept"
+                                  onClick={() => onAcceptRequest && onAcceptRequest(row.Id)}
+                                >
+                                  Accept
+                                </Button>
+                                <Button
+                                  variant="btn-deny"
+                                  onClick={() => onDenyRequest && onDenyRequest(row.Id)}
+                                >
+                                  Deny
+                                </Button>
+                              </div>
+                            )
+                          ) : (
+                            <span className={`status-badge ${statusDisplay?.className || ''}`}>
+                              {statusDisplay?.label || ''}
+                            </span>
+                          )}
+                        </td>
+                      )}
+
+                      {/* Maintenances specific actions */}
+                      {isMaintenance && (
+                        <td className="actions-cell maintenance-actions">
+                          {isMaintenanceInProgress ? (
                             <Button
                               variant="btn-accept"
-                              onClick={() => onAcceptRequest && onAcceptRequest(row.Id)}
+                              onClick={() => onCompleteMaintenance && onCompleteMaintenance(row.Id)}
                             >
-                              Accept
+                              Complete
                             </Button>
+                          ) : (
+                            <span className={`status-badge ${maintenanceStatusDisplay?.className || ''}`}>
+                              {maintenanceStatusDisplay?.label || ''}
+                            </span>
+                          )}
+                        </td>
+                      )}
+
+                      {/* EquipmentDecommissions specific actions */}
+                      {isDecommission && (
+                        <td className="actions-cell decommission-actions">
+                          {isInWarehouse ? (
                             <Button
-                              variant="btn-deny"
-                              onClick={() => onDenyRequest && onDenyRequest(row.Id)}
+                              variant="btn-accept"
+                              onClick={() => {
+                                setReleaseDecommissionId(row.Id);
+                                setSelectedDepartmentId("");
+                                setSelectedRecipientId("");
+                                setReleaseModalOpen(true);
+                              }}
                             >
-                              Deny
+                              Release
                             </Button>
-                          </div>
-                        )
-                      ) : (
-                        <span className={`status-badge ${statusDisplay?.className || ''}`}>
-                          {statusDisplay?.label || ''}
-                        </span>
+                          ) : (
+                            <span className={`status-badge ${destinyTypeId === 1 ? 'status-accepted' : destinyTypeId === 2 ? 'status-denied' : ''}`}>
+                              {destinyTypeId === 1 ? 'In Department' : destinyTypeId === 2 ? 'Disposed' : ''}
+                            </span>
+                          )}
+                        </td>
                       )}
-                    </td>
-                  )}
 
-                  {/* Maintenances specific actions */}
-                  {isMaintenance && (
-                    <td className="actions-cell maintenance-actions">
-                      {isMaintenanceInProgress ? (
-                        <Button
-                          variant="btn-accept"
-                          onClick={() => onCompleteMaintenance && onCompleteMaintenance(row.Id)}
-                        >
-                          Complete
-                        </Button>
-                      ) : (
-                        <span className={`status-badge ${maintenanceStatusDisplay?.className || ''}`}>
-                          {maintenanceStatusDisplay?.label || ''}
-                        </span>
+                      {/* Regular Actions - show if edit/delete handlers provided, even for special tables (admin needs CRUD) */}
+                      {(onEdit || onDelete) && (
+                        <td className="actions-cell">
+                          <Button
+                            variant="btn-dots"
+                            onClick={(e) => toggleRowMenu(row.Id, e)}
+                          >
+                            ⋮
+                          </Button>
+                        </td>
                       )}
-                    </td>
-                  )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
 
-                  {/* EquipmentDecommissions specific actions */}
-                  {isDecommission && (
-                    <td className="actions-cell decommission-actions">
-                      {isInWarehouse ? (
-                        <Button
-                          variant="btn-accept"
-                          onClick={() => {
-                            setReleaseDecommissionId(row.Id);
-                            setSelectedDepartmentId("");
-                            setSelectedRecipientId("");
-                            setReleaseModalOpen(true);
-                          }}
-                        >
-                          Release
-                        </Button>
-                      ) : (
-                        <span className={`status-badge ${destinyTypeId === 1 ? 'status-accepted' : destinyTypeId === 2 ? 'status-denied' : ''}`}>
-                          {destinyTypeId === 1 ? 'In Department' : destinyTypeId === 2 ? 'Disposed' : ''}
-                        </span>
-                      )}
-                    </td>
-                  )}
-
-                  {/* Regular Actions - show if edit/delete handlers provided, even for special tables (admin needs CRUD) */}
-                  {(onEdit || onDelete) && (
-                  <td className="actions-cell">
-                    <Button
-                      variant="btn-dots"
-                      onClick={(e) => toggleRowMenu(row.Id, e)}
-                    >
-                      ⋮
-                    </Button>
-                  </td>
-                  )}
-                </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          {displayRows?.length === 0 && (
-            <div className="no-results">No matching records found</div>
-          )}
-        </div>
+            {displayRows?.length === 0 && (
+              <div className="no-results">No matching records found</div>
+            )}
+          </div>
 
           {/* Flecha derecha */}
           {canScrollRight && (
@@ -513,27 +517,27 @@ function TableViewer({
         >
           <div className="row-actions-content">
             {onEdit && (
-            <div
-              className="action-item"
-              onClick={() => {
-                const row = displayRows.find(r => r.Id === openMenuRow);
-                if (row) onEdit(row);
-                setOpenMenuRow(null);
-              }}
-            >
-              <span>Edit</span>
-            </div>
+              <div
+                className="action-item"
+                onClick={() => {
+                  const row = displayRows.find(r => r.Id === openMenuRow);
+                  if (row) onEdit(row);
+                  setOpenMenuRow(null);
+                }}
+              >
+                <span>Edit</span>
+              </div>
             )}
             {onDelete && (
-            <div
-              className="action-item delete"
-              onClick={() => {
-                onDelete(openMenuRow);
-                setOpenMenuRow(null);
-              }}
-            >
-              <span>Delete</span>
-            </div>
+              <div
+                className="action-item delete"
+                onClick={() => {
+                  onDelete(openMenuRow);
+                  setOpenMenuRow(null);
+                }}
+              >
+                <span>Delete</span>
+              </div>
             )}
           </div>
         </Panel>
@@ -545,7 +549,7 @@ function TableViewer({
           <div className="modal-content release-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Release Equipment to Department</h3>
             <p>Select the department and recipient for this equipment.</p>
-            
+
             <div className="form-group">
               <label>Target Department</label>
               <select
