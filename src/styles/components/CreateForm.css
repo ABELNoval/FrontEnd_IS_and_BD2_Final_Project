@@ -250,3 +250,25 @@
   content: "⚠";
   font-size: 14px;
 }
+
+/* ===== PROHIBITED/DISABLED FIELDS ===== */
+.form-field-disabled {
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+.form-field-disabled * {
+  cursor: not-allowed !important;
+}
+
+.form-field-disabled label {
+  color: var(--text-muted) !important;
+}
+
+.form-field-disabled .form-select,
+.form-field-disabled .form-input {
+  background: var(--bg-dark-1) !important;
+  border-style: dashed !important;
+  border-color: var(--text-muted) !important;
+  color: var(--text-muted) !important;
+}

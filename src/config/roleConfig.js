@@ -1,19 +1,35 @@
 /**
  * Role-based table and permission configuration
  * This defines what each role can see and do
+ * 
+ * CATALOG TABLES (general, no filtering, visible to all):
+ * - Sections, Departments, EquipmentTypes, Responsibles, Directors, Technicals, Equipments
+ * - These are referenced as FK in other tables
+ * - Only Admin can CRUD, others have limited access
+ * 
+ * ACTION TABLES (filtered by user context):
+ * - Assessments, Maintenances, Transfers, TransferRequests, EquipmentDecommissions
+ * - Filtered based on user's role (SectionId, TechnicalId, DepartmentId, etc.)
  */
+
+// Catalog tables that everyone can see but only Admin can modify
+const CATALOG_TABLES = [
+  "Sections",
+  "Departments",
+  "EquipmentTypes",
+  "Responsibles",
+  "Directors",
+  "Technicals",
+  "Equipments"  // General - referenced in Transfers, Maintenances, Decommissions, etc.
+];
 
 export const ROLE_CONFIG = {
   Administrator: {
     tables: [
-      "Departments",
-      "EquipmentTypes", 
-      "Responsibles",
+      // Catalog tables (includes Equipments now)
+      ...CATALOG_TABLES,
       "Employees",
-      "Directors",
-      "Technicals",
-      "Sections",
-      "Equipments",
+      // Action tables
       "Assessments",
       "Maintenances",
       "Transfers",
@@ -26,96 +42,122 @@ export const ROLE_CONFIG = {
     canDelete: true,
     canExportReports: true,
     dashboardTitle: "Administrator Dashboard",
-    hiddenColumns: {} // No hidden columns for admin
+    hiddenColumns: {}
   },
-  
+
   Director: {
     tables: [
-      "Departments",
-      "EquipmentTypes",
-      "Sections",
-      "Equipments",
+      ...CATALOG_TABLES,
+      "Employees",
       "Assessments",
       "Maintenances",
       "Transfers",
-      "EquipmentDecommissions",
-      // Can view but not edit these:
-      "Directors",
-      "Employees",
-      "Technicals",
-      "Responsibles"
+      "EquipmentDecommissions"
     ],
-    // Tables that Director can only view (no create/edit/delete)
-    readOnlyTables: ["Directors", "Employees", "Technicals", "Responsibles"],
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
-    canExportReports: true,
-    dashboardTitle: "Director Dashboard",
-    hiddenColumns: {} // No hidden columns for director
-  },
-  
-  Responsible: {
-    // Equipment from their section, departments from their section, transfers, employees table
-    tables: [
-      "Departments",
-      "EquipmentTypes",
-      "Equipments",
+    readOnlyTables: [
+      ...CATALOG_TABLES,
       "Employees",
-      "TransferRequests",
-      "Transfers"
+      "Assessments",
+      "Maintenances",
+      "Transfers",
+      "EquipmentDecommissions"
     ],
-    canCreate: true,
-    canEdit: true,
+    canCreate: false,
+    canEdit: false,
     canDelete: false,
     canExportReports: true,
-    dashboardTitle: "Responsible Dashboard",
-    // Hide columns that reference filtered data (their own section)
-    hiddenColumns: {
-      Departments: ["SectionId"], // Departments are already filtered by section
-    }
+    dashboardTitle: "Director Dashboard",
+    hiddenColumns: {}
   },
-  
-  Technical: {
-    // Equipment info, maintenances, their assessments, decommissions
+
+  Responsible: {
     tables: [
-      "Departments",
+      // Catalog tables - filtered for Responsible
+      "Sections",          // Only their section (filtered by SectionId)
+      "Departments",       // Only departments in their section
+      "EquipmentTypes",    // Only types of equipment they can see (current + past)
+      "Equipments",        // Current equipment + equipment from accepted transfer requests
+      "Responsibles",      // All responsibles (for ResolverId FK reference)
+      "Technicals",        // All technicals (unfiltered, for FK reference)
+      "Employees",         // Employees in their section's departments
+      // Action tables
+      "Maintenances",      // Only maintenances of their CURRENT equipment
+      "EquipmentDecommissions", // Only decommissions of their CURRENT equipment
+      "TransferRequests",  // Filtered by RequesterId (their own requests)
+      "Transfers"          // View only, filtered by SectionId
+    ],
+    readOnlyTables: ["Sections", "Departments", "EquipmentTypes", "Equipments", "Responsibles", "Technicals", "Employees", "Maintenances", "EquipmentDecommissions", "Transfers"],
+    canCreate: true,
+    canEdit: false,
+    canDelete: false,
+    canExportReports: true,
+    canEditTables: [],
+    dashboardTitle: "Responsible Dashboard",
+    hiddenColumns: {}
+  },
+
+  Technical: {
+    tables: [
       "Sections",
+      "Departments",
       "EquipmentTypes",
       "Equipments",
+      "Directors",
+      "Employees",
       "Maintenances",
       "Assessments",
       "EquipmentDecommissions"
     ],
-    canCreate: true,
-    canEdit: true,
+    readOnlyTables: [
+      "Sections", "Departments", "EquipmentTypes", "Equipments", "Directors", "Employees", "Assessments"
+    ],
+    canCreate: false,
+    canEdit: false,
     canDelete: false,
     canExportReports: false,
+    canCreateTables: ["Maintenances", "EquipmentDecommissions"],
     dashboardTitle: "Technical Dashboard",
-    // Hide TechnicalId columns since they're filtered by the user's own ID
     hiddenColumns: {
       Maintenances: ["TechnicalId"],
       Assessments: ["TechnicalId"],
       EquipmentDecommissions: ["TechnicalId"]
     }
   },
-  
+
   Employee: {
-    // Their department and equipment from their department
     tables: [
-      "Departments",
-      "EquipmentTypes",
-      "Equipments"
+      // Only what they need to see - filtered by their department
+      "Sections",         // Only their section (filtered by backend via department)
+      "Departments",      // Only their department (filtered by backend)
+      "Equipments",       // Only equipment in their department (filtered by backend)
+      "EquipmentTypes"    // Only types of equipment in their department (filtered by backend)
     ],
+    readOnlyTables: ["Sections", "Departments", "Equipments", "EquipmentTypes"],
     canCreate: false,
     canEdit: false,
     canDelete: false,
     canExportReports: false,
     dashboardTitle: "Employee Dashboard",
-    // Hide DepartmentId since they only see their own department
+    hiddenColumns: {}
+  },
+  Receptor: {
+    // Receptors confirm reception and destination of decommissioned equipment
+    tables: [
+      "Departments",
+      "Sections",
+      "EquipmentTypes",
+      "Equipments",
+      "EquipmentDecommissions"
+    ],
+    canCreate: false,
+    canEdit: false,
+    canDelete: false,
+    canExportReports: false,
+    dashboardTitle: "Receptor Dashboard",
     hiddenColumns: {
       Equipments: ["DepartmentId"],
-      Departments: ["SectionId"] // They don't have access to sections
+      Departments: ["SectionId"],
+      EquipmentDecommissions: ["RecipientId"] // They are the recipient, hide their own ID
     }
   }
 };
@@ -138,6 +180,17 @@ export function getRoleConfig(role) {
 export function getHiddenColumns(role, tableName) {
   const config = getRoleConfig(role);
   return config.hiddenColumns?.[tableName] || [];
+}
+
+/**
+ * Check if a table is read-only for a specific role
+ * @param {string} role 
+ * @param {string} tableName 
+ * @returns {boolean}
+ */
+export function isTableReadOnly(role, tableName) {
+  const config = getRoleConfig(role);
+  return config.readOnlyTables?.includes(tableName) || false;
 }
 
 export default ROLE_CONFIG;

@@ -43,6 +43,13 @@ function App() {
             <Dashboard />
           </ProtectedRoute>
         } />
+
+        {/* Receptor Dashboard - confirms reception of decommissioned equipment */}
+        <Route path="/receptor" element={
+          <ProtectedRoute allowedRoles={["Receptor"]}>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
         
         {/* Legacy route - redirects based on role */}
         <Route path="/dashboard" element={

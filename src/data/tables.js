@@ -119,7 +119,8 @@ export const TABLE_METADATA = {
         values: ["Pending", "Accepted", "Denied", "Cancelled"],
         required: true,
         readonly: true
-      }
+      },
+      ResolverId: { type: "fk", ref: "Responsibles", readonly: true } // Director who resolved the request
     },
     // Special table with action buttons instead of edit/delete
     hasActions: true,
@@ -160,6 +161,7 @@ export const TABLE_METADATA = {
       EquipmentId: { type: "fk", ref: "Equipments", required: true },
       Reason: { type: "string", required: true },
       DecommissionDate: { type: "date", required: false, hidden: true }, // Auto-set to today
+      CompletionDate: { type: "date", readonly: true }, // Set automatically based on destiny
       TechnicalId: {type: "fk", ref: "Technicals", required: true},
       DepartmentId: {type: "fk", ref: "Departments", required: false},
       DestinyTypeId: {

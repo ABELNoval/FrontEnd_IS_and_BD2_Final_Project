@@ -113,7 +113,18 @@ const transformToTableFormat = (data, tableName) => {
       Object.keys(item).forEach((key) => {
         if (key.endsWith("Id")) {
           var refTable = key.replace("Id", "");
-          if (key.startsWith("Source") || key.startsWith("Target")) { refTable = "Department";} 
+          // Special mappings for FK names that don't match table names
+          if (key.startsWith("Source") || key.startsWith("Target")) { refTable = "Department"; }
+          if (key === "RequesterId") { refTable = "Responsible"; } // RequesterId -> Responsibles table
+          if (key === "ResolverId") { refTable = "Responsible"; } // ResolverId -> Responsibles table
+          // Distinción para RecipientId
+          if (key === "RecipientId") {
+            if (tableName === "Transfers") {
+              refTable = "Responsible";
+            } else {
+              refTable = "Employee";
+            }
+          }
           const upRefTable = refTable.charAt(0).toLocaleUpperCase() + refTable.slice(1) + "s";
           if (allTableNames.includes(upRefTable)) {
             row[key] = {
@@ -850,15 +861,19 @@ function Dashboard() {
 
             {selectedTable ? (
               <TableViewer
+                userRole={userRole}
                 table={tableWithFilters}
                 tables={tables}
                 onForeignClick={handleForeignClick}
                 onToggleRow={toggleRowSelection}
                 onCreateClick={
-                  roleConfig.canCreate && 
+                  (
+                    roleConfig.canCreate ||
+                    (Array.isArray(roleConfig.canCreateTables) && roleConfig.canCreateTables.includes(selectedTable.name))
+                  ) &&
                   !TABLE_METADATA[selectedTable.name]?.viewOnly &&
                   !roleConfig.readOnlyTables?.includes(selectedTable.name)
-                    ? toggleCreateForm 
+                    ? toggleCreateForm
                     : null
                 }
                 onEdit={
@@ -921,6 +936,9 @@ function Dashboard() {
               tables={tables}
               allDepartments={allDepartments}
               editingItem={editingItem}
+              hiddenColumns={getHiddenColumns(userRole, selectedTable?.name)}
+              currentUserId={user?.id || user?.Id}
+              userRole={userRole}
               onClose={() => {
                 setShowCreateForm(false);
                 setEditingItem(null);
