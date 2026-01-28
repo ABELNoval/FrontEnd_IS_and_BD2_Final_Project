@@ -867,10 +867,13 @@ function Dashboard() {
                 onForeignClick={handleForeignClick}
                 onToggleRow={toggleRowSelection}
                 onCreateClick={
-                  roleConfig.canCreate && 
+                  (
+                    roleConfig.canCreate ||
+                    (Array.isArray(roleConfig.canCreateTables) && roleConfig.canCreateTables.includes(selectedTable.name))
+                  ) &&
                   !TABLE_METADATA[selectedTable.name]?.viewOnly &&
                   !roleConfig.readOnlyTables?.includes(selectedTable.name)
-                    ? toggleCreateForm 
+                    ? toggleCreateForm
                     : null
                 }
                 onEdit={
