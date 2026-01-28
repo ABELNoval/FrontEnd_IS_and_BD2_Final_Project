@@ -47,20 +47,24 @@ export const ROLE_CONFIG = {
 
   Director: {
     tables: [
-      // Catalog tables (includes Equipments now)
       ...CATALOG_TABLES,
       "Employees",
-      // Action tables (full access)
       "Assessments",
       "Maintenances",
       "Transfers",
       "EquipmentDecommissions"
     ],
-    // Catalog tables are read-only for Director (except Equipments which they can edit)
-    readOnlyTables: ["Sections", "Departments", "EquipmentTypes", "Responsibles", "Directors", "Technicals", "Employees"],
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
+    readOnlyTables: [
+      ...CATALOG_TABLES,
+      "Employees",
+      "Assessments",
+      "Maintenances",
+      "Transfers",
+      "EquipmentDecommissions"
+    ],
+    canCreate: false,
+    canEdit: false,
+    canDelete: false,
     canExportReports: true,
     dashboardTitle: "Director Dashboard",
     hiddenColumns: {}
@@ -135,6 +139,26 @@ export const ROLE_CONFIG = {
     canExportReports: false,
     dashboardTitle: "Employee Dashboard",
     hiddenColumns: {}
+  },
+  Receptor: {
+    // Receptors confirm reception and destination of decommissioned equipment
+    tables: [
+      "Departments",
+      "Sections",
+      "EquipmentTypes",
+      "Equipments",
+      "EquipmentDecommissions"
+    ],
+    canCreate: false,
+    canEdit: false,
+    canDelete: false,
+    canExportReports: false,
+    dashboardTitle: "Receptor Dashboard",
+    hiddenColumns: {
+      Equipments: ["DepartmentId"],
+      Departments: ["SectionId"],
+      EquipmentDecommissions: ["RecipientId"] // They are the recipient, hide their own ID
+    }
   }
 };
 
